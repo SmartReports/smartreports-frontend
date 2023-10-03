@@ -15,21 +15,33 @@ export const useMainStore = defineStore("main", {
       this.kpi = [
         {
           id: "id1",
-          name: "KPI 1",
+          name: "Production Cycle Time",
           description: "KPI 1 description",
-          allowed_charts: ["bar", "line", "pie", "scatter"],
+          allowed_charts: ["bar", "line"],
         },
         {
           id: "id2",
-          name: "KPI 2",
+          name: "Energy Efficiency",
           description: "KPI 2 description",
           allowed_charts: ["bar", "line", "pie"],
         },
         {
           id: "id3",
-          name: "KPI 3",
+          name: "Maintenance Downtime vs. Equipment Age",
           description: "KPI 3 description",
           allowed_charts: ["scatter"],
+        },
+        {
+          id: "id4",
+          name: "Quality First Pass Yield",
+          description: "KPI 4 description",
+          allowed_charts: ["bar", "line", "pie", "scatter"],
+        },
+        {
+          id: "id5",
+          name: "Overall Equipment Effectiveness",
+          description: "KPI 5 description",
+          allowed_charts: ["bar", "line"],
         },
       ];
     },

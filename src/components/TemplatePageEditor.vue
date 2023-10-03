@@ -47,9 +47,9 @@
         </v-btn>
       </div>
     </v-card-text>
-    <v-card-actions>
+    <!-- <v-card-actions>
       <v-btn variant="text" color="deep-purple-accent-4"> Learn More </v-btn>
-    </v-card-actions>
+    </v-card-actions> -->
   </v-card>
 </template>
 

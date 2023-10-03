@@ -6,7 +6,7 @@
 
       <!-- <div class="text-body-2 font-weight-light mb-n1">Report</div> -->
 
-      <h3 class="text-h4 font-weight-bold mt-4">Report Template Editor</h3>
+      <h3 class="text-h4 mt-4">Report Template Editor</h3>
 
       <div class="pt-12" />
 
@@ -17,7 +17,7 @@
 
         <v-col cols="4">
           <v-select
-            :items="['Daily', 'Weekly', 'Monthly', 'Quarterly', 'Yearly']"
+            :items="frequencyItems"
             label="Frequency"
             v-model="modelValue.frequency"
           />
@@ -120,6 +120,14 @@ export default defineComponent({
   },
   computed: {
     ...mapStores(useMainStore),
+    frequencyItems() {
+      return [
+        { title: "Weekly", value: "weekly" },
+        { title: "Monthly", value: "monthly" },
+        { title: "Quarterly", value: "quarterly" },
+        { title: "Yearly", value: "yearly" },
+      ];
+    },
   },
   components: { TemplatePageEditor },
 });

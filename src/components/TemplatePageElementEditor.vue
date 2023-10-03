@@ -5,8 +5,7 @@
         hide-details="auto"
         :items="kpiAsItems"
         label="KPI"
-        :modelValue="modelValueKpiAsItem"
-        @update:modelValue="onUpdate('kpi', $event.value)"
+        v-model="proxyModelValueKpi"
       />
     </v-col>
     <v-col cols="5">
@@ -37,7 +36,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import { ChartType, Kpi, KpiReportElement } from "../models";
+import { KpiReportElement } from "../models";
 import { mapStores } from "pinia";
 import { useMainStore } from "../store/app";
 export default defineComponent({
@@ -50,10 +49,6 @@ export default defineComponent({
   },
   methods: {
     getImgUrl(chartType: string) {
-      console.log(
-        chartType,
-        new URL(`../assets/${chartType}.png`, import.meta.url).href
-      );
       return new URL(`../assets/${chartType}.png`, import.meta.url).href;
     },
     onUpdate<K extends keyof KpiReportElement>(
@@ -83,10 +78,24 @@ export default defineComponent({
       }));
     },
     modelValueKpiAsItem() {
+      // TODO  workaround for v-combobox to make search work - find a better way
+      const kpi = this.mainStore.getKpiById(this.modelValue.kpi);
+      if (!kpi) {
+        return this.modelValue.kpi;
+      }
       return {
-        title: this.mainStore.getKpiById(this.modelValue.kpi)?.name ?? "",
+        title: kpi.name,
         value: this.modelValue.kpi,
       };
+    },
+    proxyModelValueKpi: {
+      get() {
+        return this.modelValueKpiAsItem;
+      },
+      set(value: any) {
+        // TODO only update the value if it is a valid kpi, but keep the search value otherwise
+        this.onUpdate("kpi", value.value);
+      },
     },
   },
 });
