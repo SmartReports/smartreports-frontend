@@ -1,6 +1,7 @@
 <template>
   <v-container class="fill-height">
-    <v-responsive class="fill-height">
+    <!-- TODO overflow visible is pretty ugly -->
+    <v-responsive class="fill-height" style="overflow: visible !important">
       <!-- <v-img height="300" src="@/assets/logo.svg" /> -->
 
       <!-- <div class="text-body-2 font-weight-light mb-n1">Report</div> -->
@@ -56,7 +57,7 @@
       </v-row>
 
       <v-row v-for="(page, index) in modelValue.pages" :key="index">
-        <v-col cols="auto">
+        <v-col cols="12">
           <TemplatePageEditor
             class="pb-10"
             :modelValue="page"
@@ -75,9 +76,14 @@
 import { defineComponent, PropType } from "vue";
 import { ReportTemplate, ReportTemplatePage } from "../models";
 import TemplatePageEditor from "./TemplatePageEditor.vue";
+import { mapStores } from "pinia";
+import { useMainStore } from "../store/app";
 export default defineComponent({
   name: "TemplateEditor",
   props: {},
+  async created() {
+    await this.mainStore.getKpi();
+  },
   data() {
     return {
       modelValue: {
@@ -85,7 +91,16 @@ export default defineComponent({
         name: "Your report",
         pages: [
           {
-            elements: [],
+            elements: [
+              {
+                chart_type: "line",
+                kpi: "id2",
+              },
+              {
+                chart_type: "line",
+                kpi: "id1",
+              },
+            ],
             layout: "grid",
           },
         ],
@@ -103,7 +118,9 @@ export default defineComponent({
       });
     },
   },
-  computed: {},
+  computed: {
+    ...mapStores(useMainStore),
+  },
   components: { TemplatePageEditor },
 });
 </script>

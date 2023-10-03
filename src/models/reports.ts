@@ -12,7 +12,6 @@ export interface ReportTemplatePage {
 export interface KpiReportElement {
   kpi: string;
   chart_type: ChartType;
-  chart_data: object;
 }
 
-export type ChartType = "line" | "bar" | "pie" | "bubble" | "scatter";
+export type ChartType = "line" | "bar" | "pie" | "scatter";
