@@ -1,5 +1,5 @@
 <template>
-  <v-container class="fill-height">
+  <v-container class="fill-height rounded-xl px-10 pb-10 bg-white">
     <!-- TODO overflow visible is pretty ugly -->
     <v-responsive class="fill-height" style="overflow: visible !important">
       <!-- <v-img height="300" src="@/assets/logo.svg" /> -->
@@ -22,22 +22,6 @@
             v-model="modelValue.frequency"
           />
         </v-col>
-
-        <!-- <v-col cols="auto">
-          <v-btn
-            color="primary"
-            href="https://vuetifyjs.com/introduction/why-vuetify/#feature-guides"
-            min-width="228"
-            rel="noopener noreferrer"
-            size="x-large"
-            target="_blank"
-            variant="flat"
-          >
-            <v-icon icon="mdi-speedometer" size="large" start />
-
-            Get Started
-          </v-btn>
-        </v-col> -->
       </v-row>
       <v-row class="d-flex-col align-center mt-10 mb-8">
         <v-col cols="auto">
@@ -63,9 +47,17 @@
             :modelValue="page"
             :index="index"
             @update:model-value="onPageUpdate(index, $event)"
+            @remove="onPageRemove(index)"
           />
         </v-col>
       </v-row>
+
+      <div v-if="modelValue.pages.length === 0" class="text-center mt-4">
+        <v-icon class="text-grey-lighten-1" style="font-size: 180px !important">
+          mdi-chart-bar
+        </v-icon>
+        <p class="text-grey">No pages yet</p>
+      </div>
 
       <!-- {{ modelValue.pages[0].layout }} -->
     </v-responsive>
@@ -93,12 +85,8 @@ export default defineComponent({
           {
             elements: [
               {
-                chart_type: "line",
-                kpi: "id2",
-              },
-              {
-                chart_type: "line",
-                kpi: "id1",
+                chart_type: null,
+                kpi: "",
               },
             ],
             layout: "grid",
@@ -113,9 +101,17 @@ export default defineComponent({
     },
     onAddPage() {
       this.modelValue.pages.push({
-        elements: [],
+        elements: [
+          {
+            kpi: "",
+            chart_type: null,
+          },
+        ],
         layout: "grid",
       });
+    },
+    onPageRemove(index: number) {
+      this.modelValue.pages.splice(index, 1);
     },
   },
   computed: {

@@ -1,6 +1,12 @@
 <template>
   <v-row class="d-flex align-center">
-    <v-col cols="6" class="pb-4">
+    <v-col cols="6" class="d-flex align-center">
+      <v-btn
+        class="mr-1 ml-n4 text-grey-darken-1"
+        variant="text"
+        @click="onRemove()"
+        icon="mdi-close"
+      />
       <v-combobox
         hide-details="auto"
         :items="kpiAsItems"
@@ -59,6 +65,9 @@ export default defineComponent({
         ...this.modelValue,
         [key]: value,
       });
+    },
+    onRemove() {
+      this.$emit("remove");
     },
   },
   computed: {

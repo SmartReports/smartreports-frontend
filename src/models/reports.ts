@@ -11,7 +11,7 @@ export interface ReportTemplatePage {
 
 export interface KpiReportElement {
   kpi: string;
-  chart_type: ChartType;
+  chart_type: ChartType | null;
 }
 
 export type ChartType = "line" | "bar" | "pie" | "scatter";

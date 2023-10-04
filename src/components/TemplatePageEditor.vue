@@ -1,7 +1,17 @@
 <template>
   <v-card class="mx-auto">
     <v-card-text>
-      <div>Page {{ index + 1 }}</div>
+      <div class="mt-n2 mb-4 d-flex align-center justify-space-between">
+        <div>Page {{ index + 1 }}</div>
+        <v-btn
+          class="text-grey-darken-1"
+          @click="onRemove()"
+          icon="mdi-delete"
+          variant="text"
+          tooltip="Remove "
+        />
+      </div>
+
       <div class="">
         <div class="d-flex justify-end align-center">
           <p class="text-overline mr-4">Page layout</p>
@@ -17,7 +27,7 @@
           </v-btn-toggle>
         </div>
 
-        <div class="mb-8 d-flex flex-column">
+        <div class="mb-8 mt-n4 d-flex flex-column">
           <h3 class="text-h5">KPI</h3>
           <p class="v-card-subtitle pl-0">
             KPI's shown on page {{ index + 1 }}.
@@ -27,9 +37,10 @@
         <v-row v-for="(element, index) in modelValue.elements" :key="index">
           <v-col cols="12">
             <TemplatePageElementEditor
-              class="pb-10"
+              class="pb-4"
               :modelValue="element"
               @update:modelValue="onUpdateElement(index, $event)"
+              @remove="onRemoveElement(index)"
               :index="index"
             />
           </v-col>
@@ -40,7 +51,8 @@
           @click="onAddElement()"
           color="primary"
           target="_blank"
-          variant="flat"
+          variant="text"
+          class="mt-4"
         >
           <v-icon icon="mdi-plus" start />
           Add
@@ -78,6 +90,14 @@ export default defineComponent({
         ...this.modelValue,
         [key]: value,
       });
+    },
+    onRemove() {
+      this.$emit("remove");
+    },
+    onRemoveElement(index: number) {
+      const elements = [...this.modelValue.elements];
+      elements.splice(index, 1);
+      this.onUpdate("elements", elements);
     },
     onUpdateElement(index: number, value: any) {
       console.log("onUpdateElement", index, value);
