@@ -1,5 +1,5 @@
 <template>
-  <v-container class="fill-height rounded-xl px-10 pb-10 bg-white">
+  <v-container class="rounded-xl px-16 my-8 pb-10 bg-white">
     <!-- TODO overflow visible is pretty ugly -->
     <v-responsive class="fill-height" style="overflow: visible !important">
       <!-- <v-img height="300" src="@/assets/logo.svg" /> -->
@@ -59,6 +59,22 @@
         <p class="text-grey">No pages yet</p>
       </div>
 
+      <div class="mt-10 d-flex justify-end">
+        <v-btn
+          :loading="saving"
+          :disabled="modelValue.pages.length === 0"
+          @click="onSave()"
+          color="success"
+          target="_blank"
+          variant="flat"
+        >
+          <v-icon icon="mdi-check" start />
+          Save
+        </v-btn>
+      </div>
+
+      <v-snackbar v-model="showSuccess">Template saved successfully</v-snackbar>
+
       <!-- {{ modelValue.pages[0].layout }} -->
     </v-responsive>
   </v-container>
@@ -93,9 +109,20 @@ export default defineComponent({
           },
         ],
       } as ReportTemplate,
+      saving: false,
+      showSuccess: false,
     };
   },
   methods: {
+    async onSave() {
+      this.saving = true;
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      this.saving = false;
+      this.showSuccess = true;
+      setTimeout(() => {
+        this.showSuccess = false;
+      }, 2500);
+    },
     onPageUpdate(index: number, value: ReportTemplatePage) {
       this.modelValue.pages[index] = value;
     },

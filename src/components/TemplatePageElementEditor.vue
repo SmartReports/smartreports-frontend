@@ -1,8 +1,8 @@
 <template>
   <v-row class="d-flex align-center">
-    <v-col cols="6" class="d-flex align-center">
+    <v-col cols="5" class="d-flex align-center">
       <v-btn
-        class="mr-1 ml-n4 text-grey-darken-1"
+        class="mr-1 ml-n3 text-grey-darken-1"
         variant="text"
         @click="onRemove()"
         icon="mdi-close"
@@ -14,7 +14,7 @@
         v-model="proxyModelValueKpi"
       />
     </v-col>
-    <v-col cols="5">
+    <v-col cols="6">
       <div
         v-if="kpiAllowedChartTypes.length > 0"
         class="d-flex align-start flex-column justify-center"
