@@ -2,6 +2,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routerOptions = [
+  { path: "/", component: "Dashboard" },
   { path: "/Dashboard", component: "Dashboard" },
   { path: "/TemplateEditor", component: "TemplateEditor" },
   { path: "/Reports", component: "Reports" },
