@@ -1,22 +1,22 @@
 <template>
   <Bar
     v-if="chartConfiguration.type === 'bar'"
-    :options="chartConfiguration.options"
+    :options="barCastedOption"
     :data="barCastedData"
   />
   <Doughnut
     v-if="chartConfiguration.type === 'doughnut'"
-    :options="chartConfiguration.options"
+    :options="doughnutCastedOption"
     :data="doughnutCastedData"
   />
   <Pie
     v-if="chartConfiguration.type === 'pie'"
-    :options="chartConfiguration.options"
+    :options="pieCastedOption"
     :data="pieCastedData"
   />
   <Line
     v-if="chartConfiguration.type === 'line'"
-    :options="chartConfiguration.options"
+    :options="lineCastedOption"
     :data="lineCastedData"
   />
   <Radar
@@ -37,7 +37,11 @@ import {
   PieChartData,
   LineChartData,
   RadarChartData,
-  RadarChartOption
+  RadarChartOption,
+LineChartOption,
+PieChartOption,
+DoughnutChartOption,
+BarChartOption
 } from "@/models";
 
 
@@ -63,6 +67,18 @@ export default defineComponent ({
     },
     radarCastedOption() {
       return (<RadarChartOption>this.chartConfiguration.options);
+    },
+    lineCastedOption() {
+      return (<LineChartOption>this.chartConfiguration.options);
+    },
+    pieCastedOption() {
+      return (<PieChartOption>this.chartConfiguration.options);
+    },
+    doughnutCastedOption() {
+      return (<DoughnutChartOption>this.chartConfiguration.options);
+    },
+    barCastedOption() {
+      return (<BarChartOption>this.chartConfiguration.options);
     }
   },
   components: { Bar, Doughnut, Pie, Line, Radar },

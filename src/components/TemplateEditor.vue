@@ -1,5 +1,4 @@
 <template>
-  <v-container class="rounded-xl px-16 my-8 pb-10 bg-white">
     <!-- TODO overflow visible is pretty ugly -->
     <v-responsive class="fill-height" style="overflow: visible !important">
       <!-- <v-img height="300" src="@/assets/logo.svg" /> -->
@@ -77,7 +76,6 @@
 
       <!-- {{ modelValue.pages[0].layout }} -->
     </v-responsive>
-  </v-container>
 </template>
 
 <script lang="ts">
