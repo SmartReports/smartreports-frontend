@@ -1,8 +1,15 @@
 <template>
-    <v-container class="rounded-xl px-16 my-8 pb-10 bg-white">
-        <v-switch v-model="resizable"/> Resizable
-        <v-switch v-model="responsive"/> Responsive
-        <v-switch v-model="draggable" :false-value="true" :true-value="false" :label="smart_switch_tex"/>
+        <v-row>
+          <v-col>
+              <v-switch v-model="resizable" label="Resizable"/>
+          </v-col>
+          <v-col>
+            <v-switch v-model="responsive" label="Responsive"/>
+          </v-col>
+          <v-col>
+            <v-switch v-model="draggable" :false-value="true" :true-value="false" :label="smart_switch_tex"/>
+          </v-col>
+        </v-row>
         <br />
         <div style="margin-top: 10px">
           <GridLayout
@@ -21,7 +28,6 @@
             </template>
           </GridLayout>
         </div>
-    </v-container>
 </template>
 
 <script lang="ts">
@@ -72,14 +78,24 @@ export default defineComponent({
 <style scoped>
 .vgl-layout {
   background-color: white;
+  --vgl-placeholder-bg: gray;
+  --vgl-placeholder-opacity: 10%;
+  border-radius: 15px;
+
+}
+
+:deep(.vgl-item--placeholder) {
+  border-radius: 40px;
 }
 
 :deep(.vgl-item:not(.vgl-item--placeholder)) {
-  border: 1px solid black;
+  border: 1px solid white;
+  border-radius: 40px;
 }
 
 :deep(.vgl-item--resizing) {
-  opacity: 100%;
+  opacity: 30%;
+  border-radius: 15px;
 }
 
 :deep(.vgl-item--static) {

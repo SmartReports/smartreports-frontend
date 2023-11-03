@@ -8,3 +8,6 @@ export type RadarChartData = ChartData<"radar", (number | null)[], unknown>;
 
 export type BarChartOption = ChartOptions<"bar">
 export type RadarChartOption = ChartOptions<"radar">
+export type PieChartOption = ChartOptions<"pie">
+export type LineChartOption = ChartOptions<"line">
+export type DoughnutChartOption = ChartOptions<"doughnut">
