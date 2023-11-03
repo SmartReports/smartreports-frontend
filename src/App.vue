@@ -4,6 +4,7 @@
       </Navbar>
       <v-main class="bg-grey-lighten-5">
             <router-view></router-view>
+            <v-btn class="chat-btn" icon="mdi-robot" size="x-large"></v-btn>
       </v-main>
   </v-app>
 </template>
@@ -22,5 +23,11 @@ import Navbar from "./components/Navbar.vue";
     rgba(0, 0, 0, 0) 50%
   );
   background-color: #35aaff47 !important;
+}
+
+.chat-btn {
+  position: fixed;
+  right: 30px;
+  bottom: 30px;
 }
 </style>

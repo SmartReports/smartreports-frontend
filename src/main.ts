@@ -18,3 +18,9 @@ const app = createApp(App)
 registerPlugins(app)
 
 app.mount('#app')
+
+import { GridLayout, GridItem } from 'grid-layout-plus'
+
+app
+  .component('GridLayout', GridLayout)
+  .component('GridItem', GridItem)

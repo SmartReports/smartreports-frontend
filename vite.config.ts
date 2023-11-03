@@ -9,7 +9,6 @@ import { fileURLToPath, URL } from 'node:url'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/smartreports-frontend/',
   plugins: [
     vue({
       template: { transformAssetUrls }
