@@ -1,33 +1,52 @@
 <template>
     <v-container class="rounded-xl px-16 my-8 pb-10 bg-white">
-        <v-switch v-model="resizable"/> Resizable
-        <v-switch v-model="responsive"/> Responsive
-        <v-switch v-model="draggable" :false-value="true" :true-value="false" :label="smart_switch_tex"/>
-        <br />
-        <div style="margin-top: 10px">
-          <GridLayout
-            v-model:layout="layout"
-            :col-num="4"
-            :cols = '{ lg: 4, md: 4, sm: 2, xs: 1, xxs: 1 }'
-            :row-height="250"
-            :is-draggable="draggable"
-            :is-resizable="resizable"
-            :responsive="responsive"
+      <v-row>
+        <v-col>
+          <v-menu>
+
+          </v-menu>
+          <v-btn
+            color="primary"
+            target="_blank"
+            variant="flat"
           >
-            <template #item="{ item }">
-              <DashboardElement
-                :chart-configuration="test_chart"
-              />
-            </template>
-          </GridLayout>
-        </div>
+            <v-icon icon="mdi-plus"/>
+            Add Chart
+            <DashboardDialog/>
+          </v-btn>
+        </v-col>
+        <v-col>
+          <v-switch v-model="draggable" :false-value="true" :true-value="false" :label="smart_switch_tex"/>
+        </v-col>
+
+      </v-row>
+      <div style="margin-top: 10px">
+        <GridLayout
+          v-model:layout="layout"
+          :col-num="colNum"
+          :cols = '{ lg: 4, md: 4, sm: 2, xs: 1, xxs: 1 }'
+          :row-height="250"
+          :is-draggable="draggable"
+          :is-resizable="resizable"
+          :responsive="responsive"
+        >
+          <template #item="{ item }">
+            <DashboardElement
+              :chart-configuration="item.chart"
+              @remove="onChartRemove(item.i)"
+            />
+          </template>
+        </GridLayout>
+      </div>
     </v-container>
 </template>
 
 <script lang="ts">
 import DashboardElement from "@/components/DashboardElement.vue";
-import {ref, reactive, defineComponent} from 'vue'
-import {ChartConfiguration} from "chart.js";
+import {reactive, defineComponent} from 'vue'
+import {test_chart1, test_chart2, test_chart3, test_chart4} from "./test_charts";
+import {Doughnut} from "vue-chartjs";
+import DashboardDialog from "@/components/DashboardDialog.vue";
 
 export default defineComponent({
   name: "Dashboard",
@@ -37,34 +56,41 @@ export default defineComponent({
       draggable: true,
       resizable: true,
       responsive: true,
+      colNum: 4,
+      lastIndex: 3,
       layout: reactive([
-        { x: 0, y: 0, w: 2, h: 1, i: '0' },
-        { x: 2, y: 0, w: 2, h: 1, i: '1' },
-        { x: 0, y: 2, w: 2, h: 1, i: '2' },
-        { x: 2, y: 2, w: 2, h: 1, i: '3' },
+        { x: 0, y: 0, w: 2, h: 1, i: '0', chart: test_chart1 },
+        { x: 2, y: 0, w: 2, h: 1, i: '1', chart: test_chart2 },
+        { x: 0, y: 2, w: 2, h: 1, i: '2', chart: test_chart3 },
+        { x: 2, y: 2, w: 2, h: 1, i: '3', chart: test_chart4 },
       ]),
-      test_chart: {
-        type: 'bar',
-        data: {
-          labels: ['January', 'February', 'March'],
-          datasets: [{ data: [40, 20, 12],
-                       backgroundColor: ["red", "green", "blue"],}]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false
-        }
-      } as ChartConfiguration,
-    //   can be improved, but I don't know how to use typescript
     };
   },
-  methods: {},
-  computed: {
-    smart_switch_tex() {
-      return this.draggable ? "Custom" : "Smart";
+  methods: {
+    onAddChart() {
+      this.layout.push({
+        x: (this.layout.length * 2) % (this.colNum || 12),
+        y: this.layout.length + (this.colNum || 12), // puts it at the bottom
+        w: 2,
+        h: 1,
+        i: `${++this.lastIndex}`,
+        chart: test_chart1
+      })
+    },
+    onChartRemove(id: string) {
+      const index = this.layout.findIndex(item => item.i === id)
+
+      if (index > -1) {
+        this.layout.splice(index, 1)
+      }
     }
   },
-  components: { DashboardElement },
+  computed: {
+    smart_switch_tex() {
+      return this.draggable ? "Custom ordering" : "Smart ordering";
+    }
+  },
+  components: {DashboardDialog, Doughnut, DashboardElement },
 });
 
 </script>
