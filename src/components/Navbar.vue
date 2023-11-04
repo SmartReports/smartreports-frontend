@@ -1,7 +1,7 @@
 <template>
-    <v-navigation-drawer  permanent :elevation="4" :rail="rail">
+    <v-navigation-drawer floating v-model="drawer" :rail="rail">
       <!-- MENU ICON  -->
-        <v-list @click="rail=!rail">
+        <v-list @click="rail=!rail" class="d-none d-lg-block">
             <v-list-item
               title="Menu"
               prepend-icon="mdi-menu"
@@ -9,7 +9,7 @@
             </v-list-item>
         </v-list>
         <!-- SPLIT LINE BETWEEN MENU ICON AND PAGES ICONS -->
-        <v-divider :elevation="3"></v-divider>
+        <v-divider color="black"></v-divider>
 
         <!-- PAGES ICONS (BUTTONS) -->
         <v-list density="compact" nav>
@@ -53,7 +53,9 @@
 
     </v-navigation-drawer>
     <!-- APP BAR (HEADER BAR WITH SITE NAME) -->
-    <v-app-bar class="px-8" :elevation="6">
+    <v-app-bar class="px-8" :elevation="0">
+      <v-icon @click="drawer=!drawer; rail=false" class="d-md-none">mdi-menu</v-icon>
+      <v-spacer class="d-md-none"></v-spacer>
         <!-- SITE ICON -->
           <div class="d-flex align-center">
             <div
@@ -92,7 +94,18 @@
           {name: "Rodolfo", employment:"Physician", value:"TOKENRodolfo", image:"https://emis.health/wp-content/uploads/2023/07/Doctor-10.jpg"},
         ],
         currentAccount: {name: "Caterina", employment:"Machine Mantainer", value:"TOKENCaterina", image: new URL(`../assets/Caterina.png`, import.meta.url).href},
+        isMobile: false,
       }
+    },
+    beforeDestroy () {
+      if (typeof window === 'undefined') return
+
+      window.removeEventListener('resize', this.onResize, { passive: true })
+    },
+    mounted () {
+      this.onResize()
+
+      window.addEventListener('resize', this.onResize, { passive: true })
     },
     methods: {
       onAccountChange(value: number, currAcc: {name: string; employment: string; value: string; image:string}) {
@@ -103,7 +116,10 @@
           this.accounts.splice(value, 1);
           this.accounts.push(currAcc);
           this.rail = true
-      }
+      },
+      onResize () {
+        this.isMobile = window.innerWidth < 600
+      },
     },
   }
 </script>
