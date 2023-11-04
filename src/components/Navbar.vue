@@ -100,12 +100,12 @@
     beforeDestroy () {
       if (typeof window === 'undefined') return
 
-      window.removeEventListener('resize', this.onResize, { passive: true })
+      window.removeEventListener('resize', this.onResize)
     },
     mounted () {
       this.onResize()
 
-      window.addEventListener('resize', this.onResize, { passive: true })
+      window.addEventListener('resize', this.onResize)
     },
     methods: {
       onAccountChange(value: number, currAcc: {name: string; employment: string; value: string; image:string}) {
