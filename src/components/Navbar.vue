@@ -72,6 +72,12 @@
           Smart Reports
         </h2>
       </div>
+      <v-spacer></v-spacer>
+      <v-dialog v-model="notificationSetting">
+      <template v-slot:activator="{ props }">
+        <v-icon color="primary" v-bind="props">mdi-bell</v-icon>
+      </template>
+      </v-dialog>
       <!-- </template> -->
     </v-app-bar>
 </template>
@@ -95,6 +101,7 @@
         ],
         currentAccount: {name: "Caterina", employment:"Machine Mantainer", value:"TOKENCaterina", image: new URL(`../assets/Caterina.png`, import.meta.url).href},
         isMobile: false,
+        notificationSetting: false,
       }
     },
     beforeDestroy () {

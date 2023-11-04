@@ -11,6 +11,3 @@ export type DoughnutChartOption = ChartOptions<"doughnut">
 export type PieChartOption = ChartOptions<"pie">
 export type LineChartOption = ChartOptions<"line">
 export type RadarChartOption = ChartOptions<"radar">
-export type PieChartOption = ChartOptions<"pie">
-export type LineChartOption = ChartOptions<"line">
-export type DoughnutChartOption = ChartOptions<"doughnut">

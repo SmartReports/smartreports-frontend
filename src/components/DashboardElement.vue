@@ -4,7 +4,7 @@
                   variant="text"
                   tooltip="Remove">mdi-delete</v-icon>
           <v-icon class="text-grey-darken-1 change-button"
-                  @click="onChangeChart()"
+                  @click="onRemove()"
                   variant="text"
                   tooltip="Remove">mdi-pencil</v-icon>
 <!--      <v-menu>-->
@@ -122,18 +122,6 @@ export default defineComponent ({
     radarCastedOption() {
       return (<RadarChartOption>this.chartConfiguration.options);
     },
-    lineCastedOption() {
-      return (<LineChartOption>this.chartConfiguration.options);
-    },
-    pieCastedOption() {
-      return (<PieChartOption>this.chartConfiguration.options);
-    },
-    doughnutCastedOption() {
-      return (<DoughnutChartOption>this.chartConfiguration.options);
-    },
-    barCastedOption() {
-      return (<BarChartOption>this.chartConfiguration.options);
-    }
   },
   components: { Bar, Doughnut, Pie, Line, Radar },
   props: {
