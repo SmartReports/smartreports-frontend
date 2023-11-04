@@ -121,6 +121,18 @@ export default defineComponent ({
     },
     radarCastedOption() {
       return (<RadarChartOption>this.chartConfiguration.options);
+    },
+    lineCastedOption() {
+      return (<LineChartOption>this.chartConfiguration.options);
+    },
+    pieCastedOption() {
+      return (<PieChartOption>this.chartConfiguration.options);
+    },
+    doughnutCastedOption() {
+      return (<DoughnutChartOption>this.chartConfiguration.options);
+    },
+    barCastedOption() {
+      return (<BarChartOption>this.chartConfiguration.options);
     }
   },
   components: { Bar, Doughnut, Pie, Line, Radar },

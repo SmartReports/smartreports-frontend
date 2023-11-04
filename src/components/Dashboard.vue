@@ -98,14 +98,24 @@ export default defineComponent({
 <style scoped>
 .vgl-layout {
   background-color: white;
+  --vgl-placeholder-bg: gray;
+  --vgl-placeholder-opacity: 10%;
+  border-radius: 15px;
+
+}
+
+:deep(.vgl-item--placeholder) {
+  border-radius: 40px;
 }
 
 :deep(.vgl-item:not(.vgl-item--placeholder)) {
-  border: 1px solid black;
+  border: 1px solid white;
+  border-radius: 40px;
 }
 
 :deep(.vgl-item--resizing) {
-  opacity: 100%;
+  opacity: 30%;
+  border-radius: 15px;
 }
 
 :deep(.vgl-item--static) {
