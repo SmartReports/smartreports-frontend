@@ -1,7 +1,7 @@
 <template>
   <v-dialog width="1600" class="d-flex">
     <template v-slot:activator="{ props }">
-      <v-icon color="primary" v-bind="props">mdi-bell</v-icon>
+      <v-icon class="bell-icn" color="primary" v-bind="props">mdi-bell</v-icon>
     </template>
     <template v-slot:default="{ isActive }">
       <v-card>
@@ -49,3 +49,12 @@ export default defineComponent({
     components: { NotificationKpiPicker, NotificationKpiSelected }
 });
 </script>
+
+<style>
+.bell-icn {
+  opacity: 40%;
+}
+.bell-icn:hover {
+  opacity: 1.0;
+}
+</style>
