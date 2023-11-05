@@ -6,6 +6,8 @@
     <template v-slot:default="{ isActive }">
       <v-card color="white">
         <v-card-actions>
+          <v-card-title class="text-h5">Notifications</v-card-title>
+
           <v-spacer></v-spacer>
           <v-btn
           text="Close"
@@ -18,7 +20,6 @@
           <v-container>
             <v-container>
               <v-card>
-                <v-card-title class="text-h5">Notifications Add</v-card-title>
                 <v-list-item>
                   <notification-kpi-picker @onAdd="onAddItem"></notification-kpi-picker>
                 </v-list-item>
