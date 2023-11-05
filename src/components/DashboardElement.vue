@@ -4,29 +4,9 @@
                   variant="text"
                   tooltip="Remove">mdi-delete</v-icon>
           <v-icon class="text-grey-darken-1 change-button"
-                  @click="onRemove()"
+                  @click="onEdit()"
                   variant="text"
-                  tooltip="Remove">mdi-pencil</v-icon>
-<!--      <v-menu>-->
-<!--        <template v-slot:activator="{ props }">-->
-<!--          <v-icon icon="mdi-dots-vertical" v-bind="props" class="delete-button"></v-icon>-->
-<!--        </template>-->
-
-<!--        <v-list>-->
-<!--          <v-list-item>-->
-<!--            <v-icon class="text-grey-darken-1"-->
-<!--                    @click="onRemove()"-->
-<!--                    variant="text"-->
-<!--                    tooltip="Remove">mdi-delete</v-icon> Delete-->
-<!--          </v-list-item>-->
-<!--          <v-list-item>-->
-<!--            <v-icon class="text-grey-darken-1"-->
-<!--                    @click="onChangeChart()"-->
-<!--                    variant="text"-->
-<!--                    tooltip="Remove">mdi-pencil</v-icon> Change Chart-->
-<!--          </v-list-item>-->
-<!--        </v-list>-->
-<!--      </v-menu>-->
+                  tooltip="Edit">mdi-pencil</v-icon>
       <Bar
         v-if="chartConfiguration.type === 'bar'"
         :options="barCastedOption"
@@ -137,6 +117,9 @@ export default defineComponent ({
     onRemove() {
       this.$emit("remove");
     },
+    onEdit() {
+      this.$emit("edit");
+    }
   },
 })
 </script>

@@ -3,16 +3,17 @@
       <Navbar>
       </Navbar>
       <v-main class="bg-grey-lighten-5">
-            <v-container class="rounded-xl px-16 my-8 pb-10 bg-white">
+            <v-container class="rounded-xl px-12 py-6 my-8 pb-10 bg-white">
               <router-view></router-view>
             </v-container>
-            <v-btn class="chat-btn" icon="mdi-robot" size="x-large"></v-btn>
+            <ChatBot/>
       </v-main>
   </v-app>
 </template>
 
 <script setup lang="ts">
 import Navbar from "./components/Navbar.vue";
+import ChatBot from "./components/ChatBot.vue"
 </script>
 
 
@@ -24,11 +25,5 @@ import Navbar from "./components/Navbar.vue";
     rgba(0, 0, 0, 0) 50%
   );
   background-color: #35aaff47 !important;
-}
-
-.chat-btn {
-  position: fixed;
-  right: 30px;
-  bottom: 30px;
 }
 </style>

@@ -1,16 +1,7 @@
 <template>
-    <v-navigation-drawer floating v-model="drawer" :rail="rail">
-      <!-- MENU ICON  -->
-        <v-list @click="rail=!rail" class="d-none d-lg-block">
-            <v-list-item
-              title="Menu"
-              prepend-icon="mdi-menu"
-              >
-            </v-list-item>
-        </v-list>
-        <!-- SPLIT LINE BETWEEN MENU ICON AND PAGES ICONS -->
-        <v-divider color="black"></v-divider>
-
+    <!-- APP BAR with menu button -->
+    <Appbar :elevation="3" @onMobileClick="onMobileClick" @onNormalClick="onNormalClick"/>
+    <v-navigation-drawer floating :elevation="3" v-model="drawer" :rail="rail">
         <!-- PAGES ICONS (BUTTONS) -->
         <v-list density="compact" nav>
             <v-list-item v-for="(menuitem, i) in items" :key="i"
@@ -50,83 +41,68 @@
                 </v-list>
               </v-menu>
         </v-list>
-
-    </v-navigation-drawer>
-    <!-- APP BAR (HEADER BAR WITH SITE NAME) -->
-    <v-app-bar class="px-8" :elevation="0">
-      <v-icon @click="drawer=!drawer; rail=false" class="d-md-none">mdi-menu</v-icon>
-      <v-spacer class="d-md-none"></v-spacer>
-        <!-- SITE ICON -->
-          <div class="d-flex align-center">
-            <div
-            class="rounded-circle d-flex justify-center align-center mr-3 pa-2 grad-bg">
-            <v-icon class="" size="x-large" color="primary">
-              mdi-chart-timeline-variant-shimmer
-            </v-icon>
-          </div>
-        <!-- SITE NAME -->
-        <h2
-          class="text-h4"
-          style="font-variant: small-caps; font-size: 1.7rem !important"
-          >
-          Smart Reports
-        </h2>
-      </div>
-      <v-spacer></v-spacer>
-      <v-dialog v-model="notificationSetting">
-      <template v-slot:activator="{ props }">
-        <v-icon color="primary" v-bind="props">mdi-bell</v-icon>
-      </template>
-      </v-dialog>
-      <!-- </template> -->
-    </v-app-bar>
+      </v-navigation-drawer>
 </template>
 
 <script lang="ts">
+import Appbar from "./Appbar.vue";
   export default {
     data() {
-      return {
-        drawer: true,
-        rail: true,
-        items: [
-          { title: 'Dashboard',  path:"/Dashboard", value:"Home", icon: "mdi-view-dashboard"},
-          { title: 'Customize Reports', path:"/Reports", value:"reports", icon: "mdi-table-settings"},
-          { title: 'Archive', path:"/Archive", value:"archive", icon: "mdi-archive-outline" },
-          { title: 'TemplateEditor', path:"/TemplateEditor", value:"templateeditor", icon: "mdi-archive-outline" },
-        ],
-        accounts: [
-          {name: "Francesco", employment:"Production Engineer", value:"TOKENFrancesco", image:"https://www.nahb.org/-/media/NAHB/education-and-events/images/designations/designations-cmp-500x500.jpg?h=500&w=500&la=en&hash=7FF6FBC0A5C3FA87869D099A0079E670"},
-          {name: "Sandra", employment:"Maria's Mother", value:"TOKENSandra", image:"https://www.scopeaust.org.au/uploads/main/Disability-Services/physiotherapy-small.jpg"},
-          {name: "Rodolfo", employment:"Physician", value:"TOKENRodolfo", image:"https://emis.health/wp-content/uploads/2023/07/Doctor-10.jpg"},
-        ],
-        currentAccount: {name: "Caterina", employment:"Machine Mantainer", value:"TOKENCaterina", image: new URL(`../assets/Caterina.png`, import.meta.url).href},
-        isMobile: false,
-        notificationSetting: false,
-      }
+        return {
+            drawer: true,
+            rail: true && (window.innerWidth < 600),
+            items: [
+                { title: 'Dashboard', path: "/Dashboard", value: "Home", icon: "mdi-view-dashboard" },
+                { title: 'Customize Reports', path: "/Reports", value: "reports", icon: "mdi-table-settings" },
+                { title: 'Archive', path: "/Archive", value: "archive", icon: "mdi-archive-outline" },
+                { title: 'TemplateEditor', path: "/TemplateEditor", value: "templateeditor", icon: "mdi-archive-outline" },
+            ],
+            accounts: [
+                { name: "Francesco", employment: "Production Engineer", value: "TOKENFrancesco", image: "https://www.nahb.org/-/media/NAHB/education-and-events/images/designations/designations-cmp-500x500.jpg?h=500&w=500&la=en&hash=7FF6FBC0A5C3FA87869D099A0079E670" },
+                { name: "Sandra", employment: "Maria's Mother", value: "TOKENSandra", image: "https://www.scopeaust.org.au/uploads/main/Disability-Services/physiotherapy-small.jpg" },
+                { name: "Rodolfo", employment: "Physician", value: "TOKENRodolfo", image: "https://emis.health/wp-content/uploads/2023/07/Doctor-10.jpg" },
+            ],
+            currentAccount: { name: "Caterina", employment: "Machine Mantainer", value: "TOKENCaterina", image: new URL(`../assets/Caterina.png`, import.meta.url).href },
+            isMobile: false,
+            notificationSetting: false,
+        };
     },
-    beforeDestroy () {
-      if (typeof window === 'undefined') return
-
-      window.removeEventListener('resize', this.onResize)
+    beforeDestroy() {
+        if (typeof window === 'undefined')
+            return;
+        window.removeEventListener('resize', this.onResize);
     },
-    mounted () {
-      this.onResize()
-
-      window.addEventListener('resize', this.onResize)
+    mounted() {
+        this.onResize();
+        window.addEventListener('resize', this.onResize);
     },
     methods: {
-      onAccountChange(value: number, currAcc: {name: string; employment: string; value: string; image:string}) {
-          if (this.rail == true){
-            this.rail = false;
-          }
-          this.currentAccount = this.accounts[value];
-          this.accounts.splice(value, 1);
-          this.accounts.push(currAcc);
-          this.rail = true
-      },
-      onResize () {
-        this.isMobile = window.innerWidth < 600
-      },
+        onAccountChange(value: number, currAcc: {
+            name: string;
+            employment: string;
+            value: string;
+            image: string;
+        }) {
+            if (this.rail == true) {
+                this.rail = false;
+            }
+            this.currentAccount = this.accounts[value];
+            this.accounts.splice(value, 1);
+            this.accounts.push(currAcc);
+            this.rail = true;
+        },
+        onResize() {
+            this.isMobile = window.innerWidth < 600;
+            this.rail = this.rail && this.isMobile;
+        },
+        onMobileClick() {
+          this.drawer=!this.drawer;
+          this.rail=false;
+        },
+        onNormalClick() {
+          this.rail=!this.rail;
+        }
     },
-  }
+    components: { Appbar }
+}
 </script>
