@@ -2,6 +2,7 @@
   <v-row class="d-flex align-center">
     <v-col cols="5" class="d-flex align-center">
       <v-btn
+        v-if="allow_remove"
         class="mr-1 ml-n3 text-grey-darken-1"
         variant="text"
         @click="onRemove()"
@@ -23,8 +24,9 @@
         <v-btn-toggle
           style="height: 80px"
           class="border pa-0"
-          :modelValue="modelValue.chart_type"
+          v-model="proxyModelValueChartType"
           divided
+          mandatory
         >
           <v-btn
             size="x-large"
@@ -52,6 +54,11 @@ export default defineComponent({
       type: Object as PropType<KpiReportElement>,
       required: true,
     },
+    allow_remove: {
+      type: Boolean,
+      required: false,
+      default: true
+    }
   },
   methods: {
     getImgUrl(chartType: string) {
@@ -106,7 +113,18 @@ export default defineComponent({
         this.onUpdate("kpi", value.value);
       },
     },
-  },
+    proxyModelValueChartType: {
+      get() {
+        if (!this.modelValue.chart_type || !this.kpiAllowedChartTypes.includes(this.modelValue.chart_type)) {
+          this.proxyModelValueChartType = this.kpiAllowedChartTypes[0];
+        }
+        return this.modelValue.chart_type;
+      },
+      set(value: any) {
+        this.onUpdate("chart_type", value);
+      }
+    }
+  }
 });
 </script>
 

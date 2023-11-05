@@ -41,7 +41,6 @@
               :modelValue="element"
               @update:modelValue="onUpdateElement(index, $event)"
               @remove="onRemoveElement(index)"
-              :index="index"
             />
           </v-col>
         </v-row>
@@ -110,7 +109,7 @@ export default defineComponent({
         ...this.modelValue.elements,
         {
           kpi: "",
-          chart_type: "bar",
+          chart_type: null,
         },
       ]);
     },
