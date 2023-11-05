@@ -1,37 +1,30 @@
 <template>
-
-      <v-card height="55">
-      <v-row>
-          <v-col cols="12" md="4">
-            <v-combobox chips label="California">
-            </v-combobox>
-          </v-col>
-          <v-col cols="4" md="2" sm="4" xs="1">
-              <v-text-field label="Max: 1"/>
+    <v-row>
+            <v-col cols="12" md="4">
+              <v-card-item>{{ KPIName }}</v-card-item>
             </v-col>
-            <v-col  cols="4" md="2" sm="4" xs="1">
-              <v-text-field label="Min: 2"/>
+            <v-col cols="3" md="2" sm="3" xs="2">
+              <v-card-item>Min: {{ KPIMin }}</v-card-item>
             </v-col>
-          <v-col cols="4" md="2" sm="2" xs="2">
-              <v-switch
-              inset
-              color="green"
-              :model-value="true"
-              height="55" width="50%"
-              label="On"
-                ></v-switch>
-          </v-col>
-          <v-col cols="4" md="2" sm="2" xs="2">
-              <v-btn color="red" height="54" width="100%">
+            <v-col  cols="3" md="2" sm="3" xs="2">
+              <v-card-item>Max: {{ KPIMax }}</v-card-item>
+            </v-col>
+            <v-col cols="3" md="2" sm="3" xs="1">
+              <v-btn color="green" height="40" width="100%">
+              <v-icon>
+                mdi-pencil
+              </v-icon>
+            </v-btn>
+            </v-col>
+            <v-col cols="3" md="2" sm="3" xs="1">
+              <v-btn @click="$emit('delete')" color="red" height="40" width="100%">
               <v-icon>
                 mdi-delete
               </v-icon>
-              Delete
             </v-btn>
             </v-col>
-      </v-row>
-  </v-card>
-
+        </v-row>
+        <v-divider></v-divider>
 </template>
 
 
@@ -41,6 +34,20 @@ export default {
     return {
       min: 1,
       max: 2,
+    }
+  },
+  props: {
+    KPIMin: {
+      type: Number,
+      required: true,
+    },
+    KPIMax: {
+      type: Number,
+      required: true,
+    },
+    KPIName: {
+      type: String,
+      required: true,
     }
   }
 }
