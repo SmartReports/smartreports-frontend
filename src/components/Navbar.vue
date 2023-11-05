@@ -1,13 +1,15 @@
 <template>
+      <Appbar @onMobileClick="onMobileClick" @onNormalClick="onNormalClick"/>
+
     <v-navigation-drawer floating v-model="drawer" :rail="rail">
       <!-- MENU ICON  -->
-        <v-list @click="rail=!rail" class="d-none d-lg-block">
+        <!-- <v-list @click="rail=!rail" class="d-none d-lg-block">
             <v-list-item
               title="Menu"
               prepend-icon="mdi-menu"
               >
             </v-list-item>
-        </v-list>
+        </v-list> -->
         <!-- SPLIT LINE BETWEEN MENU ICON AND PAGES ICONS -->
         <v-divider color="black"></v-divider>
 
@@ -52,8 +54,7 @@
         </v-list>
       </v-navigation-drawer>
       <!-- APP BAR (HEADER BAR WITH SITE NAME) -->
-      <Appbar @onMobileClick="onMobileClick"/>
-      
+
 </template>
 
 <script lang="ts">
@@ -109,6 +110,9 @@ import Appbar from "./Appbar.vue";
         onMobileClick() {
           this.drawer=!this.drawer;
           this.rail=false;
+        },
+        onNormalClick() {
+          this.rail=!this.rail;
         }
     },
     components: { Appbar }

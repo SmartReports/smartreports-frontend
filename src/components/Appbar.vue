@@ -1,7 +1,11 @@
 <template >
-<v-app-bar class="px-8" :elevation="0">
+  <v-app-bar class="px-8" :elevation="0">
+  <v-icon  @click="$emit('onNormalClick')" class="d-none d-lg-block menu-icn">
+    mdi-menu
+  </v-icon>
+  <v-text class="d-none d-lg-block  menu-text">Menu</v-text>
   <v-icon @click="$emit('onMobileClick')" class="d-md-none">mdi-menu</v-icon>
-  <v-spacer class="d-md-none"></v-spacer>
+  <v-spacer></v-spacer>
     <!-- SITE ICON -->
       <div class="d-flex align-center">
         <div
@@ -34,3 +38,19 @@ export default defineComponent({
     components: { NotificationBell }
 })
 </script>
+
+
+<style>
+.menu-icn {
+  position: absolute;
+  top:30%; /* Adjust top positioning as needed */
+  left: -15px; /* Adjust right positioning as needed */
+  z-index: 1; /* Ensure the button is displayed on top of the plot */
+}
+.menu-text {
+  position: absolute;
+  top: 33%; /* Adjust top positioning as needed */
+  left: 40px; /* Adjust right positioning as needed */
+  z-index: 1; /* Ensure the button is displayed on top of the plot */
+}
+</style>
