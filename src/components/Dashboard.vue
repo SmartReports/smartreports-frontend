@@ -1,5 +1,4 @@
 <template>
-    <v-container class="rounded-xl px-16 my-8 pb-10 bg-white">
       <v-row>
         <v-col>
           <v-btn
@@ -44,7 +43,6 @@
           </template>
         </GridLayout>
       </div>
-    </v-container>
 </template>
 
 <script lang="ts">
