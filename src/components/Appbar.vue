@@ -4,7 +4,7 @@
     mdi-menu
   </v-icon>
   <v-text class="d-none d-lg-block  menu-text">Menu</v-text>
-  <v-icon @click="$emit('onMobileClick')" class="d-md-none">mdi-menu</v-icon>
+  <v-icon @click="$emit('onMobileClick')" class="d-block d-lg-none">mdi-menu</v-icon>
   <v-spacer></v-spacer>
     <!-- SITE ICON -->
       <div class="d-flex align-center">

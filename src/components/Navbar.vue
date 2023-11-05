@@ -1,18 +1,7 @@
 <template>
-      <Appbar @onMobileClick="onMobileClick" @onNormalClick="onNormalClick"/>
-
-    <v-navigation-drawer floating v-model="drawer" :rail="rail">
-      <!-- MENU ICON  -->
-        <!-- <v-list @click="rail=!rail" class="d-none d-lg-block">
-            <v-list-item
-              title="Menu"
-              prepend-icon="mdi-menu"
-              >
-            </v-list-item>
-        </v-list> -->
-        <!-- SPLIT LINE BETWEEN MENU ICON AND PAGES ICONS -->
-        <v-divider color="black"></v-divider>
-
+    <!-- APP BAR with menu button -->
+    <Appbar :elevation="3" @onMobileClick="onMobileClick" @onNormalClick="onNormalClick"/>
+    <v-navigation-drawer floating :elevation="3" v-model="drawer" :rail="rail">
         <!-- PAGES ICONS (BUTTONS) -->
         <v-list density="compact" nav>
             <v-list-item v-for="(menuitem, i) in items" :key="i"
@@ -53,8 +42,6 @@
               </v-menu>
         </v-list>
       </v-navigation-drawer>
-      <!-- APP BAR (HEADER BAR WITH SITE NAME) -->
-
 </template>
 
 <script lang="ts">
@@ -63,7 +50,7 @@ import Appbar from "./Appbar.vue";
     data() {
         return {
             drawer: true,
-            rail: true,
+            rail: true && (window.innerWidth < 600),
             items: [
                 { title: 'Dashboard', path: "/Dashboard", value: "Home", icon: "mdi-view-dashboard" },
                 { title: 'Customize Reports', path: "/Reports", value: "reports", icon: "mdi-table-settings" },
@@ -106,6 +93,7 @@ import Appbar from "./Appbar.vue";
         },
         onResize() {
             this.isMobile = window.innerWidth < 600;
+            this.rail = this.rail && this.isMobile;
         },
         onMobileClick() {
           this.drawer=!this.drawer;
