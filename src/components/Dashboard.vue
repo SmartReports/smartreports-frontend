@@ -89,6 +89,7 @@ export default defineComponent({
     onAddChart() {
       if(this.editing){
         // backend call
+        this.editing = ""
       } else {
         this.layout.push({
           x: (this.layout.length * 2) % (this.colNum || 12),
@@ -127,6 +128,7 @@ export default defineComponent({
       this.dialogOpen = value;
     },
     clearDialogModel() {
+      this.editing = ""
       this.dialogModel = {
         chart_type: null,
         kpi: "",
