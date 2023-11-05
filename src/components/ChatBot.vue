@@ -4,10 +4,10 @@
   <v-btn class="chat-btn d-block d-md-none d-lg-none" icon="mdi-robot" @click="btnClick"></v-btn>
 </template>
 
-<script>
+<script lang="ts">
   export default {
       methods : {
-          btnClick: function(event) {
+          btnClick() {
               window.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
           }
       }
