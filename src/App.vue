@@ -6,13 +6,15 @@
             <v-container class="rounded-xl px-16 my-8 pb-10 bg-white">
               <router-view></router-view>
             </v-container>
-            <v-btn class="chat-btn" icon="mdi-robot" size="x-large"></v-btn>
+            <ChatBot/>
+            <!-- <v-btn class="chat-btn" icon="mdi-robot" size="x-large" @click=new URL("https://www.youtube.com/watch?v=dQw4w9WgXcQ")></v-btn> -->
       </v-main>
   </v-app>
 </template>
 
 <script setup lang="ts">
 import Navbar from "./components/Navbar.vue";
+import ChatBot from "./components/ChatBot.vue"
 </script>
 
 
@@ -24,11 +26,5 @@ import Navbar from "./components/Navbar.vue";
     rgba(0, 0, 0, 0) 50%
   );
   background-color: #35aaff47 !important;
-}
-
-.chat-btn {
-  position: fixed;
-  right: 30px;
-  bottom: 30px;
 }
 </style>
