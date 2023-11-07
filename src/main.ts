@@ -4,23 +4,24 @@
  * Bootstraps Vuetify and other plugins then mounts the App`
  */
 
-// Components
-import App from './App.vue'
+import axios from "axios";
+import VueAxios from "vue-axios";
+import App from "./App.vue";
+import { createApp } from "vue";
+import { registerPlugins } from "@/plugins";
+import { GridLayout, GridItem } from "grid-layout-plus";
 
-// Composables
-import { createApp } from 'vue'
+const app = createApp(App);
 
-// Plugins
-import { registerPlugins } from '@/plugins'
+const dev = process.env.NODE_ENV !== "production";
+axios.defaults.baseURL = dev
+  ? process.env.VUE_APP_AXIOS_BASE ?? "http://127.0.0.1:8000"
+  : process.env.VUE_APP_AXIOS_BASE;
 
-const app = createApp(App)
-
-registerPlugins(app)
-
-app.mount('#app')
-
-import { GridLayout, GridItem } from 'grid-layout-plus'
+registerPlugins(app);
 
 app
-  .component('GridLayout', GridLayout)
-  .component('GridItem', GridItem)
+  .use(VueAxios, axios)
+  .component("GridLayout", GridLayout)
+  .component("GridItem", GridItem)
+  .mount("#app");
