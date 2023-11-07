@@ -1,4 +1,5 @@
 export interface ReportTemplate {
+  id: string;
   name: string;
   frequency: "daily" | "weekly" | "monthly" | "yearly" | "quarterly";
   pages: ReportTemplatePage[];

@@ -1,81 +1,81 @@
 <template>
-    <!-- TODO overflow visible is pretty ugly -->
-    <v-responsive class="fill-height" style="overflow: visible !important">
-      <!-- <v-img height="300" src="@/assets/logo.svg" /> -->
+  <!-- TODO overflow visible is pretty ugly -->
+  <v-responsive class="fill-height" style="overflow: visible !important">
+    <!-- <v-img height="300" src="@/assets/logo.svg" /> -->
 
-      <!-- <div class="text-body-2 font-weight-light mb-n1">Report</div> -->
+    <!-- <div class="text-body-2 font-weight-light mb-n1">Report</div> -->
 
-      <h3 class="text-h4 mt-4">Report Template Editor</h3>
+    <h3 class="text-h4 mt-4">Report Template Editor</h3>
 
-      <div class="pt-12" />
+    <div class="pt-12" />
 
-      <v-row class="d-flex align-center">
-        <v-col cols="8">
-          <v-text-field label="Name" v-model="modelValue.name" />
-        </v-col>
+    <v-row class="d-flex align-center">
+      <v-col cols="8">
+        <v-text-field label="Name" v-model="modelValue.name" />
+      </v-col>
 
-        <v-col cols="4">
-          <v-select
-            :items="frequencyItems"
-            label="Frequency"
-            v-model="modelValue.frequency"
-          />
-        </v-col>
-      </v-row>
-      <v-row class="d-flex-col align-center mt-10 mb-8">
-        <v-col cols="auto">
-          <h4 class="text-h5">Pages ({{ modelValue.pages.length }})</h4>
-        </v-col>
-        <v-col cols="auto">
-          <v-btn
-            @click="onAddPage()"
-            color="primary"
-            target="_blank"
-            variant="flat"
-          >
-            <v-icon icon="mdi-plus" start />
-            Add
-          </v-btn>
-        </v-col>
-      </v-row>
-
-      <v-row v-for="(page, index) in modelValue.pages" :key="index">
-        <v-col cols="12">
-          <TemplatePageEditor
-            class="pb-10"
-            :modelValue="page"
-            :index="index"
-            @update:model-value="onPageUpdate(index, $event)"
-            @remove="onPageRemove(index)"
-          />
-        </v-col>
-      </v-row>
-
-      <div v-if="modelValue.pages.length === 0" class="text-center mt-4">
-        <v-icon class="text-grey-lighten-1" style="font-size: 180px !important">
-          mdi-chart-bar
-        </v-icon>
-        <p class="text-grey">No pages yet</p>
-      </div>
-
-      <div class="mt-10 d-flex justify-end">
+      <v-col cols="4">
+        <v-select
+          :items="frequencyItems"
+          label="Frequency"
+          v-model="modelValue.frequency"
+        />
+      </v-col>
+    </v-row>
+    <v-row class="d-flex-col align-center mt-10 mb-8">
+      <v-col cols="auto">
+        <h4 class="text-h5">Pages ({{ modelValue.pages.length }})</h4>
+      </v-col>
+      <v-col cols="auto">
         <v-btn
-          :loading="saving"
-          :disabled="modelValue.pages.length === 0"
-          @click="onSave()"
-          color="success"
+          @click="onAddPage()"
+          color="primary"
           target="_blank"
           variant="flat"
         >
-          <v-icon icon="mdi-check" start />
-          Save
+          <v-icon icon="mdi-plus" start />
+          Add
         </v-btn>
-      </div>
+      </v-col>
+    </v-row>
 
-      <v-snackbar v-model="showSuccess">Template saved successfully</v-snackbar>
+    <v-row v-for="(page, index) in modelValue.pages" :key="index">
+      <v-col cols="12">
+        <TemplatePageEditor
+          class="pb-10"
+          :modelValue="page"
+          :index="index"
+          @update:model-value="onPageUpdate(index, $event)"
+          @remove="onPageRemove(index)"
+        />
+      </v-col>
+    </v-row>
 
-      <!-- {{ modelValue.pages[0].layout }} -->
-    </v-responsive>
+    <div v-if="modelValue.pages.length === 0" class="text-center mt-4">
+      <v-icon class="text-grey-lighten-1" style="font-size: 180px !important">
+        mdi-chart-bar
+      </v-icon>
+      <p class="text-grey">No pages yet</p>
+    </div>
+
+    <div class="mt-10 d-flex justify-end">
+      <v-btn
+        :loading="saving"
+        :disabled="modelValue.pages.length === 0"
+        @click="onSave()"
+        color="success"
+        target="_blank"
+        variant="flat"
+      >
+        <v-icon icon="mdi-check" start />
+        Save
+      </v-btn>
+    </div>
+
+    <v-snackbar v-model="showSuccess">Template saved successfully</v-snackbar>
+
+    <!-- {{ modelValue.pages[0].layout }} -->
+  </v-responsive>
 </template>
 
 <script lang="ts">
@@ -114,12 +114,17 @@ export default defineComponent({
   methods: {
     async onSave() {
       this.saving = true;
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      this.saving = false;
-      this.showSuccess = true;
-      setTimeout(() => {
-        this.showSuccess = false;
-      }, 2500);
+      try {
+        await this.axios.post("/report-templates/", this.modelValue);
+        this.saving = false;
+        this.showSuccess = true;
+        setTimeout(() => {
+          this.showSuccess = false;
+        }, 2500);
+      } catch (e) {
+        this.saving = false;
+        console.error(e);
+      }
     },
     onPageUpdate(index: number, value: ReportTemplatePage) {
       this.modelValue.pages[index] = value;

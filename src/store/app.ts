@@ -14,31 +14,31 @@ export const useMainStore = defineStore("main", {
     async getKpi() {
       this.kpi = [
         {
-          id: "id1",
+          id: "1",
           name: "Production Cycle Time",
           description: "KPI 1 description",
           allowed_charts: ["bar", "line"],
         },
         {
-          id: "id2",
+          id: "2",
           name: "Energy Efficiency",
           description: "KPI 2 description",
           allowed_charts: ["bar", "line", "pie"],
         },
         {
-          id: "id3",
+          id: "3",
           name: "Maintenance Downtime vs. Equipment Age",
           description: "KPI 3 description",
           allowed_charts: ["scatter"],
         },
         {
-          id: "id4",
+          id: "4",
           name: "Quality First Pass Yield",
           description: "KPI 4 description",
           allowed_charts: ["bar", "line", "pie", "scatter"],
         },
         {
-          id: "id5",
+          id: "5",
           name: "Overall Equipment Effectiveness",
           description: "KPI 5 description",
           allowed_charts: ["bar", "line"],
