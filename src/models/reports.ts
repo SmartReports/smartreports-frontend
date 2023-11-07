@@ -6,6 +6,7 @@ export interface ReportTemplate {
 }
 
 export interface ReportTemplatePage {
+  id: string;
   layout: "horizontal" | "vertical" | "grid";
   elements: KpiReportElement[];
 }
