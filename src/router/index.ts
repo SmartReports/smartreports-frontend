@@ -3,10 +3,10 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 const routerOptions = [
   { path: "/", component: "Dashboard" },
-  { path: "/Dashboard", component: "Dashboard" },
-  { path: "/TemplateEditor", component: "TemplateEditor" },
-  { path: "/Reports", component: "Reports" },
-  { path: "/Archive", component: "Archive", meta: { requiresAuth: true } },
+  { path: "/dashboard", component: "Dashboard" },
+  { path: "/templateeditor", component: "TemplateEditor" },
+  { path: "/templates", component: "Templates" },
+  { path: "/archive", component: "Archive", meta: { requiresAuth: true } },
 ];
 
 const routes = routerOptions.map(route => {
