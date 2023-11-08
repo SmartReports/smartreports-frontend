@@ -41,14 +41,35 @@
                 </v-list>
               </v-menu>
         </v-list>
+        <v-divider></v-divider>
+        <v-spacer></v-spacer>
+        <!-- move th the bottom of the navbar -->
+        <template v-slot:append>
+            <v-layout column align-center>
+                <v-switch 
+                    :model="darkMode"
+                    @change="toggleDarkMode" 
+                    :label="`toggle ${switchLabel} mode`" 
+                    style="padding-left: 10px" 
+                    hide-details inset>
+                </v-switch>
+            </v-layout>
+        </template>
       </v-navigation-drawer>
 </template>
 
 <script lang="ts">
 import Appbar from "./Appbar.vue";
+import { useTheme } from "vuetify";
+
   export default {
+    setup() {
+        const theme = useTheme();
+        theme.global.name.value = 'light';
+    },
     data() {
         return {
+            darkMode: false,
             drawer: true,
             rail: true && (window.innerWidth < 600),
             items: [
@@ -101,7 +122,16 @@ import Appbar from "./Appbar.vue";
         },
         onNormalClick() {
           this.rail=!this.rail;
+        },
+        toggleDarkMode: function () {
+            (this.$vuetify.theme as any).global.name = this.darkMode ? 'dark' : 'light';
+            this.darkMode = !this.darkMode;
         }
+    },
+    computed: {
+      switchLabel: function () {
+        return this.darkMode ? 'light' : 'dark';
+      }
     },
     components: { Appbar }
 }
