@@ -1,7 +1,7 @@
 <template>
     <!-- APP BAR with menu button -->
     <Appbar :account-id="currentAccount.value" :elevation="3" @onMobileClick="onMobileClick" @onNormalClick="onNormalClick"/>
-    <v-navigation-drawer :elevation="3" v-model="drawer" :rail="rail">
+    <v-navigation-drawer floating :elevation="3" v-model="drawer" :rail="rail">
         <!-- PAGES ICONS (BUTTONS) -->
         <v-list density="compact" nav>
             <v-list-item v-for="(menuitem, i) in items" :key="i"
@@ -66,7 +66,6 @@
 import Appbar from "./Appbar.vue";
 import { useTheme } from "vuetify";
 import { Account } from "../models"
-import { PropType } from "vue";
 
   export default {
     setup() {
@@ -93,8 +92,6 @@ import { PropType } from "vue";
             isMobile: false,
             notificationSetting: false,
         };
-    },
-    props: {
     },
     beforeDestroy() {
         if (typeof window === 'undefined')
