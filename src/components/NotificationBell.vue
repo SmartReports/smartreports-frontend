@@ -29,7 +29,7 @@
             <v-card class="savedNotificationClass">
                 <v-card-title class="text-h5">Saved Notifications</v-card-title>
                   <v-container>
-                  <notification-kpi-selected v-for="alarm in alarms" @delete="onDeleteAlarm(alarm.id)" :account="accountId" :KPIId="alarm.kpi" :KPIMin="alarm.min_value" :KPIMax="alarm.max_value"/>
+                  <NotificationKpiElement v-for="alarm in alarms" @delete="onDeleteAlarm(alarm.id)" :account="accountId" :KPIId="alarm.kpi" :KPIMin="alarm.min_value" :KPIMax="alarm.max_value"/>
                 </v-container>
               </v-card>
             </v-container>
@@ -46,12 +46,13 @@ import { defineComponent, PropType } from "vue";
 import { useMainStore } from "../store/app";
 import { mapStores } from "pinia";
 import NotificationKpiPicker from "./NotificationKpiPicker.vue";
-import NotificationKpiSelected from "./NotificationKpiSelected.vue";
+import NotificationKpiElement from "./NotificationKpiElement.vue";
 import { Account, Alarms } from "@/models";
 export default defineComponent({
     name: "NotificationBell",
     async created() {
-      this.alarms = (await this.axios.get("/alarms-list/")).data
+      // Get alarm where uset_type is equal to accountId
+      this.alarms = (await this.axios.get(`/alarms-list/?user_type=${this.accountId}`)).data
     },
     data() {
       return {
@@ -59,7 +60,7 @@ export default defineComponent({
         ] as Alarms[],
       }
     },
-    components: { NotificationKpiPicker, NotificationKpiSelected },
+    components: { NotificationKpiPicker, NotificationKpiElement },
     props:{
       accountId: {
         type: String as PropType<string>,
