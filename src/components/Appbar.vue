@@ -23,7 +23,7 @@
     </h2>
   </div>
   <v-spacer></v-spacer>
-  <notification-bell></notification-bell>
+  <notification-bell :accountId="accountId"></notification-bell>
 </v-app-bar>
 </template>
 
@@ -33,6 +33,12 @@ import NotificationBell from './NotificationBell.vue';
 export default defineComponent({
     name: "Appbar",
     data() {
+    },
+    props:{
+      accountId: {
+        type: String as PropType<string>,
+        required: true,
+      }
     },
     methods: {},
     components: { NotificationBell }

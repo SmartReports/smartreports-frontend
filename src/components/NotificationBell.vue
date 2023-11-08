@@ -21,7 +21,7 @@
             <v-container>
               <v-card>
                 <v-list-item>
-                  <notification-kpi-picker @insert="onAddItem"></notification-kpi-picker>
+                  <notification-kpi-picker :accountId="accountId" @insert="onAddItem"></notification-kpi-picker>
                 </v-list-item>
               </v-card>
             </v-container>
@@ -29,7 +29,7 @@
             <v-card class="savedNotificationClass">
                 <v-card-title class="text-h5">Saved Notifications</v-card-title>
                   <v-container>
-                  <notification-kpi-selected v-for="alarm in alarms" @delete="onDeleteAlarm(alarm.id)" :KPIId="alarm.kpi" :KPIMin="alarm.min_value" :KPIMax="alarm.max_value"/>
+                  <notification-kpi-selected v-for="alarm in alarms" @delete="onDeleteAlarm(alarm.id)" :account="accountId" :KPIId="alarm.kpi" :KPIMin="alarm.min_value" :KPIMax="alarm.max_value"/>
                 </v-container>
               </v-card>
             </v-container>
@@ -47,7 +47,7 @@ import { useMainStore } from "../store/app";
 import { mapStores } from "pinia";
 import NotificationKpiPicker from "./NotificationKpiPicker.vue";
 import NotificationKpiSelected from "./NotificationKpiSelected.vue";
-import { Alarms } from "@/models";
+import { Account, Alarms } from "@/models";
 export default defineComponent({
     name: "NotificationBell",
     async created() {
@@ -60,10 +60,16 @@ export default defineComponent({
       }
     },
     components: { NotificationKpiPicker, NotificationKpiSelected },
+    props:{
+      accountId: {
+        type: String as PropType<string>,
+        required: true,
+      }
+    },
     methods: {
-      async onAddItem(kpiId: any, min:number, max:number) {
+      async onAddItem(account: string, kpiId: any, min:number, max:number) {
         console.log(kpiId, min, max)
-        await this.axios.post(`/alarms-list/`, {user_type: "parent", min_value: min, max_value: max, kpi: kpiId})
+        await this.axios.post(`/alarms-list/`, {user_type: account, min_value: min, max_value: max, kpi: kpiId.value})
       },
       async onDeleteAlarm(index: string) {
         if (!confirm("Are you sure you want to delete this alarm?")) {

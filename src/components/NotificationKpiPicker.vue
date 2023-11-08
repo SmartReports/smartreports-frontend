@@ -17,7 +17,7 @@
               <v-text-field type="number" v-model="max" label="max"/>
             </v-col>
             <v-col cols="4" md="2" sm="4" xs="1">
-              <v-btn color="primary" height="55" width="100%" @click="$emit('insert', kpiId.value, min, max)">
+              <v-btn color="primary" height="55" width="100%" @click="$emit('insert', accountId, kpiId, min, max)">
               <v-icon>
                 mdi-check
               </v-icon>
@@ -44,7 +44,12 @@ export default defineComponent ({
       kpiId: '',
     }
   },
-
+  props: {
+    accountId: {
+        type: String as PropType<string>,
+        required: true,
+    }
+  },
   methods: {
     onAdd(item: any) {
       this.$emit('onAddItem', {KPI:"ciao", min:10, max:100})
