@@ -10,7 +10,7 @@
       <div class="d-flex align-center">
         <div
         class="rounded-circle d-flex justify-center align-center mr-3 pa-2 grad-bg">
-        <v-icon class="" size="x-large" color="primary">
+        <v-icon class="" size="x-large" color="company_color">
           mdi-chart-timeline-variant-shimmer
         </v-icon>
       </div>

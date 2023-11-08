@@ -2,8 +2,8 @@
   <v-app>
       <Navbar>
       </Navbar>
-      <v-main class="bg-grey-lighten-5">
-            <v-container class="rounded-xl px-12 py-6 my-8 pb-10 bg-white">
+      <v-main>
+            <v-container class="rounded-xl px-12 py-6 my-8 pb-10 bg-surface">
               <router-view></router-view>
             </v-container>
             <ChatBot/>
