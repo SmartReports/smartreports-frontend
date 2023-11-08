@@ -1,7 +1,7 @@
 <template>
     <!-- APP BAR with menu button -->
     <Appbar :account-id="currentAccount.value" :elevation="3" @onMobileClick="onMobileClick" @onNormalClick="onNormalClick"/>
-    <v-navigation-drawer floating :elevation="3" v-model="drawer" :rail="rail">
+    <v-navigation-drawer :elevation="3" v-model="drawer" :rail="rail">
         <!-- PAGES ICONS (BUTTONS) -->
         <v-list density="compact" nav>
             <v-list-item v-for="(menuitem, i) in items" :key="i"
@@ -10,6 +10,8 @@
                 :value="menuitem.value"
                 :to="menuitem.path"
                 @click="rail=true"
+                class="rounded-pill"
+                color='primary'
               ></v-list-item>
         </v-list>
 
@@ -36,7 +38,8 @@
                               :prepend-avatar="account.image"
                               @click="onAccountChange(index, currentAccount)"
                               :title="account.name"
-                              :subtitle="account.employment">
+                              :subtitle="account.employment"
+                              >
                   </v-list-item>
                 </v-list>
             </v-menu>
