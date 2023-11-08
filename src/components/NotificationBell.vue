@@ -21,7 +21,7 @@
             <v-container>
               <v-card>
                 <v-list-item>
-                  <notification-kpi-picker @onAdd="onAddItem"></notification-kpi-picker>
+                  <notification-kpi-picker :accountId="accountId" @insert="onAddItem"></notification-kpi-picker>
                 </v-list-item>
               </v-card>
             </v-container>
@@ -29,7 +29,7 @@
             <v-card class="savedNotificationClass">
                 <v-card-title class="text-h5">Saved Notifications</v-card-title>
                   <v-container>
-                  <notification-kpi-selected v-for="(notification, i) in savedNotifiations" @delete="onDeleteItem(i)" :KPIName="notification.KPI" :KPIMin="notification.min" :KPIMax="notification.max"/>
+                  <notification-kpi-selected v-for="alarm in alarms" @delete="onDeleteAlarm(alarm.id)" :account="accountId" :KPIId="alarm.kpi" :KPIMin="alarm.min_value" :KPIMax="alarm.max_value"/>
                 </v-container>
               </v-card>
             </v-container>
@@ -43,27 +43,52 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
+import { useMainStore } from "../store/app";
+import { mapStores } from "pinia";
 import NotificationKpiPicker from "./NotificationKpiPicker.vue";
 import NotificationKpiSelected from "./NotificationKpiSelected.vue";
+import { Account, Alarms } from "@/models";
 export default defineComponent({
     name: "NotificationBell",
+    async created() {
+      this.alarms = (await this.axios.get("/alarms-list/")).data
+    },
     data() {
       return {
-        savedNotifiations: [
-          {KPI: "California", min:10, max:100},
-          {KPI: "Massags=fsdf", min:10, max:100},
-        ]
+        alarms: [
+        ] as Alarms[],
       }
     },
     components: { NotificationKpiPicker, NotificationKpiSelected },
-    methods: {
-      onAddItem(newitem: any) {
-        this.savedNotifiations.push(newitem)
-      },
-      onDeleteItem(index: number) {
-        this.savedNotifiations.splice(index, 1)
+    props:{
+      accountId: {
+        type: String as PropType<string>,
+        required: true,
       }
     },
+    methods: {
+      async onAddItem(account: string, kpiId: any, min:number, max:number) {
+        console.log(kpiId, min, max)
+        await this.axios.post(`/alarms-list/`, {user_type: account, min_value: min, max_value: max, kpi: kpiId.value})
+      },
+      async onDeleteAlarm(index: string) {
+        if (!confirm("Are you sure you want to delete this alarm?")) {
+        return;
+        }
+        await this.axios.delete(`/alarms-list/${index}/`);
+        this.alarms = this.alarms.filter((alarm) => alarm.id != index);
+      }
+    },
+    computed: {
+    ...mapStores(useMainStore),
+    getAlarms() {
+      return this.alarms.map((alarms) => ({
+        name: alarms.kpi,
+        max_value: alarms.max_value,
+        min_value: alarms.min_value,
+      }));
+    },
+  }
 });
 </script>
 

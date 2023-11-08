@@ -3,9 +3,9 @@
   <v-icon  @click="$emit('onNormalClick')" class="d-none d-lg-block menu-icn">
     mdi-menu
   </v-icon>
-  <v-text class="d-none d-lg-block  menu-text">Menu</v-text>
-  <v-icon @click="$emit('onMobileClick')" class="d-block d-lg-none">mdi-menu</v-icon>
-  <v-spacer></v-spacer>
+  <!-- <v-text class="d-none d-lg-block  menu-text">Menu</v-text>  -->
+  <v-icon @click="$emit('onMobileClick')" class="d-block d-lg-none menu-icn">mdi-menu</v-icon>
+  <!-- <v-spacer></v-spacer>  -->
     <!-- SITE ICON -->
       <div class="d-flex align-center">
         <div
@@ -23,7 +23,7 @@
     </h2>
   </div>
   <v-spacer></v-spacer>
-  <notification-bell></notification-bell>
+  <notification-bell :accountId="accountId"></notification-bell>
 </v-app-bar>
 </template>
 
@@ -34,6 +34,12 @@ export default defineComponent({
     name: "Appbar",
     data() {
     },
+    props:{
+      accountId: {
+        type: String as PropType<string>,
+        required: true,
+      }
+    },
     methods: {},
     components: { NotificationBell }
 })
@@ -42,15 +48,9 @@ export default defineComponent({
 
 <style>
 .menu-icn {
-  position: absolute;
-  top:30%; /* Adjust top positioning as needed */
-  left: -15px; /* Adjust right positioning as needed */
-  z-index: 1; /* Ensure the button is displayed on top of the plot */
-}
-.menu-text {
-  position: absolute;
-  top: 33%; /* Adjust top positioning as needed */
-  left: 40px; /* Adjust right positioning as needed */
+  position: relative;
+  margin-left: -15px;
+  margin-right: 25px;
   z-index: 1; /* Ensure the button is displayed on top of the plot */
 }
 </style>

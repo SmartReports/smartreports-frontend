@@ -1,7 +1,7 @@
 <template>
     <!-- APP BAR with menu button -->
-    <Appbar :elevation="3" @onMobileClick="onMobileClick" @onNormalClick="onNormalClick"/>
-    <v-navigation-drawer floating :elevation="3" v-model="drawer" :rail="rail">
+    <Appbar :account-id="currentAccount.value" :elevation="3" @onMobileClick="onMobileClick" @onNormalClick="onNormalClick"/>
+    <v-navigation-drawer :elevation="3" v-model="drawer" :rail="rail">
         <!-- PAGES ICONS (BUTTONS) -->
         <v-list density="compact" nav>
             <v-list-item v-for="(menuitem, i) in items" :key="i"
@@ -10,6 +10,8 @@
                 :value="menuitem.value"
                 :to="menuitem.path"
                 @click="rail=true"
+                class="rounded-pill"
+                color='primary'
               ></v-list-item>
         </v-list>
 
@@ -36,24 +38,26 @@
                               :prepend-avatar="account.image"
                               @click="onAccountChange(index, currentAccount)"
                               :title="account.name"
-                              :subtitle="account.employment">
+                              :subtitle="account.employment"
+                              >
                   </v-list-item>
                 </v-list>
-              </v-menu>
+            </v-menu>
         </v-list>
         <v-divider></v-divider>
         <v-spacer></v-spacer>
-        <!-- move th the bottom of the navbar -->
         <template v-slot:append>
-            <v-layout column align-center>
-                <v-switch 
-                    :model="darkMode"
-                    @change="toggleDarkMode" 
-                    :label="`toggle ${switchLabel} mode`" 
-                    style="padding-left: 10px" 
-                    hide-details inset>
-                </v-switch>
-            </v-layout>
+            <v-card class="pa-4">
+            <v-list-item>
+              <v-switch
+                :model="darkMode"
+                @change="toggleDarkMode"
+                :label="`toggle ${switchLabel} mode`"
+                hide-details inset
+                color="orange">
+              </v-switch>
+            </v-list-item>
+          </v-card>
         </template>
       </v-navigation-drawer>
 </template>
@@ -61,6 +65,8 @@
 <script lang="ts">
 import Appbar from "./Appbar.vue";
 import { useTheme } from "vuetify";
+import { Account } from "../models"
+import { PropType } from "vue";
 
   export default {
     setup() {
@@ -79,14 +85,16 @@ import { useTheme } from "vuetify";
                 { title: 'TemplateEditor', path: "/TemplateEditor", value: "templateeditor", icon: "mdi-archive-outline" },
             ],
             accounts: [
-                { name: "Francesco", employment: "Production Engineer", value: "TOKENFrancesco", image: "https://www.nahb.org/-/media/NAHB/education-and-events/images/designations/designations-cmp-500x500.jpg?h=500&w=500&la=en&hash=7FF6FBC0A5C3FA87869D099A0079E670" },
-                { name: "Sandra", employment: "Maria's Mother", value: "TOKENSandra", image: "https://www.scopeaust.org.au/uploads/main/Disability-Services/physiotherapy-small.jpg" },
-                { name: "Rodolfo", employment: "Physician", value: "TOKENRodolfo", image: "https://emis.health/wp-content/uploads/2023/07/Doctor-10.jpg" },
+                { name: "Francesco", employment: "Production Engineer", value: "project_manager", image: "https://www.nahb.org/-/media/NAHB/education-and-events/images/designations/designations-cmp-500x500.jpg?h=500&w=500&la=en&hash=7FF6FBC0A5C3FA87869D099A0079E670" },
+                { name: "Sandra", employment: "Parent", value: "parent", image: "https://www.scopeaust.org.au/uploads/main/Disability-Services/physiotherapy-small.jpg" },
+                { name: "Rodolfo", employment: "Doctor", value: "doctor", image: "https://emis.health/wp-content/uploads/2023/07/Doctor-10.jpg" },
             ],
-            currentAccount: { name: "Caterina", employment: "Machine Mantainer", value: "TOKENCaterina", image: new URL(`../assets/Caterina.png`, import.meta.url).href },
+            currentAccount: { name: "Caterina", employment: "Machine Maintainer", value: "machine_maintainer", image: new URL(`../assets/Caterina.png`, import.meta.url).href } as Account,
             isMobile: false,
             notificationSetting: false,
         };
+    },
+    props: {
     },
     beforeDestroy() {
         if (typeof window === 'undefined')
@@ -130,7 +138,7 @@ import { useTheme } from "vuetify";
     },
     computed: {
       switchLabel: function () {
-        return this.darkMode ? 'light' : 'dark';
+        return !this.darkMode ? 'light' : 'dark';
       }
     },
     components: { Appbar }
