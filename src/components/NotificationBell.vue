@@ -92,10 +92,6 @@ export default defineComponent({
         this.mainStore.getAlarms(this.accountId)
       },
       async onDeleteAlarm(index: string, deleting: any) {
-        // Wait "wait" time to go
-        setTimeout(() => {
-          deleting()
-        }, 2500);
         if (!confirm("Are you sure you want to delete this alarm?")) {
         return;
         }
