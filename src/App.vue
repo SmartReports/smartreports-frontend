@@ -1,19 +1,37 @@
 <template>
-  <v-app>
-      <Navbar>
+  <v-app >
+      <Navbar @user_pass="onEmit">
       </Navbar>
       <v-main>
             <v-container class="rounded-xl px-12 py-6 my-8 pb-10 bg-surface">
-              <router-view></router-view>
+              <router-view
+              :user_type="user_type"
+              ></router-view>
             </v-container>
             <ChatBot/>
       </v-main>
   </v-app>
 </template>
 
+<script lang="ts">
+import { defineComponent } from 'vue'
+export default defineComponent({
+  data() {
+    return {
+      user_type: '',
+    }
+  },
+  methods: {
+    onEmit(value: string) {
+      this.user_type = value
+    }
+  }
+})
+</script>
+
 <script setup lang="ts">
 import Navbar from "./components/Navbar.vue";
-import ChatBot from "./components/ChatBot.vue"
+import ChatBot from "./components/ChatBot.vue";
 </script>
 
 

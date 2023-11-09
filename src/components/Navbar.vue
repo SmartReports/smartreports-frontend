@@ -90,6 +90,9 @@ export default {
         this.onResize();
         window.addEventListener('resize', this.onResize);
     },
+    created() {
+        this.$emit('user_pass', this.currentAccount.value)
+    },
     methods: {
         onAccountChange(value: number, currAcc: {
             name: string;
@@ -104,6 +107,7 @@ export default {
             this.accounts.splice(value, 1);
             this.accounts.push(currAcc);
             this.rail = true;
+            this.$emit('user_pass', this.currentAccount.value)
         },
         onResize() {
             this.isMobile = window.innerWidth < 600;

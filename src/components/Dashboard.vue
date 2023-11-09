@@ -64,6 +64,7 @@ import { mapStores } from "pinia";
 import { useMainStore } from "@/store/app";
 import {Breakpoint, Layout} from "grid-layout-plus";
 import {ChartConfiguration} from "chart.js";
+import { PropType } from "vue";
 
 export default defineComponent({
   name: "Dashboard",
@@ -78,7 +79,12 @@ export default defineComponent({
     }
 
   },
-  props: {},
+  props: {
+    user_type: {
+      type: String as PropType<string>,
+      required: true,
+    }
+  },
   data() {
     return {
       smart_ordering: false,
@@ -121,6 +127,8 @@ export default defineComponent({
     },
 
     onChartRemove(id: string) {
+      console.log(this.user_type)
+
       const index = this.layout.findIndex((item) => item.i == id);
 
       if (index > -1) {
