@@ -66,8 +66,8 @@
 import Appbar from "./Appbar.vue";
 import { useTheme } from "vuetify";
 import { Account } from "../models"
-
-  export default {
+import { emit } from "process";
+export default {
     setup() {
         const theme = useTheme();
         theme.global.name.value = 'light';

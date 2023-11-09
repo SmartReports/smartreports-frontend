@@ -13,30 +13,27 @@ export const useMainStore = defineStore("main", {
       state.kpi.find((kpi) => kpi.id == id),
     getAlarmById: (state) => (id: string) =>
       state.alarms.find((alarm) => alarm.id == id),
-    // // Get kpi that don't have alarms setted
-    // getKpiWithoutAlarms: (state) => {
-    //   console.log("KPI data:", state.kpi);
-    //   console.log("Alarms data:", state.alarms);
+    // Get kpi that don't have alarms setted
+    getKpiWithoutAlarms: (state) => {
+      console.log("KPI data:", state.kpi);
+      console.log("Alarms data:", state.alarms);
 
-    //   const kpiWithoutAlarms = state.kpi.filter((kpi) => {
-    //     const hasMatchingAlarms = state.alarms.some((alarm) => alarm.kpi === kpi.id);
-    //     console.log(`KPI ${kpi.id} has matching alarms: ${hasMatchingAlarms}`);
-    //     return !hasMatchingAlarms;
-    //   });
+      const kpiWithoutAlarms = state.kpi.filter((kpi) => {
+        const hasMatchingAlarms = state.alarms.some((alarm) => alarm.kpi === kpi.id);
+        console.log(`KPI ${kpi.id} has matching alarms: ${hasMatchingAlarms}`);
+        return !hasMatchingAlarms;
+      });
 
-    //   console.log("KPIs without matching alarms:", kpiWithoutAlarms);
-    //   return kpiWithoutAlarms;
-    // },
+      console.log("KPIs without matching alarms:", kpiWithoutAlarms);
+      return kpiWithoutAlarms;
+    },
   },
   actions: {
     async getKpi() {
       this.kpi = (await axios.get("/kpi-list/")).data
-      console.log(this.kpi)
-
     },
-    async getAlarms(accountId: string) {
+    async getAlarms(accountId: any) {
       this.alarms = (await axios.get(`/alarms-list/?user_type=${accountId}`)).data
-      console.log(this.alarms)
     }
   },
 });
