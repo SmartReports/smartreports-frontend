@@ -7,6 +7,7 @@ const routerOptions = [
   { path: "/TemplateEditor", component: "TemplateEditor" },
   { path: "/Reports", component: "Reports" },
   { path: "/Archive", component: "Archive", meta: { requiresAuth: true } },
+  { path: "/Settings", component: "Settings", meta: { requiresAuth: true } },
 ];
 
 const routes = routerOptions.map(route => {
