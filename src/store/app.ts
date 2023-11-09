@@ -5,14 +5,14 @@ import axios from "axios";
 
 export const useMainStore = defineStore("main", {
   state: () => ({
-    // alarms: [] as Alarms[],
+    alarms: [] as Alarms[],
     kpi: [] as Kpi[],
   }),
   getters: {
     getKpiById: (state) => (id: string) =>
       state.kpi.find((kpi) => kpi.id == id),
-    // getAlarmById: (state) => (id: string) =>
-    //   state.alarms.find((alarm) => alarm.id == id),
+    getAlarmById: (state) => (id: string) =>
+      state.alarms.find((alarm) => alarm.id == id),
     // // Get kpi that don't have alarms setted
     // getKpiWithoutAlarms: (state) => {
     //   console.log("KPI data:", state.kpi);
@@ -31,6 +31,12 @@ export const useMainStore = defineStore("main", {
   actions: {
     async getKpi() {
       this.kpi = (await axios.get("/kpi-list/")).data
+      console.log(this.kpi)
+
     },
+    async getAlarms(accountId: string) {
+      this.alarms = (await axios.get(`/alarms-list/?user_type=${accountId}`)).data
+      console.log(this.alarms)
+    }
   },
 });
