@@ -19,6 +19,7 @@
         <v-divider :elevation="3"></v-divider>
 
         <!-- ACCOUNT ICON AND DROPDOWN SELECTOR -->
+        <template  v-slot:append>
         <v-list>
           <v-menu>
           <template v-slot:activator="{ props }">
@@ -44,21 +45,8 @@
                 </v-list>
             </v-menu>
         </v-list>
+      </template>
         <v-divider></v-divider>
-        <v-spacer></v-spacer>
-        <template v-slot:append>
-            <v-card class="pa-4">
-            <v-list-item>
-              <v-switch
-                :model="darkMode"
-                @change="toggleDarkMode"
-                :label="`toggle ${switchLabel} mode`"
-                hide-details inset
-                color="orange">
-              </v-switch>
-            </v-list-item>
-          </v-card>
-        </template>
       </v-navigation-drawer>
 </template>
 
@@ -66,15 +54,14 @@
 import Appbar from "./Appbar.vue";
 import { useTheme } from "vuetify";
 import { Account } from "../models"
-
-  export default {
+import { emit } from "process";
+export default {
     setup() {
         const theme = useTheme();
         theme.global.name.value = 'light';
     },
     data() {
         return {
-            darkMode: false,
             drawer: true,
             rail: true && (window.innerWidth < 600),
             items: [
@@ -82,6 +69,7 @@ import { Account } from "../models"
                 { title: 'Customize Reports', path: "/Reports", value: "reports", icon: "mdi-table-settings" },
                 { title: 'Archive', path: "/Archive", value: "archive", icon: "mdi-archive-outline" },
                 { title: 'TemplateEditor', path: "/TemplateEditor", value: "templateeditor", icon: "mdi-archive-outline" },
+                { title: 'Settings', path: "/Settings", value: "settings", icon: "mdi-cog"},
             ],
             accounts: [
                 { name: "Francesco", employment: "Production Engineer", value: "project_manager", image: "https://www.nahb.org/-/media/NAHB/education-and-events/images/designations/designations-cmp-500x500.jpg?h=500&w=500&la=en&hash=7FF6FBC0A5C3FA87869D099A0079E670" },
@@ -128,15 +116,6 @@ import { Account } from "../models"
         onNormalClick() {
           this.rail=!this.rail;
         },
-        toggleDarkMode: function () {
-            (this.$vuetify.theme as any).global.name = this.darkMode ? 'dark' : 'light';
-            this.darkMode = !this.darkMode;
-        }
-    },
-    computed: {
-      switchLabel: function () {
-        return !this.darkMode ? 'light' : 'dark';
-      }
     },
     components: { Appbar }
 }

@@ -33,6 +33,8 @@ import NotificationBell from './NotificationBell.vue';
 export default defineComponent({
     name: "Appbar",
     data() {
+      return{
+      }
     },
     props:{
       accountId: {
