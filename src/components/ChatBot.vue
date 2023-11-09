@@ -6,7 +6,7 @@
     <v-btn
           text="Close"
           icon="mdi-close"
-          color="red"
+          color="error"
           class="chatbot-close"
           @click="closeChatbot"
           ></v-btn>
@@ -48,6 +48,7 @@
   position: fixed;
   right: 30px;
   bottom: 30px;
+  background: rgb(var(--v-theme-secondary));
 }
 
 .chatbot-iframe {
@@ -59,7 +60,7 @@
   position: fixed;
   right: 30px;
   bottom: 30px;
-  width: 40em;
+  width: min(calc(100vw - 60px), 40em);
   aspect-ratio: 5/4;
   display: none;
 }

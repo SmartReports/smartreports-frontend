@@ -222,7 +222,7 @@ export default defineComponent({
 
 <style scoped>
 .vgl-layout {
-  background-color: white;
+  background-color: var(--v-theme-background);
   --vgl-placeholder-bg: rgb(128, 128, 128);
   --vgl-placeholder-opacity: 10%;
   border-radius: 15px;
@@ -233,7 +233,7 @@ export default defineComponent({
 }
 
 :deep(.vgl-item:not(.vgl-item--placeholder)) {
-  border: 1px solid white;
+  border: 1px solid var(--v-theme-secondary);
   border-radius: 40px;
 }
 
@@ -243,7 +243,7 @@ export default defineComponent({
 }
 
 :deep(.vgl-item--static) {
-  background-color: white;
+  background-color: var(--v-theme-primary);
 }
 
 .text {
