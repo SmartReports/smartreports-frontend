@@ -45,7 +45,6 @@ import { PropType } from 'vue';
 import { useMainStore } from "../store/app";
 import { mapStores } from "pinia";
 import { emit } from 'process';
-import NotificationBell from "NotificationBell.vue"
 export default {
   data() {
     return {
