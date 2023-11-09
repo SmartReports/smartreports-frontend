@@ -10,6 +10,8 @@
                 :value="menuitem.value"
                 :to="menuitem.path"
                 @click="rail=true"
+                class="rounded-pill"
+                color='primary'
               ></v-list-item>
         </v-list>
 
@@ -36,7 +38,8 @@
                               :prepend-avatar="account.image"
                               @click="onAccountChange(index, currentAccount)"
                               :title="account.name"
-                              :subtitle="account.employment">
+                              :subtitle="account.employment"
+                              >
                   </v-list-item>
                 </v-list>
             </v-menu>
@@ -63,7 +66,6 @@
 import Appbar from "./Appbar.vue";
 import { useTheme } from "vuetify";
 import { Account } from "../models"
-import { PropType } from "vue";
 
   export default {
     setup() {
@@ -90,8 +92,6 @@ import { PropType } from "vue";
             isMobile: false,
             notificationSetting: false,
         };
-    },
-    props: {
     },
     beforeDestroy() {
         if (typeof window === 'undefined')
