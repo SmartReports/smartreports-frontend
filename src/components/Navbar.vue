@@ -66,7 +66,7 @@ export default {
             rail: true && (window.innerWidth < 600),
             items: [
                 { title: 'Dashboard', path: "/dashboard", value: "Home", icon: "mdi-view-dashboard" },
-                { title: 'Customize Reports', path: "/templates", value: "templates", icon: "mdi-table-settings" },
+                { title: 'Templates', path: "/templates", value: "templates", icon: "mdi-table-settings" },
                 { title: 'Archive', path: "/archive", value: "archive", icon: "mdi-archive-outline" },
                 { title: 'TemplateEditor', path: "/templateeditor", value: "templateeditor", icon: "mdi-archive-outline" },
                 { title: 'Settings', path: "/settings", value: "settings", icon: "mdi-cog"},
