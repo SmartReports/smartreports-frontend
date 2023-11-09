@@ -30,10 +30,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import { useMainStore } from "../store/app";
 import { mapStores } from "pinia";
-import { PropType } from 'vue';
 import { Kpi } from '@/models';
 
 export default defineComponent ({

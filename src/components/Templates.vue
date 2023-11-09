@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h3 class="text-h4 mt-4">Reports</h3>
+    <h3 class="text-h4 mt-4">Templates</h3>
     <v-container>
       <v-list>
         <v-container>

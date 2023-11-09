@@ -65,11 +65,11 @@ export default {
             drawer: true,
             rail: true && (window.innerWidth < 600),
             items: [
-                { title: 'Dashboard', path: "/Dashboard", value: "Home", icon: "mdi-view-dashboard" },
-                { title: 'Customize Reports', path: "/Reports", value: "reports", icon: "mdi-table-settings" },
-                { title: 'Archive', path: "/Archive", value: "archive", icon: "mdi-archive-outline" },
-                { title: 'TemplateEditor', path: "/TemplateEditor", value: "templateeditor", icon: "mdi-archive-outline" },
-                { title: 'Settings', path: "/Settings", value: "settings", icon: "mdi-cog"},
+                { title: 'Dashboard', path: "/dashboard", value: "Home", icon: "mdi-view-dashboard" },
+                { title: 'Templates', path: "/templates", value: "templates", icon: "mdi-table-settings" },
+                { title: 'Archive', path: "/archive", value: "archive", icon: "mdi-archive-outline" },
+                { title: 'TemplateEditor', path: "/templateeditor", value: "templateeditor", icon: "mdi-archive-outline" },
+                { title: 'Settings', path: "/settings", value: "settings", icon: "mdi-cog"},
             ],
             accounts: [
                 { name: "Francesco", employment: "Production Engineer", value: "project_manager", image: "https://www.nahb.org/-/media/NAHB/education-and-events/images/designations/designations-cmp-500x500.jpg?h=500&w=500&la=en&hash=7FF6FBC0A5C3FA87869D099A0079E670" },
@@ -90,6 +90,9 @@ export default {
         this.onResize();
         window.addEventListener('resize', this.onResize);
     },
+    created() {
+        this.$emit('user_pass', this.currentAccount.value)
+    },
     methods: {
         onAccountChange(value: number, currAcc: {
             name: string;
@@ -104,6 +107,7 @@ export default {
             this.accounts.splice(value, 1);
             this.accounts.push(currAcc);
             this.rail = true;
+            this.$emit('user_pass', this.currentAccount.value)
         },
         onResize() {
             this.isMobile = window.innerWidth < 600;
