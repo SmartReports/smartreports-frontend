@@ -29,7 +29,15 @@
             <v-card class="savedNotificationClass">
                 <v-card-title class="text-h5">Saved Notifications</v-card-title>
                   <v-container>
-                  <notification-kpi-selected v-for="alarm in alarms" @delete="onDeleteAlarm(alarm.id)" :account="accountId" :KPIId="alarm.kpi" :KPIMin="alarm.min_value" :KPIMax="alarm.max_value"/>
+                  <NotificationKpiElement v-model="proxyModelValueAlarms"
+                                          v-for="alarm in alarmAsItem"
+                                          @update="onUpdateItem"
+                                          @delete="onDeleteAlarm"
+                                          :alarmId="alarm.id"
+                                          :accountId="accountId"
+                                          :KPIId="alarm.kpi"
+                                          :KPIMin="alarm.min_value"
+                                          :KPIMax="alarm.max_value"/>
                 </v-container>
               </v-card>
             </v-container>
@@ -46,49 +54,80 @@ import { defineComponent, PropType } from "vue";
 import { useMainStore } from "../store/app";
 import { mapStores } from "pinia";
 import NotificationKpiPicker from "./NotificationKpiPicker.vue";
-import NotificationKpiSelected from "./NotificationKpiSelected.vue";
+import NotificationKpiElement from "./NotificationKpiElement.vue";
 import { Account, Alarms } from "@/models";
+import { onUpdated } from "vue";
 export default defineComponent({
     name: "NotificationBell",
-    async created() {
-      this.alarms = (await this.axios.get("/alarms-list/")).data
-    },
+    // async created() {
+    //   // Get alarm where uset_type is equal to accountId
+    //   this.alarms = (await this.axios.get(`/alarms-list/?user_type=${this.accountId}`)).data
+    // },
     data() {
       return {
-        alarms: [
-        ] as Alarms[],
       }
     },
-    components: { NotificationKpiPicker, NotificationKpiSelected },
+    components: { NotificationKpiPicker, NotificationKpiElement },
     props:{
       accountId: {
         type: String as PropType<string>,
         required: true,
-      }
+      },
     },
     methods: {
-      async onAddItem(account: string, kpiId: any, min:number, max:number) {
-        console.log(kpiId, min, max)
-        await this.axios.post(`/alarms-list/`, {user_type: account, min_value: min, max_value: max, kpi: kpiId.value})
+      async onUpdateItem(id: string, kpiId: any, min:number, max:number) {
+        await this.axios.put(
+          `/alarms-list/${id}/`, {
+            id: id,
+            user_type: this.accountId,
+            min_value: min,
+            max_value: max,
+            kpi: kpiId,
+          })
+        this.mainStore.getAlarms(this.accountId)
+
       },
-      async onDeleteAlarm(index: string) {
+      async onAddItem(id: string, kpiId: any, min:number, max:number) {
+        await this.axios.post(`/alarms-list/`, {id: id, user_type: this.accountId, min_value: min, max_value: max, kpi: kpiId.value})
+        this.mainStore.getAlarms(this.accountId)
+      },
+      async onDeleteAlarm(index: string, deleting: any) {
+        // Wait "wait" time to go
+        setTimeout(() => {
+          deleting()
+        }, 2500);
         if (!confirm("Are you sure you want to delete this alarm?")) {
         return;
         }
         await this.axios.delete(`/alarms-list/${index}/`);
-        this.alarms = this.alarms.filter((alarm) => alarm.id != index);
+        this.mainStore.getAlarms(this.accountId)
       }
     },
     computed: {
     ...mapStores(useMainStore),
-    getAlarms() {
+    alarms(accountId: string) {
+      return this.mainStore.alarms;
+    },
+    alarmAsItem() {
       return this.alarms.map((alarms) => ({
-        name: alarms.kpi,
+        id: alarms.id,
+        kpi: alarms.kpi,
         max_value: alarms.max_value,
         min_value: alarms.min_value,
       }));
     },
-  }
+    proxyModelValueAlarms: {
+      get(user_type: string) {
+        return this.mainStore.alarms
+      },
+      set(alarm: Alarms) {
+        this.onAddItem(alarm.id, alarm.kpi, alarm.min_value, alarm.max_value)
+      }
+    },
+    },
+    async created() {
+      this.mainStore.getAlarms(this.accountId)
+    }
 });
 </script>
 
