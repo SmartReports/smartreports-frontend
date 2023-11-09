@@ -41,7 +41,7 @@
 
 
 <script lang="ts">
-import { PropType } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import { useMainStore } from "../store/app";
 import { mapStores } from "pinia";
 import { emit } from 'process';
