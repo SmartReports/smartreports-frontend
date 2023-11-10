@@ -87,9 +87,9 @@ import { useMainStore } from "../store/app";
 export default defineComponent({
   name: "TemplateEditor",
   props: {},
-  async created() {
-    await this.mainStore.getKpi(undefined);
-  },
+  // async created() {
+  //   await this.mainStore.getKpi();
+  // },
   data() {
     return {
       modelValue: {

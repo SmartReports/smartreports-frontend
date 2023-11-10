@@ -53,8 +53,9 @@
 <script lang="ts">
 import Appbar from "./Appbar.vue";
 import { useTheme } from "vuetify";
-import { Account } from "../models"
-import { emit } from "process";
+import { Account, Alarms, Kpi } from "../models"
+import { useMainStore } from "../store/app";
+import { mapStores } from "pinia";
 export default {
     setup() {
         const theme = useTheme();
@@ -92,6 +93,8 @@ export default {
     },
     created() {
         this.$emit('user_pass', this.currentAccount.value)
+        this.mainStore.getAlarms(this.currentAccount.value)
+        this.mainStore.getKpi(this.currentAccount.value)
     },
     methods: {
         onAccountChange(value: number, currAcc: {
@@ -108,6 +111,8 @@ export default {
             this.accounts.push(currAcc);
             this.rail = true;
             this.$emit('user_pass', this.currentAccount.value)
+            this.mainStore.getAlarms(this.currentAccount.value)
+            this.mainStore.getKpi(this.currentAccount.value)
         },
         onResize() {
             this.isMobile = window.innerWidth < 600;
@@ -120,6 +125,9 @@ export default {
         onNormalClick() {
           this.rail=!this.rail;
         },
+    },
+    computed: {
+      ...mapStores(useMainStore),
     },
     components: { Appbar }
 }

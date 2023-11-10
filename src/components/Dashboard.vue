@@ -68,17 +68,16 @@ import { PropType } from "vue";
 
 export default defineComponent({
   name: "Dashboard",
-  async created() {
-    await this.mainStore.getKpi(this.user_type);
-    try {
-      const layout_string = (await this.axios.get("/matteo_gay/", {params: {user: "Caterina"}})).data;
-      this.layout = reactive(JSON.parse(layout_string));
-    } catch (error) {
-      console.log(error)
-      this.getDefaultLayout();
-    }
-
-  },
+  // async created() {
+  //   await this.mainStore.getKpi(this.user_type);
+  //   try {
+  //     const layout_string = (await this.axios.get("/matteo_gay/", {params: {user: "Caterina"}})).data;
+  //     this.layout = reactive(JSON.parse(layout_string));
+  //   } catch (error) {
+  //     console.log(error)
+  //     this.getDefaultLayout();
+  //   }
+  // },
   props: {
     user_type: {
       type: String as PropType<string>,
