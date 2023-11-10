@@ -16,14 +16,14 @@ const app = createApp(App);
 const dev = process.env.NODE_ENV !== "production";
 axios.defaults.baseURL = dev ? (import.meta.env.VITE_APP_AXIOS_BASE ?? "http://127.0.0.1:8000") : import.meta.env.VITE_APP_AXIOS_BASE ?? "https://unipi.it/";
 
-// add basic auth axios
+// // add basic auth axios
 
-if (!dev) {
-  axios.defaults.auth = {
-    username: import.meta.env.VITE_APP_AXIOS_USERNAME ?? "",
-    password: import.meta.env.VITE_APP_AXIOS_PASSWORD ?? "",
-  };
-}
+// if (!dev) {
+//   axios.defaults.auth = {
+//     username: import.meta.env.VITE_APP_AXIOS_USERNAME ?? "",
+//     password: import.meta.env.VITE_APP_AXIOS_PASSWORD ?? "",
+//   };
+// }
 
 registerPlugins(app);
 
