@@ -9,7 +9,8 @@
           <v-container class="pa-4">
             <v-list-item>
               <v-switch
-                :model="darkMode"
+                :model-value="darkMode"
+                :v-model="darkMode"
                 @change="toggleDarkMode"
                 :label="`toggle ${switchLabel} mode`"
                 hide-details inset
@@ -25,6 +26,9 @@
 </template>
 
 <script lang="ts">
+
+import { getTheme } from '../plugins/index';
+
 export default {
   data() {
     return {
@@ -33,14 +37,20 @@ export default {
   },
   methods: {
     toggleDarkMode: function () {
-          (this.$vuetify.theme as any).global.name = this.darkMode ? 'dark' : 'light';
           this.darkMode = !this.darkMode;
+          localStorage.setItem('theme', this.darkMode ? 'dark' : 'light');
+          // Don't ask, it works
+          (this.$vuetify.theme as any).global.name = !this.darkMode ? 'dark' : 'light';
+          (this.$vuetify.theme as any).global.name = this.darkMode ? 'dark' : 'light';
     }
   },
   computed: {
       switchLabel: function () {
-        return !this.darkMode ? 'light' : 'dark';
+        return this.darkMode ? 'light' : 'dark';
       }
     },
+  mounted() {
+    this.darkMode = getTheme() === 'dark';
+  }
 }
 </script>
