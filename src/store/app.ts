@@ -19,7 +19,7 @@ export const useMainStore = defineStore("main", {
       console.log("Alarms data:", state.alarms);
 
       const kpiWithoutAlarms = state.kpi.filter((kpi) => {
-        const hasMatchingAlarms = state.alarms.some((alarm) => alarm.kpi === kpi.id);
+        const hasMatchingAlarms = state.alarms.some((alarm) => alarm.kpi == kpi.id);
         console.log(`KPI ${kpi.id} has matching alarms: ${hasMatchingAlarms}`);
         return !hasMatchingAlarms;
       });
@@ -30,7 +30,10 @@ export const useMainStore = defineStore("main", {
   },
   actions: {
     async getKpi(accountId: any) {
-      this.kpi = (await axios.get(`/kpi-list/?user_type=${accountId}`)).data
+      // If accountId is undefined accountId = ''
+      const account = accountId === undefined? '' : accountId;
+
+      this.kpi = (await axios.get(`/kpi-list/?user_type=${account}`)).data
     },
     async getAlarms(accountId: any) {
       this.alarms = (await axios.get(`/alarms-list/?user_type=${accountId}`)).data
