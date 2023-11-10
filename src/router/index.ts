@@ -8,7 +8,6 @@ const routerOptions = [
   { path: "/templates", component: "Templates" },
   { path: "/archive", component: "Archive", meta: { requiresAuth: true } },
   { path: "/settings", component: "Settings", meta: { requiresAuth: true } },
-  { path: "/templaterender", component: "TemplateRender", meta: { requiresAuth: true } },
 ];
 
 const routes = routerOptions.map(route => {
