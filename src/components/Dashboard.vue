@@ -69,7 +69,7 @@ import { PropType } from "vue";
 export default defineComponent({
   name: "Dashboard",
   async created() {
-    await this.mainStore.getKpi();
+    await this.mainStore.getKpi(undefined);
     try {
       const layout_string = (await this.axios.get("/matteo_gay/", {params: {user: "Caterina"}})).data;
       this.layout = reactive(JSON.parse(layout_string));

@@ -88,7 +88,7 @@ export default defineComponent({
   name: "TemplateEditor",
   props: {},
   async created() {
-    await this.mainStore.getKpi();
+    await this.mainStore.getKpi(undefined);
   },
   data() {
     return {
