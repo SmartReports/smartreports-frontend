@@ -121,9 +121,9 @@ export default defineComponent({
       }
     },
     },
-    async created() {
-      this.mainStore.getAlarms(this.accountId)
-    }
+    // async created() {
+    //   this.mainStore.getAlarms(this.accountId)
+    // }
 });
 </script>
 
