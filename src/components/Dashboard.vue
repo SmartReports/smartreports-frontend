@@ -39,7 +39,7 @@
     >
       <template #item="{ item }">
         <DashboardElement
-          :chart-configuration="charts[item.i]"
+          :chart-configuration="charts_map[item.i]"
           @remove="onChartRemove(item.i)"
           @edit="onChartEdit(item.i)"
         />
@@ -63,13 +63,13 @@ import { ChartType, KpiReportElement, Kpi } from "@/models";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/store/app";
 import {Breakpoint, Layout} from "grid-layout-plus";
-import {ChartConfiguration} from "chart.js";
+import {ChartConfiguration, ChartData} from "chart.js";
 import { PropType } from "vue";
 
 export default defineComponent({
   name: "Dashboard",
   async created() {
-    await this.mainStore.getKpi(undefined);
+    await this.mainStore.getKpi(this.user_type);
     try {
       const layout_string = (await this.axios.get("/matteo_gay/", {params: {user: "Caterina"}})).data;
       this.layout = reactive(JSON.parse(layout_string));
@@ -95,13 +95,20 @@ export default defineComponent({
       colNum: 4,
       layout: reactive([]) as Layout,
       old_layout: reactive([]) as Layout,
-      charts: {} as { [key: string]: ChartConfiguration },
+      kpi_map: {} as { [key: number]: string },
+      charts_map: {} as { [key: number]: ChartConfiguration },
       dialogOpen: false,
       dialogModel: {
         chart_type: null,
         kpi: "",
       } as KpiReportElement,
-      editing: "",
+      editing: -1,
+      user_type: "doctor",
+      default_chart_options: {
+        responsive: true,
+        maintainAspectRatio: false
+      },
+      last_used_index: -1,
     };
   },
   methods: {
@@ -110,38 +117,35 @@ export default defineComponent({
       this.colNum = this.cols[newBreakpoint];
     },
 
-    onAddChart() {
-      if (this.editing !== "") {
-        // backend call
-        this.editing = "";
+    async onAddChart() {
+      let id: number;
+      if (this.editing != -1) {
+        id = this.editing;
+        this.kpi_map[id] = this.dialogModel.kpi;
+        this.charts_map[id] = (await this.getChart(this.dialogModel.kpi, this.dialogModel.chart_type));
+        this.editing = -1;
       } else {
-        this.layout.push({
-          x: (this.layout.length * 2) % 4,
-          y: this.layout.length + 1, // puts it at the bottom
-          w: 2,
-          h: 1,
-          i: this.dialogModel.kpi,
-        });
-        this.charts[this.dialogModel.kpi] = test_chart2;
+        id = ++this.last_used_index;
+        this.addChart(id, this.dialogModel.kpi);
       }
     },
 
-    onChartRemove(id: string) {
-      console.log(this.user_type)
-
+    onChartRemove(id: number) {
       const index = this.layout.findIndex((item) => item.i == id);
 
       if (index > -1) {
         this.layout.splice(index, 1);
-        delete this.charts[id];
+        delete this.kpi_map[id];
+        delete this.charts_map[id];
       }
     },
 
-    onChartEdit(id: string) {
+    onChartEdit(id: number) {
       this.editing = id;
-      const chart = this.charts[id];
+      const kpi_id = this.kpi_map[id];
+      const chart = this.charts_map[id];
       this.dialogModel = {
-        kpi: id,
+        kpi: kpi_id,
         chart_type: chart.type as ChartType,
       };
       this.dialogOpen = true;
@@ -155,33 +159,38 @@ export default defineComponent({
       this.dialogOpen = value;
     },
 
+    async addChart(id: number, kpi_id: string) {
+      this.kpi_map[id] = kpi_id;
+      this.charts_map[id] = (await this.getChart(kpi_id, null));
+      this.layout.push({x: this.layout.length * 2 % 4, y: this.layout.length + 1, w: 2, h: 1, i: id});
+    },
+
     clearDialogModel() {
-      this.editing = "";
+      this.editing = -1;
       this.dialogModel = {
         chart_type: null,
         kpi: "",
       } as KpiReportElement;
     },
 
-    getNextCoordinates: function (x: number, y: number) {
-      if (x + 2 >= this.colNum) {
-        x = 0;
-        y++;
-      } else {
-        x += 2;
+    async getChart(kpi_id: string, type: ChartType | null) {
+      if (!type) {
+        type = this.kpiAllowedChartTypes(kpi_id)[0];
       }
-      return [x, y];
+      let chart_data = (await this.axios.get(`/kpi-data/?user_type=${this.user_type}&chart_type=${type}&kpi_id=${kpi_id}`)).data["data"];
+      return {
+        data: chart_data,
+        options: this.default_chart_options,
+        type: type
+      } as ChartConfiguration;
     },
 
-    getDefaultLayout() {
-      let default_layout: Layout = reactive([]);
-      let default_charts: { [key: string]: ChartConfiguration } = {};
-      this.mainStore.kpi.forEach((kpi) => {
-        default_layout.push({x: default_layout.length * 2 % 4, y: default_layout.length + 1, w: 2, h: 1, i: kpi.id});
-        default_charts[kpi.id] = test_chart1;
-      });
-      this.layout = default_layout;
-      this.charts = default_charts;
+     async getDefaultLayout() {
+      for (let i=0; i < this.mainStore.kpi.length; i++)
+      {
+        const new_index = ++this.last_used_index;
+        await this.addChart(new_index, this.mainStore.kpi[i].id);
+      }
     },
 
     orderLayout() {
@@ -203,9 +212,14 @@ export default defineComponent({
         layout_item.y = y;
         layout_item.w = 2;
         layout_item.h = 1;
-        [x, y] = this.getNextCoordinates(x, y);
       }
-    }
+    },
+
+    kpiAllowedChartTypes(kpi_id: string) {
+      return (
+        this.mainStore.getKpiById(kpi_id)?.allowed_charts ?? []
+      );
+    },
   },
   watch: {
       smart_ordering(new_value) {
