@@ -71,6 +71,7 @@ ChartJS.register(Title, Tooltip, Legend,
 
 export default defineComponent ({
   name: 'DashboardElement',
+  emits: ["remove", "edit"],
   computed: {
     barCastedData() {
       return (<BarChartData>this.chartConfiguration.data);

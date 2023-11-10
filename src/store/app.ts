@@ -29,8 +29,8 @@ export const useMainStore = defineStore("main", {
     },
   },
   actions: {
-    async getKpi() {
-      this.kpi = (await axios.get("/kpi-list/")).data
+    async getKpi(accountId: any) {
+      this.kpi = (await axios.get(`/kpi-list/?user_type=${accountId}`)).data
     },
     async getAlarms(accountId: any) {
       this.alarms = (await axios.get(`/alarms-list/?user_type=${accountId}`)).data

@@ -15,4 +15,4 @@ export interface KpiReportElement {
   chart_type: ChartType | null;
 }
 
-export type ChartType = "line" | "bar" | "pie" | "scatter";
+export type ChartType = "line" | "bar" | "pie" | "doughnut" | "radar";
