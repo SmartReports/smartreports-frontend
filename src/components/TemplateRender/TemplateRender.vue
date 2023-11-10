@@ -1,6 +1,6 @@
 <template>
-  <v-dialog width="2100" height="500">
-      <template v-slot:activator="{ props }">
+  <v-dialog width="2100" height="2970">
+    <template v-slot:activator="{ props }">
         <v-btn
           class="text-grey-darken-1"
           icon="mdi-eye"
@@ -10,15 +10,15 @@
         />
       </template>
       <template v-slot:default="{ isActive }">
-          <v-container>
-            <h3 class="text-h4 mt-4">{{ modelValue.name }}</h3>
+          <v-card>
+            <v-card-text class="text-h4 mt-4">{{ modelValue.name }}</v-card-text>
             <v-divider></v-divider>
             <v-container>
 
-            <v-card theme="dark" flat rounded="10">
+            <v-card  flat rounded="10">
             <v-window v-model="onboarding">
               <v-window-item v-for="(page, i) in pages" :key="`card-${i}`" :value="i">
-                <v-card height=100 class="d-flex justify-center align-center">
+                <v-card height=700 class="d-flex justify-center align-center">
                     <template-render-page :user_type="user_type" :modelPage="page"></template-render-page>
                 </v-card>
               </v-window-item>
@@ -44,7 +44,7 @@
             </v-card-actions>
           </v-card>
         </v-container>
-      </v-container>
+      </v-card>
 </template>
 </v-dialog>
 </template>

@@ -2,7 +2,7 @@
     <v-container>
         <v-row v-for="row in rows">
             <v-col v-for="col in cols">
-                <DashboardElement :chart-configuration="getNext"></DashboardElement>
+                <DashboardElement :chart-configuration="getNext" :options="false"></DashboardElement>
             </v-col>
         </v-row>
     </v-container>

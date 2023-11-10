@@ -1,9 +1,11 @@
 <template >
           <v-icon class="text-grey-darken-1 delete-button"
+                  v-if="options"
                   @click="onRemove()"
                   variant="text"
                   tooltip="Remove">mdi-delete</v-icon>
           <v-icon class="text-grey-darken-1 change-button"
+                  v-if="options"
                   @click="onEdit()"
                   variant="text"
                   tooltip="Edit">mdi-pencil</v-icon>
@@ -110,9 +112,15 @@ export default defineComponent ({
       type: Object as PropType<ChartConfiguration>,
       required: true,
     },
+    options: {
+      type: Boolean as PropType<Boolean>,
+      required: false,
+      default: true,
+    }
   },
   data() {
-    return {}
+    return {
+    }
   },
   methods: {
     onRemove() {
