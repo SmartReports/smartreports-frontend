@@ -65,6 +65,8 @@ import { useTheme } from "vuetify";
 import { Account, Alarms, Kpi } from "../models";
 import { useMainStore } from "../store/app";
 import { mapStores } from "pinia";
+
+
 export default {
   emits: ['user_pass'],
   setup() {
@@ -123,6 +125,7 @@ export default {
     this.$emit("user_pass", this.currentAccount.value);
     this.mainStore.getAlarms(this.currentAccount.value);
     this.mainStore.getKpi(this.currentAccount.value);
+    this.mainStore.getReports(this.currentAccount.value);
   },
   methods: {
     onAccountChange(
@@ -144,6 +147,8 @@ export default {
       this.$emit("user_pass", this.currentAccount.value);
       this.mainStore.getAlarms(this.currentAccount.value);
       this.mainStore.getKpi(this.currentAccount.value);
+      this.mainStore.getReports(this.currentAccount.value);
+
     },
     onResize() {
       this.isMobile = window.innerWidth < 600;

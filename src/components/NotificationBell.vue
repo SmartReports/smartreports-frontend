@@ -90,11 +90,11 @@ export default defineComponent({
         }
         await this.axios.delete(`/alarms-list/${index}/`);
         this.mainStore.getAlarms(this.accountId)
-      }
+      },
     },
     computed: {
     ...mapStores(useMainStore),
-    alarms(accountId: string) {
+    alarms() {
       return this.mainStore.alarms;
     },
     alarmAsItem() {
