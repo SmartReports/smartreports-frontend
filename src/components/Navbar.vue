@@ -136,9 +136,9 @@ export default {
       if (this.rail == true) {
         this.rail = false;
       }
+      this.mainStore.accounts.push(this.currentAccount)
       this.currentAccount = this.mainStore.accounts[value];
-      //   this.accounts.splice(value, 1);
-      //   this.accounts.push(currAcc);
+      this.mainStore.accounts.splice(value, 1)
       this.rail = true;
       this.$emit("user_pass", this.currentAccount.value);
       this.mainStore.getAlarms(this.currentAccount.value);
