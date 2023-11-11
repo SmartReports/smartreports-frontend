@@ -39,17 +39,31 @@
       </v-col>
     </v-row>
 
-    <v-row v-for="(page, index) in modelValue.pages" :key="index">
-      <v-col cols="12">
-        <TemplatePageEditor
-          class="pb-10"
-          :modelValue="page"
-          :index="index"
-          @update:model-value="onPageUpdate(index, $event)"
-          @remove="onPageRemove(index)"
-        />
-      </v-col>
-    </v-row>
+    <draggable
+      animation="100"
+      v-model="modelValue.pages"
+      drag-class="dragging-element"
+      :itemKey="'id'"
+      :ghostClass="'ghost'"
+      :handle="'.drag-handle'"
+      @start="draggingSomeElement = true"
+      @end="draggingSomeElement = false"
+    >
+      <template #item="{ element, index }">
+        <v-row>
+          <v-col cols="12">
+            <TemplatePageEditor
+              class="pb-10"
+              :class="{ 'dragging-element': draggingSomeElement }"
+              :modelValue="element"
+              :index="index"
+              @update:model-value="onPageUpdate(index, $event)"
+              @remove="onPageRemove(index)"
+            />
+          </v-col>
+        </v-row>
+      </template>
+    </draggable>
 
     <div v-if="modelValue.pages.length === 0" class="text-center mt-4">
       <v-icon class="text-grey-lighten-1" style="font-size: 180px !important">
@@ -84,14 +98,17 @@ import { ReportTemplate, ReportTemplatePage } from "../models";
 import TemplatePageEditor from "./TemplatePageEditor.vue";
 import { mapStores } from "pinia";
 import { useMainStore } from "../store/app";
+import draggable from "vuedraggable";
+
 export default defineComponent({
   name: "TemplateEditor",
   props: {},
-  async created() {
-    await this.mainStore.getKpi(undefined);
-  },
+  // async created() {
+  //   await this.mainStore.getKpi();
+  // },
   data() {
     return {
+      draggingSomeElement: false,
       modelValue: {
         frequency: "weekly",
         name: "Your report",
@@ -115,7 +132,10 @@ export default defineComponent({
     async onSave() {
       this.saving = true;
       try {
-        await this.axios.post("/report-templates/", this.modelValue);
+        await this.axios.post("/report-templates/", {
+          ...this.modelValue,
+          user_type: this.mainStore.currentAccount.value,
+        });
         this.saving = false;
         this.showSuccess = true;
         setTimeout(() => {
@@ -155,7 +175,7 @@ export default defineComponent({
       ];
     },
   },
-  components: { TemplatePageEditor },
+  components: { TemplatePageEditor, draggable },
 });
 </script>
 

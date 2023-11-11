@@ -33,6 +33,7 @@
                 }}</v-card-subtitle>
               </v-col>
               <v-col cols="2" md="4" sm="3">
+                <template-render :user_type="user_type" :modelValue="report"></template-render>
                 <v-btn
                   class="text-grey-darken-1"
                   icon="mdi-pencil"
@@ -57,30 +58,39 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, PropType } from "vue";
 import { ReportTemplate } from "../models";
+import TemplateRender from "./TemplateRender/TemplateRender.vue";
 
 export default defineComponent({
-  async created() {
-    this.reports = (await this.axios.get("/report-templates/")).data;
-  },
-  data() {
-    return {
-      reports: [
-        // {key: 1, name: "Report Name 1", freq: "Weekly"},
-        // {key: 2, name: "Report Name 2", freq: "Yearly"},
-        // {key: 3, name: "Report Name 3", freq: "Weekly"},
-      ] as ReportTemplate[],
-    };
-  },
-  methods: {
-    async deleteTemplate(id: string) {
-      if (!confirm("Are you sure you want to delete this report?")) {
-        return;
-      }
-      await this.axios.delete(`/report-templates/${id}/`);
-      this.reports = this.reports.filter((report) => report.id != id);
+    async created() {
+        this.reports = (await this.axios.get("/report-templates/")).data as ReportTemplate[];
     },
-  },
+    props: {
+      user_type: {
+        type: String as PropType<string>,
+        required: true,
+      }
+    },
+    data() {
+        return {
+            reports: [
+            ] as ReportTemplate[],
+        };
+    },
+    methods: {
+        async deleteTemplate(id: string| number |undefined) {
+            if (id==undefined){
+              alert("Are you sure you want to delete this report?");
+              return;
+            }
+            if (!confirm("Are you sure you want to delete this report?")) {
+                return;
+            }
+            await this.axios.delete(`/report-templates/${id}/`);
+            this.reports = this.reports.filter((report) => report.id != id);
+        },
+    },
+    components: { TemplateRender }
 });
 </script>

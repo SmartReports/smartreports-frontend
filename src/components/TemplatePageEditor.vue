@@ -2,7 +2,12 @@
   <v-card class="mx-auto">
     <v-card-text>
       <div class="mt-n2 mb-4 d-flex align-center justify-space-between">
-        <div>Page {{ index + 1 }}</div>
+        <div class="d-flex align-center">
+          <v-icon class="drag-handle mr-2 ml-n1" style="cursor: pointer"
+            >mdi-drag-vertical</v-icon
+          >
+          <div>Page {{ index + 1 }}</div>
+        </div>
         <v-btn
           class="text-grey-darken-1"
           @click="onRemove()"
@@ -12,7 +17,7 @@
         />
       </div>
 
-      <div class="">
+      <div class="hide-on-drag">
         <div class="d-flex justify-end align-center">
           <p class="text-overline mr-4">Page layout</p>
           <v-btn-toggle
@@ -34,16 +39,25 @@
           </p>
         </div>
         <!-- kpis -->
-        <v-row v-for="(element, index) in modelValue.elements" :key="index">
-          <v-col cols="12">
-            <TemplatePageElementEditor
-              class="pb-4"
-              :modelValue="element"
-              @update:modelValue="onUpdateElement(index, $event)"
-              @remove="onRemoveElement(index)"
-            />
-          </v-col>
-        </v-row>
+        <draggable
+          animation="100"
+          v-model="proxyElements"
+          :itemKey="'id'"
+          :handle="'.drag-handle'"
+          :ghostClass="'ghost'"
+        >
+          <template #item="{ element }"
+            ><v-row>
+              <v-col cols="12">
+                <TemplatePageElementEditor
+                  class="pb-4"
+                  :modelValue="element"
+                  @update:modelValue="onUpdateElement(index, $event)"
+                  @remove="onRemoveElement(index)"
+                />
+              </v-col> </v-row
+          ></template>
+        </draggable>
 
         <!-- add btn -->
         <v-btn
@@ -68,6 +82,8 @@
 import { defineComponent, PropType } from "vue";
 import { ReportTemplatePage } from "../models";
 import TemplatePageElementEditor from "./TemplatePageElementEditor.vue";
+import draggable from "vuedraggable";
+
 export default defineComponent({
   name: "TemplatePageEditor",
   props: {
@@ -114,9 +130,25 @@ export default defineComponent({
       ]);
     },
   },
-  computed: {},
-  components: { TemplatePageElementEditor },
+  computed: {
+    proxyElements: {
+      get(): any {
+        return this.modelValue.elements;
+      },
+      set(value: any) {
+        this.onUpdate("elements", value);
+      },
+    },
+  },
+  components: { TemplatePageElementEditor, draggable },
 });
 </script>
 
-<style></style>
+<style>
+.ghost {
+  opacity: 0.5;
+}
+.dragging-element .hide-on-drag {
+  display: none;
+}
+</style>

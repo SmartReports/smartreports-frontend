@@ -108,7 +108,6 @@ export default defineComponent({
         kpi: "",
       } as KpiReportElement,
       editing: -1,
-      user_type: "doctor",
       default_chart_options: {
         responsive: true,
         maintainAspectRatio: false
