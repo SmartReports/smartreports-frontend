@@ -175,7 +175,7 @@ export default defineComponent({
       if (!type) {
         type = this.kpiAllowedChartTypes(kpi_id)[0];
       }
-      let chart_data = (await this.axios.get(`/kpi-data/?user_type=${this.user_type}&chart_type=${type}&kpi_id=${kpi_id}`)).data["data"];
+      let chart_data = (await this.axios.get(`/kpi-data/${kpi_id}/?user_type=${this.user_type}&chart_type=${type}`)).data["data"];
       return {
         data: chart_data,
         options: this.default_chart_options,
