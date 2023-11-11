@@ -11,7 +11,17 @@
       </template>
       <template v-slot:default="{ isActive }">
           <v-card>
-            <v-card-text class="text-h4 mt-4">{{ modelValue.name }}</v-card-text>
+            <v-card-actions>
+          <v-card-text class="text-h4 mt-4">{{ modelValue.name }}</v-card-text>
+          <v-spacer></v-spacer>
+          <v-btn
+          text="Close"
+          icon="mdi-close"
+          color="error"
+          @click="isActive.value = false"
+          ></v-btn>
+        </v-card-actions>
+        <v-divider :elevation="3"></v-divider>
             <v-divider></v-divider>
             <v-container>
 
@@ -63,17 +73,13 @@ import TemplateRenderPage from './TemplateRenderPage.vue';
     },
     methods: {
         next() {
-            console.log(this.onboarding>1)
             this.onboarding =
                 this.onboarding + 1 > this.pages.length ? 1 : this.onboarding + 1;
 
         },
         prev() {
-            console.log(this.onboarding)
             this.onboarding =
                 this.onboarding - 1 < 1 ? this.pages.length : this.onboarding - 1;
-
-                console.log(this.onboarding)
               },
     },
     props: {

@@ -66,6 +66,7 @@ import { Account, Alarms, Kpi } from "../models";
 import { useMainStore } from "../store/app";
 import { mapStores } from "pinia";
 export default {
+  emits: ['user_pass'],
   setup() {
     const theme = useTheme();
     theme.global.name.value = "light";

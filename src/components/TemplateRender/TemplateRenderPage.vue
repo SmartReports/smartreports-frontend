@@ -40,7 +40,7 @@ export default {
     },
     created() {
       if (this.modelPage.layout == 'grid'){
-        this.rows = (this.modelPage.elements.length)/2;
+        this.rows = Math.floor((this.modelPage.elements.length)/2);
         this.cols = 2;
       }else {
         if (this.modelPage.layout == 'horizontal'){
