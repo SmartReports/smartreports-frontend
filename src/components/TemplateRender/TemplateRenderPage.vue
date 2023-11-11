@@ -2,7 +2,7 @@
     <v-container>
         <v-row v-for="row in rows">
             <v-col v-for="col in cols">
-                <DashboardElement :chart-configuration="getNext" :options="false"></DashboardElement>
+                <DashboardElement v-if="(row*col)<=numOfCharts" :options="false" :chart-configuration="getKpisData(pageKpis[(row*col)])"></DashboardElement>
             </v-col>
         </v-row>
     </v-container>
@@ -12,7 +12,7 @@
 import { defineComponent, PropType } from 'vue';
 import { ReportTemplatePage, KpiReportElement, ChartType } from "@/models"
 import DashboardElement from '../DashboardElement.vue';
-import {ChartConfiguration } from "chart.js"
+import {ChartConfiguration, ChartData } from "chart.js"
 export default {
     data() {
         return {
@@ -25,7 +25,7 @@ export default {
             responsive: true,
             maintainAspectRatio: false
           },
-          chart_data: {} as { [key: string]: ChartConfiguration },
+          charts_data: {} as { [key: string]: ChartConfiguration },
         }
     },
     props: {
@@ -39,37 +39,43 @@ export default {
         }
     },
     created() {
-      if (this.modelPage.layout == 'grid'){
-        this.rows = Math.floor((this.modelPage.elements.length)/2);
-        this.cols = 2;
-      }else {
-        if (this.modelPage.layout == 'horizontal'){
-          this.rows = 1;
-          this.cols = this.modelPage.layout.length;
-        }else{
-          if (this.modelPage.layout == 'vertical')
-            this.rows = this.modelPage.layout.length;
-            this.cols = 1;
-        }
-      }
+      this.pageKpis = this.modelPage.elements as KpiReportElement[];
       this.numOfCharts = this.modelPage.elements.length;
-      this.pageKpis = this.modelPage.elements;
-      this.pageKpis.forEach(async (kpi) => {
-        const type = kpi.chart_type as ChartType
-        const kpi_id = kpi.kpi as string
-        this.chart_data[kpi_id] = {
-          data: (await this.axios.get(`/kpi-data/?user_type=${this.user_type}&chart_type=${type}&kpi_id=${kpi_id}`)).data["data"],
-          options: this.default_chart_options,
-          type: type
-        } as ChartConfiguration
-      })
+      const { rows, cols } = this.calculateRowsAndCols();
+      this.rows = rows;
+      this.cols = cols;
     },
     methods: {
-      getNext() {
-        return this.chart_data[this.counter++];
+      calculateRowsAndCols() {
+        const layoutType = this.modelPage.layout;
+        switch (layoutType) {
+          case 'grid':
+            return { rows: Math.floor(this.modelPage.elements.length / 2) + 1, cols: 2 };
+          case 'horizontal':
+            return { rows: 1, cols: this.modelPage.layout.length };
+          case 'vertical':
+            return { rows: this.modelPage.layout.length, cols: 1 };
+          // Add more cases for additional layout types
+          default:
+            // Handle unsupported layout
+            console.error('Unsupported layout:', layoutType);
+            return { rows: 0, cols: 0 };
+        }
+      },
+      async getKpisData(kpi: KpiReportElement) {
+        const type = kpi.chart_type as ChartType
+        const kpi_id = kpi.kpi as string
+        const chart_data = (await this.axios.get(`/kpi-data/?user_type=${this.user_type}&chart_type=${type}&kpi_id=${kpi_id}`)).data as ChartData
+        return {
+          data: chart_data,
+          options: this.default_chart_options,
+          type: type,
+        } as ChartConfiguration;
       }
     },
-    computed: {},
+    computed: {
+
+    },
     components: { DashboardElement }
 }
 </script>
