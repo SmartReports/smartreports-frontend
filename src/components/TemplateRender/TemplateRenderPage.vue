@@ -2,7 +2,8 @@
     <v-container>
         <v-row v-for="row in rows">
             <v-col v-for="col in cols">
-                <DashboardElement v-if="(row*col)<=numOfCharts" :options="false" :chart-configuration="getKpisData(pageKpis[(row*col)])"></DashboardElement>
+                <TemplateRenderPageChartLoading v-if="charts_data[row*col]==undefined"></TemplateRenderPageChartLoading>
+                <DashboardElement v-else v-if="(row*col)<=numOfCharts" :options="false" :chart-configuration="charts_data[row*col]"></DashboardElement>
             </v-col>
         </v-row>
     </v-container>
@@ -13,6 +14,7 @@ import { defineComponent, PropType } from 'vue';
 import { ReportTemplatePage, KpiReportElement, ChartType } from "@/models"
 import DashboardElement from '../DashboardElement.vue';
 import {ChartConfiguration, ChartData } from "chart.js"
+import TemplateRenderPageChartLoading from './TemplateRenderPageChartLoading.vue';
 export default {
     data() {
         return {
@@ -62,20 +64,24 @@ export default {
             return { rows: 0, cols: 0 };
         }
       },
-      async getKpisData(kpi: KpiReportElement) {
-        const type = kpi.chart_type as ChartType
-        const kpi_id = kpi.kpi as string
-        const chart_data = (await this.axios.get(`/kpi-data/?user_type=${this.user_type}&chart_type=${type}&kpi_id=${kpi_id}`)).data as ChartData
-        return {
-          data: chart_data,
-          options: this.default_chart_options,
-          type: type,
-        } as ChartConfiguration;
+      getKpisData() {
+        this.pageKpis.forEach(async (kpi) => {
+          const type = kpi.chart_type as ChartType
+          const kpi_id = kpi.kpi as string
+          const chart_data = (await this.axios.get(`/kpi-data/${kpi_id}/?user_type=${this.user_type}&chart_type=${type}`)).data as ChartData
+          this.charts_data[kpi_id] = {
+            data: chart_data,
+            options: this.default_chart_options,
+            type: type,
+          } as ChartConfiguration
+        })
       }
     },
     computed: {
-
+      getKpis() {
+        this.getKpisData()
+      }
     },
-    components: { DashboardElement }
+    components: { DashboardElement, TemplateRenderPageChartLoading }
 }
 </script>
