@@ -79,7 +79,11 @@ export default defineComponent({
         };
     },
     methods: {
-        async deleteTemplate(id: string) {
+        async deleteTemplate(id: string| number |undefined) {
+            if (id==undefined){
+              alert("Are you sure you want to delete this report?");
+              return;
+            }
             if (!confirm("Are you sure you want to delete this report?")) {
                 return;
             }

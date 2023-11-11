@@ -1,12 +1,12 @@
 export interface ReportTemplate {
-  id: string;
+  id?: string | number;
   name: string;
   frequency: "daily" | "weekly" | "monthly" | "yearly" | "quarterly";
   pages: ReportTemplatePage[];
 }
 
 export interface ReportTemplatePage {
-  id: string;
+  id?: string | number;
   layout: "horizontal" | "vertical" | "grid";
   elements: KpiReportElement[];
 }
