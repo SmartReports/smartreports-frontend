@@ -55,7 +55,7 @@ import DashboardDialog from "@/components/DashboardDialog.vue";
 import { ChartType, KpiReportElement, Kpi } from "@/models";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/store/app";
-import { Layout } from "grid-layout-plus";
+import {Layout, LayoutItem} from "grid-layout-plus";
 import {Chart, ChartConfiguration, ChartData} from "chart.js";
 import { PropType } from "vue";
 
@@ -70,6 +70,8 @@ export default defineComponent({
           throw new Error("empty layout");
       }
 
+      const test = saved_layout.layout.map((l: LayoutItem) => l.i);
+      this.last_used_index = Math.max(...test);
       this.kpi_map = saved_layout.kpi_map;
       for (const layout_id in this.kpi_map)
       {
