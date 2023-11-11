@@ -17,10 +17,22 @@ export default createVuetify({
     themes: {
       light: {
         colors: {
+          company_color: '#1867C0',
           primary: '#1867C0',
           secondary: '#5CBBF6',
+          surface: '#FFF',
+          background: '#F5F5F5',
         },
       },
+      dark: {
+        colors: {
+          company_color: '#1867C0',
+          primary: '#1867C0',
+          secondary: '#303540',
+          surface: '#202020',
+          background: '#171616',
+        }
+      }
     },
   },
 })

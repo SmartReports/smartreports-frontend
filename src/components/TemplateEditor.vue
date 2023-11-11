@@ -103,9 +103,9 @@ import draggable from "vuedraggable";
 export default defineComponent({
   name: "TemplateEditor",
   props: {},
-  async created() {
-    await this.mainStore.getKpi();
-  },
+  // async created() {
+  //   await this.mainStore.getKpi();
+  // },
   data() {
     return {
       draggingSomeElement: false,
