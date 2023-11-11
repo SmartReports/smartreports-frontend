@@ -115,7 +115,10 @@ export default defineComponent({
     async onSave() {
       this.saving = true;
       try {
-        await this.axios.post("/report-templates/", this.modelValue);
+        await this.axios.post("/report-templates/", {
+          ...this.modelValue,
+          user_type: this.mainStore.currentAccount.value,
+        });
         this.saving = false;
         this.showSuccess = true;
         setTimeout(() => {
