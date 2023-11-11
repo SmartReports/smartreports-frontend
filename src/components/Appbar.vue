@@ -1,4 +1,4 @@
-<template >
+<template>
   <v-app-bar class="px-8" :elevation="0">
   <v-icon  @click="$emit('onNormalClick')" class="d-none d-lg-block menu-icn">
     mdi-menu
@@ -14,10 +14,10 @@
           mdi-chart-timeline-variant-shimmer
         </v-icon>
       </div>
-    <!-- SITE NAME -->
-    <h2
-      class="text-h4"
-      style="font-variant: small-caps; font-size: 1.7rem !important"
+      <!-- SITE NAME -->
+      <h2
+        class="text-h4"
+        style="font-variant: small-caps; font-size: 1.7rem !important"
       >
       Smart Reports
     </h2>
@@ -28,8 +28,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
-import NotificationBell from './NotificationBell.vue';
+import { defineComponent, PropType } from "vue";
+import NotificationBell from "./NotificationBell.vue";
 export default defineComponent({
     name: "Appbar",
     data() {
@@ -46,7 +46,6 @@ export default defineComponent({
     components: { NotificationBell }
 })
 </script>
-
 
 <style>
 .menu-icn {
