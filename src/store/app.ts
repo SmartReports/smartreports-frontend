@@ -43,18 +43,12 @@ export const useMainStore = defineStore("main", {
       state.alarms.find((alarm) => alarm.id == id),
     // Get kpi that don't have alarms setted
     getKpiWithoutAlarms: (state) => {
-      console.log("KPI data:", state.kpi);
-      console.log("Alarms data:", state.alarms);
-
       const kpiWithoutAlarms = state.kpi.filter((kpi) => {
         const hasMatchingAlarms = state.alarms.some(
           (alarm) => alarm.kpi == kpi.id
         );
-        console.log(`KPI ${kpi.id} has matching alarms: ${hasMatchingAlarms}`);
         return !hasMatchingAlarms;
       });
-
-      console.log("KPIs without matching alarms:", kpiWithoutAlarms);
       return kpiWithoutAlarms;
     },
   },

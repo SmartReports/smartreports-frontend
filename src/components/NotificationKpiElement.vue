@@ -1,15 +1,15 @@
 <template>
     <v-row >
         <v-col cols="12" md="4">
-          <v-card-item>{{ getKpiName(KPIId) }}</v-card-item>
+          <v-card-item>{{ getKpiName(alarm.kpi) }}</v-card-item>
         </v-col>
         <v-col cols="3" md="2" sm="3" xs="2">
           <v-text-field v-if="editing" type="number" v-model="kpimin" label="min"/>
-          <v-card-item v-else>Min: {{ KPIMin }}</v-card-item>
+          <v-card-item v-else>Min: {{ alarm.min_value }}</v-card-item>
         </v-col>
         <v-col  cols="3" md="2" sm="3" xs="2">
           <v-text-field v-if="editing" type="number" v-model="kpimax" label="max"/>
-          <v-card-item v-else>Max: {{ KPIMax }}</v-card-item>
+          <v-card-item v-else>Max: {{ alarm.max_value }}</v-card-item>
         </v-col>
         <v-col cols="3" md="2" sm="3" xs="1">
           <v-btn v-if="!editing" @click="editing=!editing" color="white" height="40" width="100%">
@@ -17,7 +17,7 @@
             mdi-pencil
           </v-icon>
           </v-btn>
-          <v-btn v-else @click="$emit('update', alarmId, KPIId, kpimin, kpimax); editing=!editing" color="green" height="40" width="100%">
+          <v-btn v-else @click="$emit('update', alarm.id, alarm.kpi, kpimin, kpimax); editing=!editing" color="green" height="40" width="100%">
           <v-icon>
             mdi-checkbox-marked-circle
           </v-icon>
@@ -29,7 +29,7 @@
               mdi-delete
             </v-icon>
           </v-btn>
-          <v-btn  v-else @click="$emit('delete', alarmId)" color="red" height="40" width="100%">
+          <v-btn  v-else @click="$emit('delete', alarm.id)" color="red" height="40" width="100%">
           <v-icon>
             mdi-delete
           </v-icon>
@@ -44,13 +44,14 @@
 import { defineComponent, PropType } from 'vue';
 import { useMainStore } from "../store/app";
 import { mapStores } from "pinia";
-import { emit } from 'process';
+import { Alarms } from '@/models';
 export default {
+  emits: ['update', 'delete'],
   data() {
     return {
       editing: false,
-      kpimin: this.KPIMin,
-      kpimax: this.KPIMax,
+      kpimin: this.alarm.min_value,
+      kpimax: this.alarm.max_value,
     }
   },
   methods: {
@@ -62,24 +63,8 @@ export default {
     ...mapStores(useMainStore),
   },
   props: {
-    alarmId: {
-      type: String as PropType<string>,
-      required: true,
-    },
-    accountId: {
-      type: String as PropType<string>,
-      required: true,
-    },
-    KPIId: {
-      type: String as PropType<string>,
-      required: true,
-    },
-    KPIMin: {
-      type: Number as PropType<number>,
-      required: true,
-    },
-    KPIMax: {
-      type: Number as PropType<number>,
+    alarm: {
+      type: Object as PropType<Alarms>,
       required: true,
     }
   },
