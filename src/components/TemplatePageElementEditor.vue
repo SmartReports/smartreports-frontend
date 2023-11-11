@@ -8,6 +8,9 @@
         @click="onRemove()"
         icon="mdi-close"
       />
+      <v-icon class="drag-handle mr-2 ml-n1" style="cursor: pointer"
+        >mdi-drag-vertical</v-icon
+      >
       <v-combobox
         hide-details="auto"
         :items="kpiAsItems"
@@ -57,8 +60,8 @@ export default defineComponent({
     allow_remove: {
       type: Boolean,
       required: false,
-      default: true
-    }
+      default: true,
+    },
   },
   methods: {
     getImgUrl(chartType: string) {
@@ -115,16 +118,19 @@ export default defineComponent({
     },
     proxyModelValueChartType: {
       get() {
-        if (!this.modelValue.chart_type || !this.kpiAllowedChartTypes.includes(this.modelValue.chart_type)) {
+        if (
+          !this.modelValue.chart_type ||
+          !this.kpiAllowedChartTypes.includes(this.modelValue.chart_type)
+        ) {
           this.proxyModelValueChartType = this.kpiAllowedChartTypes[0];
         }
         return this.modelValue.chart_type;
       },
       set(value: any) {
         this.onUpdate("chart_type", value);
-      }
-    }
-  }
+      },
+    },
+  },
 });
 </script>
 
