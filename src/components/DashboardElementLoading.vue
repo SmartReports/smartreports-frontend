@@ -1,11 +1,11 @@
 <template>
   <div class="text-center">
     <v-progress-circular
-      :size="70"
-      :width="7"
+      :size="100"
+      :width="8"
       color="purple"
       indeterminate
-    ></v-progress-circular>
+    >Loading...</v-progress-circular>
   </div>
 </template>
 

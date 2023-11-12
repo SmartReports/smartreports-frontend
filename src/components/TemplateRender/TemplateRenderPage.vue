@@ -1,10 +1,10 @@
 <template>
   <v-container>
     <v-row v-for="row in rows" :key="row">
-      <v-col v-for="col in colsNum(row)" :key="col">
+      <v-col v-for="col in RowCols(row)">
         <DashboardElementWrapper
           :options="false"
-          :chart-configuration="charts_data[col*row]"
+          :chart-configuration="charts_data[(2*row)+col-3]"
         ></DashboardElementWrapper>
       </v-col>
     </v-row>
@@ -23,13 +23,15 @@ export default {
     return {
       numOfCharts: 0,
       rows: 0,
+      doneElements: 0,
       pageKpis: [] as KpiReportElement[],
       cols: 0,
+      current: 0,
       default_chart_options: {
         responsive: true,
         maintainAspectRatio: false,
       },
-      charts_data: {} as { [key: string]: ChartConfiguration },
+      charts_data: {} as { [id: number]: ChartConfiguration},
     };
   },
   props: {
@@ -42,25 +44,26 @@ export default {
       required: true,
     },
   },
-  created() {
+  async created() {
     this.pageKpis = this.modelPage.elements as KpiReportElement[];
     this.numOfCharts = this.modelPage.elements.length;
     const { rows, cols } = this.calculateRowsAndCols();
     this.rows = rows==0?  1 : rows;
     this.cols = cols;
-    this.getKpisData()
+    await this.getKpisData()
   },
   methods: {
-    colsNum(row: number) {
-      if(this.modelPage.layout=='grid')
-        return this.numOfCharts - (row-1)*this.cols
-      else return this.cols
+    RowCols(row: number) {
+      if (row==this.rows && this.numOfCharts%2==1) {
+        return 1
+      }
+      return this.cols
     },
     calculateRowsAndCols() {
       const layoutType = this.modelPage.layout;
       switch (layoutType) {
         case 'grid':
-          return { rows: Math.floor(this.modelPage.elements.length / 2) + 1, cols: 2 };
+          return { rows: Math.floor(this.modelPage.elements.length / 2) +1 , cols: 2 };
         case 'horizontal':
           return { rows: 1, cols: this.modelPage.elements.length };
         case 'vertical':
@@ -70,9 +73,9 @@ export default {
           return { rows: 0, cols: 0 };
       }
     },
-    printDebug1(str: any){
+    printDebug1(str: number, str2: number){
       const name= 'loader: '
-      console.log(name, str)
+      console.log(name, str, str2, ((str*2)-1)+(str2-1))
       return true
     },
     printDebug2(str: any){
@@ -81,26 +84,29 @@ export default {
       return true
     },
     async getKpisData() {
-      await Promise.all(
-        this.pageKpis.map(async (kpi) => {
-          const type = kpi.chart_type as ChartType;
-          const kpi_id = kpi.kpi as string;
-          try {
-            const chart_data = (
-              await this.axios.get(`/kpi-data/${kpi_id}/?user_type=${this.user_type}&chart_type=${type}`)
-            ).data['data'] as ChartData;
+      try {
+        await Promise.all(
+          this.pageKpis.map(async (kpi, index) => {
+            const type = kpi.chart_type as ChartType;
+            const kpi_id = kpi.kpi as string;
 
-            this.charts_data[kpi_id] = {
-              data: chart_data,
-              options: this.default_chart_options,
-              type: type,
-            } as ChartConfiguration;
-          } catch (error) {
-            console.error('Error fetching data for KPI:', kpi_id, error);
-          }
-        })
-      );
-    },
+
+            try {
+              // Use Vue.set to ensure reactivity
+              this.charts_data[index] = {
+                data: ( await this.axios.get(`/kpi-data/${kpi_id}/?user_type=${this.user_type}&chart_type=${type}`)).data['data'] as ChartData,
+                options: this.default_chart_options,
+                type: type,
+              } as ChartConfiguration;
+            } catch (error) {
+              console.error('Error fetching data for KPI:', kpi_id, error);
+            }
+          })
+        );
+      } catch (error) {
+        console.error('Error fetching KPI data:', error);
+      }
+  },
   },
   components: { DashboardElement, DashboardElementWrapper },
 };
