@@ -68,7 +68,7 @@ import TemplateRenderPage from './TemplateRenderPage.vue';
     data() {
         return {
             pages: this.modelValue.pages,
-            onboarding: 1,
+            onboarding: 0,
         };
     },
     methods: {

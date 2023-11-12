@@ -136,6 +136,7 @@ export default defineComponent({
           ...this.modelValue,
           user_type: this.mainStore.currentAccount.value,
         });
+        this.mainStore.getReports(this.mainStore.currentAccount.value)
         this.saving = false;
         this.showSuccess = true;
         setTimeout(() => {

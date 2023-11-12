@@ -63,11 +63,6 @@ import { ReportTemplate, ReportTemplatePage } from "../models";
 import { useMainStore } from "../store/app";
 import { mapStores } from "pinia";
 import TemplateRender from "./TemplateRender/TemplateRender.vue";
-import { getCurrentInstance } from 'vue';
-
-const methodThatForcesUpdate = () => {
-  getCurrentInstance()?.proxy?.$forceUpdate;
-};
 export default defineComponent({
     props: {
       user_type: {
@@ -90,13 +85,8 @@ export default defineComponent({
             if (!confirm("Are you sure you want to delete this report?")) {
                 return;
             }
-            await this.axios.delete(`/report-templates/${id}/`);
-            this.reports = this.reports.filter((report) => report.id != id);
+            this.mainStore.removeReport(id)
         },
-        methodThatForcesUpdate() {
-          this.$forceUpdate;  // Notice we have to use a $ here
-        },
-
     },
     computed: {
       ...mapStores(useMainStore),

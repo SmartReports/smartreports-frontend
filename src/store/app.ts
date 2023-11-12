@@ -71,5 +71,9 @@ export const useMainStore = defineStore("main", {
         await axios.get(`/alarms-list/?user_type=${accountId}`)
       ).data;
     },
+    async removeReport(id: number | string) {
+      this.user_reports = this.user_reports.filter((report) => report.id != id);
+      await axios.delete(`/report-templates/${id}/`);
+    },
   },
 });
