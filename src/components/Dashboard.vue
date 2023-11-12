@@ -62,7 +62,6 @@ import { PropType } from "vue";
 export default defineComponent({
   name: "Dashboard",
   async created() {
-    await this.mainStore.getKpi(this.user_type);
     try {
       const id_and_layout = (await this.axios.get(`/dashboard-layout/?user_type=${this.user_type}`)).data[0];
       this.layout_id = id_and_layout.id;

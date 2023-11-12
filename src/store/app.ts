@@ -1,12 +1,13 @@
 // Utilities
 import { defineStore } from "pinia";
-import { Kpi, Alarms, Account } from "../models";
+import { Kpi, Alarms, Account, ReportTemplate } from "../models";
 import axios from "axios";
 
 export const useMainStore = defineStore("main", {
   state: () => ({
     alarms: [] as Alarms[],
     kpi: [] as Kpi[],
+    user_reports: [] as ReportTemplate[],
     currentAccount: {
       name: "Caterina",
       employment: "Machine Maintainer",
@@ -59,10 +60,20 @@ export const useMainStore = defineStore("main", {
 
       this.kpi = (await axios.get(`/kpi-list/?user_type=${account}`)).data;
     },
+    async getReports(accountId: any) {
+      // If accountId is undefined accountId = ''
+      const account = accountId === undefined ? "" : accountId;
+
+      this.user_reports = (await axios.get(`/report-templates/?user_type=${account}`)).data as ReportTemplate[];
+    },
     async getAlarms(accountId: any) {
       this.alarms = (
         await axios.get(`/alarms-list/?user_type=${accountId}`)
       ).data;
+    },
+    async removeReport(id: number | string) {
+      this.user_reports = this.user_reports.filter((report) => report.id != id);
+      await axios.delete(`/report-templates/${id}/`);
     },
   },
 });

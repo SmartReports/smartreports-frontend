@@ -20,7 +20,7 @@
         </v-container>
         <v-divider></v-divider>
         <v-container>
-          <v-list-item v-for="report in reports" :key="report.id">
+          <v-list-item v-for="report in reportsAsItem" :key="report.id">
             <v-row>
               <v-col cols="7" md="4" sm="5">
                 <v-card-subtitle class="text-h6">{{
@@ -59,13 +59,11 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import { ReportTemplate } from "../models";
+import { ReportTemplate, ReportTemplatePage } from "../models";
+import { useMainStore } from "../store/app";
+import { mapStores } from "pinia";
 import TemplateRender from "./TemplateRender/TemplateRender.vue";
-
 export default defineComponent({
-    async created() {
-        this.reports = (await this.axios.get("/report-templates/")).data as ReportTemplate[];
-    },
     props: {
       user_type: {
         type: String as PropType<string>,
@@ -87,9 +85,22 @@ export default defineComponent({
             if (!confirm("Are you sure you want to delete this report?")) {
                 return;
             }
-            await this.axios.delete(`/report-templates/${id}/`);
-            this.reports = this.reports.filter((report) => report.id != id);
+            this.mainStore.removeReport(id)
         },
+    },
+    computed: {
+      ...mapStores(useMainStore),
+      user_reports() {
+        return this.mainStore.user_reports;
+      },
+      reportsAsItem() {
+        return this.user_reports.map((report) =>  ({
+          id: report.id,
+          name: report.name,
+          frequency: report.frequency,
+          pages: report.pages as ReportTemplatePage[],
+        })) as ReportTemplate[];
+      },
     },
     components: { TemplateRender }
 });
