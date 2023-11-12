@@ -4,7 +4,7 @@
       <v-col v-for="col in colsNum(row)" :key="col">
         <DashboardElementWrapper
           :options="false"
-          :chart-configuration="charts_data[col*row]"
+          :chart-configuration="charts_data[(row*col)-1]"
         ></DashboardElementWrapper>
       </v-col>
     </v-row>
@@ -29,7 +29,7 @@ export default {
         responsive: true,
         maintainAspectRatio: false,
       },
-      charts_data: {} as { [key: string]: ChartConfiguration },
+      charts_data: [] as ChartConfiguration[],
     };
   },
   props: {
@@ -42,13 +42,13 @@ export default {
       required: true,
     },
   },
-  created() {
+  async created() {
     this.pageKpis = this.modelPage.elements as KpiReportElement[];
     this.numOfCharts = this.modelPage.elements.length;
     const { rows, cols } = this.calculateRowsAndCols();
     this.rows = rows==0?  1 : rows;
     this.cols = cols;
-    this.getKpisData()
+    await this.getKpisData()
   },
   methods: {
     colsNum(row: number) {
@@ -81,26 +81,29 @@ export default {
       return true
     },
     async getKpisData() {
-      await Promise.all(
-        this.pageKpis.map(async (kpi) => {
-          const type = kpi.chart_type as ChartType;
-          const kpi_id = kpi.kpi as string;
-          try {
-            const chart_data = (
-              await this.axios.get(`/kpi-data/${kpi_id}/?user_type=${this.user_type}&chart_type=${type}`)
-            ).data['data'] as ChartData;
+      try {
+        await Promise.all(
+          this.pageKpis.map(async (kpi) => {
+            const type = kpi.chart_type as ChartType;
+            const kpi_id = kpi.kpi as string;
 
-            this.charts_data[kpi_id] = {
-              data: chart_data,
-              options: this.default_chart_options,
-              type: type,
-            } as ChartConfiguration;
-          } catch (error) {
-            console.error('Error fetching data for KPI:', kpi_id, error);
-          }
-        })
-      );
-    },
+            try {
+              // Use Vue.set to ensure reactivity
+              this.charts_data.push({
+                data: ( await this.axios.get(`/kpi-data/${kpi_id}/?user_type=${this.user_type}&chart_type=${type}`)).data['data'] as ChartData,
+                options: this.default_chart_options,
+                type: type,
+              } as ChartConfiguration);
+            } catch (error) {
+              console.error('Error fetching data for KPI:', kpi_id, error);
+            }
+          })
+        );
+        console.log(this.charts_data, this.charts_data.length)
+      } catch (error) {
+        console.error('Error fetching KPI data:', error);
+      }
+  },
   },
   components: { DashboardElement, DashboardElementWrapper },
 };
