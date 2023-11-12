@@ -49,7 +49,7 @@
       :responsive="responsive"
     >
       <template #item="{ item }">
-        <DashboardElement
+        <DashboardElementWrapper
           :chart-configuration="chart_map[item.i]"
           @remove="onChartRemove(item.i)"
           @edit="onChartEdit(item.i)"
@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import DashboardElement from "@/components/DashboardElement.vue";
+import DashboardElementWrapper from "@/components/DashboardElementWrapper.vue";
 import { reactive, defineComponent, ref } from "vue";
 import { Doughnut } from "vue-chartjs";
 import DashboardDialog from "@/components/DashboardDialog.vue";
@@ -279,7 +279,7 @@ export default defineComponent({
     },
     draggable() { return !this.smart_ordering },
   },
-  components: { DashboardDialog, Doughnut, DashboardElement },
+  components: { DashboardDialog, Doughnut, DashboardElementWrapper },
 });
 </script>
 
