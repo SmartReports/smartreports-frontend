@@ -73,9 +73,14 @@ export default defineComponent({
       const test = saved_layout.layout.map((l: LayoutItem) => l.i);
       this.last_used_index = Math.max(...test);
       this.kpi_map = saved_layout.kpi_map;
+      let chart_promise = {} as { [key: number]: Promise<ChartConfiguration> };
       for (const layout_id in this.kpi_map)
       {
-          this.chart_map[layout_id] = await this.getChart(this.kpi_map[layout_id].kpi_id, this.kpi_map[layout_id].chart_type as ChartType);
+          chart_promise[layout_id] = this.getChart(this.kpi_map[layout_id].kpi_id, this.kpi_map[layout_id].chart_type as ChartType);
+      }
+      for (const layout_id in this.kpi_map)
+      {
+        this.chart_map[layout_id] = await chart_promise[layout_id];
       }
       this.layout = saved_layout.layout;
     } catch (error) {
