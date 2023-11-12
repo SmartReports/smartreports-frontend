@@ -1,26 +1,12 @@
 <template>
   <v-container>
     <v-row v-for="row in rows" :key="row">
-      <template v-if="row*cols<=numOfCharts">
-      <v-col v-for="col in cols" :key="col">
-        <TemplateRenderPageChartLoading v-if="charts_data[col*row]==undefined"></TemplateRenderPageChartLoading>
-        <DashboardElement
-          v-if="charts_data[col*row]"
+      <v-col v-for="col in colsNum(row)" :key="col">
+        <DashboardElementWrapper
           :options="false"
           :chart-configuration="charts_data[col*row]"
-        ></DashboardElement>
+        ></DashboardElementWrapper>
       </v-col>
-    </template>
-    <template v-else>
-      <v-col>
-      <TemplateRenderPageChartLoading v-if="charts_data[numOfCharts]==undefined"></TemplateRenderPageChartLoading>
-        <DashboardElement
-          v-if="charts_data[numOfCharts]"
-          :options="false"
-          :chart-configuration="charts_data[numOfCharts]"
-        ></DashboardElement>
-      </v-col>
-    </template>
     </v-row>
   </v-container>
 </template>
@@ -30,7 +16,7 @@ import { defineComponent, PropType } from 'vue';
 import { ReportTemplatePage, KpiReportElement, ChartType } from "@/models";
 import DashboardElement from '../DashboardElement.vue';
 import { ChartConfiguration, ChartData } from "chart.js";
-import TemplateRenderPageChartLoading from './TemplateRenderPageChartLoading.vue';
+import DashboardElementWrapper from '../DashboardElementWrapper.vue';
 
 export default {
   data() {
@@ -44,7 +30,6 @@ export default {
         maintainAspectRatio: false,
       },
       charts_data: {} as { [key: string]: ChartConfiguration },
-      charts_loading: {} as { [key: string]: boolean}
     };
   },
   props: {
@@ -63,17 +48,19 @@ export default {
     const { rows, cols } = this.calculateRowsAndCols();
     this.rows = rows==0?  1 : rows;
     this.cols = cols;
-    this.pageKpis.forEach((kpi) => {
-      this.charts_loading[kpi.kpi] = true
-    })
     this.getKpisData()
   },
   methods: {
+    colsNum(row: number) {
+      if(this.modelPage.layout=='grid')
+        return this.numOfCharts - (row-1)*this.cols
+      else return this.cols
+    },
     calculateRowsAndCols() {
       const layoutType = this.modelPage.layout;
       switch (layoutType) {
         case 'grid':
-          return { rows: Math.floor(this.modelPage.elements.length / 2), cols: 2 };
+          return { rows: Math.floor(this.modelPage.elements.length / 2) + 1, cols: 2 };
         case 'horizontal':
           return { rows: 1, cols: this.modelPage.elements.length };
         case 'vertical':
@@ -108,7 +95,6 @@ export default {
               options: this.default_chart_options,
               type: type,
             } as ChartConfiguration;
-            this.charts_loading[kpi_id]=false
           } catch (error) {
             console.error('Error fetching data for KPI:', kpi_id, error);
           }
@@ -116,6 +102,6 @@ export default {
       );
     },
   },
-  components: { DashboardElement, TemplateRenderPageChartLoading },
+  components: { DashboardElement, DashboardElementWrapper },
 };
 </script>
