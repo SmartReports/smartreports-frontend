@@ -1,7 +1,7 @@
 <template>
   <v-container>
-    <v-row v-for="row in rows" :key="row">
-      <v-col v-for="col in RowCols(row)">
+    <v-row style="height: 30vh" v-for="row in rows" :key="row">
+      <v-col :lg="12/RowCols(row)" :cols="12" v-for="col in RowCols(row)">
         <DashboardElementWrapper
           :options="false"
           :chart-configuration="charts_data[(2*row)+col-3]"
