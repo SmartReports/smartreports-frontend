@@ -1,10 +1,10 @@
 <template>
   <v-container>
     <v-row v-for="row in rows" :key="row">
-      <v-col v-for="col in colsNum(row)" :key="col">
+      <v-col v-for="col in RowCols(row)">
         <DashboardElementWrapper
           :options="false"
-          :chart-configuration="charts_data[(row*col)-1]"
+          :chart-configuration="charts_data[(2*row)+col-3]"
         ></DashboardElementWrapper>
       </v-col>
     </v-row>
@@ -23,13 +23,15 @@ export default {
     return {
       numOfCharts: 0,
       rows: 0,
+      doneElements: 0,
       pageKpis: [] as KpiReportElement[],
       cols: 0,
+      current: 0,
       default_chart_options: {
         responsive: true,
         maintainAspectRatio: false,
       },
-      charts_data: [] as ChartConfiguration[],
+      charts_data: {} as { [id: number]: ChartConfiguration},
     };
   },
   props: {
@@ -51,16 +53,17 @@ export default {
     await this.getKpisData()
   },
   methods: {
-    colsNum(row: number) {
-      if(this.modelPage.layout=='grid')
-        return this.numOfCharts - (row-1)*this.cols
-      else return this.cols
+    RowCols(row: number) {
+      if (row==this.rows && this.numOfCharts%2==1) {
+        return 1
+      }
+      return this.cols
     },
     calculateRowsAndCols() {
       const layoutType = this.modelPage.layout;
       switch (layoutType) {
         case 'grid':
-          return { rows: Math.floor(this.modelPage.elements.length / 2) + 1, cols: 2 };
+          return { rows: Math.floor(this.modelPage.elements.length / 2) +1 , cols: 2 };
         case 'horizontal':
           return { rows: 1, cols: this.modelPage.elements.length };
         case 'vertical':
@@ -70,9 +73,9 @@ export default {
           return { rows: 0, cols: 0 };
       }
     },
-    printDebug1(str: any){
+    printDebug1(str: number, str2: number){
       const name= 'loader: '
-      console.log(name, str)
+      console.log(name, str, str2, ((str*2)-1)+(str2-1))
       return true
     },
     printDebug2(str: any){
@@ -83,23 +86,23 @@ export default {
     async getKpisData() {
       try {
         await Promise.all(
-          this.pageKpis.map(async (kpi) => {
+          this.pageKpis.map(async (kpi, index) => {
             const type = kpi.chart_type as ChartType;
             const kpi_id = kpi.kpi as string;
 
+
             try {
               // Use Vue.set to ensure reactivity
-              this.charts_data.push({
+              this.charts_data[index] = {
                 data: ( await this.axios.get(`/kpi-data/${kpi_id}/?user_type=${this.user_type}&chart_type=${type}`)).data['data'] as ChartData,
                 options: this.default_chart_options,
                 type: type,
-              } as ChartConfiguration);
+              } as ChartConfiguration;
             } catch (error) {
               console.error('Error fetching data for KPI:', kpi_id, error);
             }
           })
         );
-        console.log(this.charts_data, this.charts_data.length)
       } catch (error) {
         console.error('Error fetching KPI data:', error);
       }
