@@ -34,10 +34,15 @@
         :options="radarCastedOption"
         :data="radarCastedData"
       />
+    <Scatter
+      v-if="chartConfiguration.type === 'scatter'"
+      :options="scatterCastedOption"
+      :data="scatterCastedData"
+    />
 </template>
 
 <script lang="ts">
-import { Bar, Doughnut, Pie, Line, Radar } from 'vue-chartjs'
+import { Bar, Doughnut, Pie, Line, Radar, Scatter } from 'vue-chartjs'
 import {Chart as
   ChartJS,
   Title,
@@ -59,11 +64,13 @@ import {
   PieChartData,
   LineChartData,
   RadarChartData,
+  ScatterChartData,
   BarChartOption,
   DoughnutChartOption,
   PieChartOption,
   LineChartOption,
-  RadarChartOption
+  RadarChartOption,
+  ScatterChartOption
 } from "@/models";
 
 ChartJS.register(Title, Tooltip, Legend,
@@ -90,6 +97,10 @@ export default defineComponent ({
     radarCastedData() {
       return (<RadarChartData>this.chartConfiguration.data);
     },
+    scatterCastedData() {
+      return (<ScatterChartData>this.chartConfiguration.data);
+    },
+
     barCastedOption() {
       return (<BarChartOption>this.chartConfiguration.options);
     },
@@ -105,8 +116,11 @@ export default defineComponent ({
     radarCastedOption() {
       return (<RadarChartOption>this.chartConfiguration.options);
     },
+    scatterCastedOption() {
+      return (<ScatterChartOption>this.chartConfiguration.options);
+    },
   },
-  components: { Bar, Doughnut, Pie, Line, Radar },
+  components: { Bar, Doughnut, Pie, Line, Radar, Scatter },
   props: {
     chartConfiguration: {
       type: Object as PropType<ChartConfiguration>,
