@@ -1,11 +1,16 @@
 <template>
   <v-container>
-    <v-row style="height: 30vh" v-for="row in rows" :key="row">
-      <v-col :lg="12/RowCols(row)" :cols="12" v-for="col in RowCols(row)">
-        <DashboardElementWrapper
-          :options="false"
-          :chart-configuration="charts_data[(2*row)+col-3]"
-        ></DashboardElementWrapper>
+    <v-row v-for="row in rows" :key="row">
+      <v-col  v-for="col in RowCols(row)">
+        <v-card-title>{{ getKpiName (kpi_id_mapping[(2*row)+col-3]) }}</v-card-title>
+        <v-container class="d-flex-fill justify-center align-center">
+          <v-card height="310" width="100%" color="white" variant="tonal">
+            <DashboardElementWrapper
+            :options="false"
+            :chart-configuration="charts_data[(2*row)+col-3]"
+            ></DashboardElementWrapper>
+          </v-card>
+        </v-container>
       </v-col>
     </v-row>
   </v-container>
@@ -17,7 +22,8 @@ import { ReportTemplatePage, KpiReportElement, ChartType } from "@/models";
 import DashboardElement from '../DashboardElement.vue';
 import { ChartConfiguration, ChartData } from "chart.js";
 import DashboardElementWrapper from '../DashboardElementWrapper.vue';
-
+import { useMainStore } from "@/store/app";
+import { mapStores } from "pinia";
 export default {
   data() {
     return {
@@ -32,6 +38,7 @@ export default {
         maintainAspectRatio: false,
       },
       charts_data: {} as { [id: number]: ChartConfiguration},
+      kpi_id_mapping: {} as { [id: number]: string},
     };
   },
   props: {
@@ -53,6 +60,9 @@ export default {
     await this.getKpisData()
   },
   methods: {
+    getKpiName(index: string) {
+        return this.mainStore.getKpiById(index)?.name
+    },
     RowCols(row: number) {
       if (row==this.rows && this.numOfCharts%2==1) {
         return 1
@@ -93,6 +103,7 @@ export default {
 
             try {
               // Use Vue.set to ensure reactivity
+              this.kpi_id_mapping[index] = kpi_id
               this.charts_data[index] = {
                 data: ( await this.axios.get(`/kpi-data/${kpi_id}/?user_type=${this.user_type}&chart_type=${type}`)).data['data'] as ChartData,
                 options: this.default_chart_options,
@@ -107,6 +118,9 @@ export default {
         console.error('Error fetching KPI data:', error);
       }
   },
+  },
+  computed: {
+    ...mapStores(useMainStore),
   },
   components: { DashboardElement, DashboardElementWrapper },
 };
