@@ -24,6 +24,18 @@
         :label="smart_switch_tex"
       />
     </v-col>
+    <v-col>
+      <v-btn
+        v-if="!smart_ordering"
+        color="primary"
+        target="_blank"
+        variant="flat"
+        @click="saveLayout"
+      >
+        <v-icon icon="mdi-content-save" />
+        Save layout
+      </v-btn>
+    </v-col>
   </v-row>
   <div style="margin-top: 10px">
     <GridLayout
@@ -233,8 +245,6 @@ export default defineComponent({
             layout: this.layout,
             kpi_map: this.kpi_map,
         };
-        const save_string = JSON.stringify(saved_layout);
-        console.log(save_string);
         console.log(saved_layout);
         if (this.layout_id == -1) {
           await this.axios.post(`/dashboard-layout/`, {user_type: this.user_type, layout: saved_layout});

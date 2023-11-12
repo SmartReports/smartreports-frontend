@@ -9,6 +9,7 @@
         icon="mdi-close"
       />
       <v-icon class="drag-handle mr-2 ml-n1" style="cursor: pointer"
+          v-if="allow_remove"
         >mdi-drag-vertical</v-icon
       >
       <v-combobox
