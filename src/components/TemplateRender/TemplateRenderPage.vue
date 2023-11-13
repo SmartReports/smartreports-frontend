@@ -2,7 +2,7 @@
   <v-container>
     <v-row v-for="row in rows" :key="row">
       <v-col  v-for="col in RowCols(row)">
-        <v-card-title>{{ getKpiName (kpi_id_mapping[(2*row)+col-3]) }}</v-card-title>
+        <v-card-title>{{ getKpiName (kpi_id_mapping[getIndex(row, col)]) }}</v-card-title>
         <v-container class="d-flex-fill justify-center align-center">
           <v-card height="310" width="100%" color="white" variant="tonal">
             <DashboardElementWrapper
@@ -71,12 +71,15 @@ export default {
     },
     calculateRowsAndCols() {
       const layoutType = this.modelPage.layout;
+      let add = this.modelPage.elements.length%2 == 0? 0:1
       switch (layoutType) {
         case 'grid':
-          return { rows: Math.floor(this.modelPage.elements.length / 2) +1 , cols: 2 };
-        case 'horizontal':
-          return { rows: 1, cols: this.modelPage.elements.length };
+          let rows= Math.floor(this.modelPage.elements.length / 2) + add
+          rows = rows==0? 1:rows
+          return { rows: rows , cols: 2 };
         case 'vertical':
+          return { rows: 1, cols: this.modelPage.elements.length };
+        case 'horizontal':
           return { rows: this.modelPage.elements.length, cols: 1 };
         default:
           console.error('Unsupported layout:', layoutType);
@@ -86,11 +89,12 @@ export default {
     getIndex(row: number, col: number){
       if (this.modelPage.layout == 'horizontal'){
         console.log("Layout : Horizontal", this.rows, row)
-        return row
+        return row-1
       }else if (this.modelPage.layout == 'vertical'){
-        console.log("Layout : Horizontal", this.cols, col)
-        return col
+        console.log("Layout : vertical", this.cols, col)
+        return col-1
       }else if (this.modelPage.layout == 'grid'){
+        console.log("Layout : grid", this.rows, this.cols, row,col, (2*row)+col-3)
         return (2*row)+col-3
       }
       return 0;
