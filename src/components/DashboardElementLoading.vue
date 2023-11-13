@@ -3,7 +3,7 @@
     <v-progress-circular
       :size="100"
       :width="8"
-      color="purple"
+      color="primary"
       indeterminate
     >Loading...</v-progress-circular>
   </div>
