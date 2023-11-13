@@ -46,7 +46,7 @@
           :handle="'.drag-handle'"
           :ghostClass="'ghost'"
         >
-          <template #item="{ element }"
+          <template #item="{ element, index }"
             ><v-row>
               <v-col cols="12">
                 <TemplatePageElementEditor
