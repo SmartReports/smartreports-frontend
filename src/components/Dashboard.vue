@@ -84,17 +84,16 @@ export default defineComponent({
 
       const test = saved_layout.layout.map((l: LayoutItem) => l.i);
       this.last_used_index = Math.max(...test);
+      this.layout = saved_layout.layout;
       this.kpi_map = saved_layout.kpi_map;
-      let chart_promise = {} as { [key: number]: Promise<ChartConfiguration> };
+      const chart_promise = {} as { [key: number]: Promise<ChartConfiguration> };
+
       for (const layout_id in this.kpi_map)
       {
           chart_promise[layout_id] = this.getChart(this.kpi_map[layout_id].kpi_id, this.kpi_map[layout_id].chart_type as ChartType);
       }
-      for (const layout_id in this.kpi_map)
-      {
-        this.chart_map[layout_id] = await chart_promise[layout_id];
-      }
-      this.layout = saved_layout.layout;
+      Object.keys(this.kpi_map).forEach(async (layout_id) => this.chart_map[parseInt(layout_id)] = await chart_promise[parseInt(layout_id)])
+
     } catch (error) {
       console.log(error)
       await this.getDefaultLayout();
@@ -146,7 +145,6 @@ export default defineComponent({
           chart_type: this.chart_map[layout_id].type
         };
         this.editing = -1;
-        await this.saveLayout();
       } else {
         layout_id = ++this.last_used_index;
         await this.addChart(layout_id, this.dialogModel.kpi, this.dialogModel.chart_type);
@@ -182,12 +180,12 @@ export default defineComponent({
     },
 
     async addChart(layout_id: number, kpi_id: string, chart_type: ChartType | null) {
+      this.layout.push({x: this.layout.length * 2 % 4, y: this.layout.length + 1, w: 2, h: 1, i: layout_id});
       this.chart_map[layout_id] = (await this.getChart(kpi_id, chart_type));
       this.kpi_map[layout_id] = {
         kpi_id: kpi_id,
         chart_type: this.chart_map[layout_id].type
       };
-      this.layout.push({x: this.layout.length * 2 % 4, y: this.layout.length + 1, w: 2, h: 1, i: layout_id});
     },
 
     clearDialogModel() {
