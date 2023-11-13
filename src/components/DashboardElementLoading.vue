@@ -1,9 +1,9 @@
 <template>
-  <div class="text-center">
+  <div class="d-flex justify-center align-center div_center">
     <v-progress-circular
       :size="100"
       :width="8"
-      color="primary"
+      color="purple"
       indeterminate
     >Loading...</v-progress-circular>
   </div>
@@ -18,5 +18,9 @@
 <style scoped>
   .v-progress-circular {
     margin: 1rem;
+  }
+
+  .div_center {
+    height: 100%;
   }
 </style>
