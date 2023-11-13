@@ -1,5 +1,5 @@
 <template>
-  <div class="text-center">
+  <div class="loading-wrapper">
     <v-progress-circular
       :size="100"
       :width="8"
@@ -18,5 +18,12 @@
 <style scoped>
   .v-progress-circular {
     margin: 1rem;
+  }
+  .loading-wrapper {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
   }
 </style>
