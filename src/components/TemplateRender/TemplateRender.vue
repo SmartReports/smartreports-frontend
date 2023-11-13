@@ -35,7 +35,7 @@
                   </v-container>
                 </v-container>
                 <div class="pt-12"></div>
-                <v-card-subtitle class="d-flex justify-center align-center">Page: {{ i + 1  }}</v-card-subtitle>
+                <v-card-subtitle class="d-flex justify-center align-center">Page: {{ i + 1  }} Kind: {{ page.layout }}</v-card-subtitle>
               </v-window-item>
             </v-window>
             <v-card-actions class="justify-space-between">
