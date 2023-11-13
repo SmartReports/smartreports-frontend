@@ -7,7 +7,7 @@
           <v-card height="310" width="100%" color="white" variant="tonal">
             <DashboardElementWrapper
             :options="false"
-            :chart-configuration="charts_data[(2*row)+col-3]"
+            :chart-configuration="charts_data[getIndex(row, col)]"
             ></DashboardElementWrapper>
           </v-card>
         </v-container>
@@ -82,6 +82,16 @@ export default {
           console.error('Unsupported layout:', layoutType);
           return { rows: 0, cols: 0 };
       }
+    },
+    getIndex(row: number, col: number){
+      if (this.modelPage.layout == 'horizontal'){
+        return col
+      }else if (this.modelPage.layout == 'vertical'){
+        return row
+      }else if (this.modelPage.layout == 'grid'){
+        return (2*row)+col-3
+      }
+      return 0;
     },
     printDebug1(str: number, str2: number){
       const name= 'loader: '
