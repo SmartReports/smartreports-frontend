@@ -85,9 +85,9 @@ export default {
     },
     getIndex(row: number, col: number){
       if (this.modelPage.layout == 'horizontal'){
-        return col-1
-      }else if (this.modelPage.layout == 'vertical'){
         return row-1
+      }else if (this.modelPage.layout == 'vertical'){
+        return col-1
       }else if (this.modelPage.layout == 'grid'){
         return (2*row)+col-3
       }
