@@ -1,5 +1,5 @@
 <template>
-  <v-row>
+  <v-row class="d-flex align-center">
     <v-col>
       <v-btn
         color="primary"
@@ -20,6 +20,7 @@
     </v-col>
     <v-col>
       <v-switch
+        hide-details="auto"
         v-model="smart_ordering"
         :label="smart_switch_tex"
       />
