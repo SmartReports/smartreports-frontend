@@ -45,8 +45,8 @@
       :cols="cols"
       :breakpoints="breakpoints"
       :row-height="250"
-      :is-draggable="draggable"
-      :is-resizable="resizable"
+      :is-draggable="false"
+      :is-resizable="false"
       :responsive="responsive"
       @breakpoint-changed="onBreakpointChanged"
     >

@@ -1,6 +1,18 @@
 <template>
   <v-container>
-    <h3 class="text-h4 mt-4">Templates</h3>
+    <v-row>
+      <h3 class="text-h4 mt-4">Templates</h3>
+      <v-spacer/>
+      <v-btn
+        class="text-grey-darken-1"
+        @click="routeTemplateEditor"
+        to="/templateeditor"
+        icon="mdi-plus"
+        variant="text"
+        tooltip="Add"
+      />
+    </v-row>
+
     <v-container>
       <v-list>
         <v-container>
@@ -35,6 +47,7 @@
               <v-col cols="2" md="4" sm="3">
                 <template-render :user_type="user_type" :modelValue="report"></template-render>
                 <v-btn
+                  v-if="false"
                   class="text-grey-darken-1"
                   icon="mdi-pencil"
                   variant="text"
@@ -86,6 +99,10 @@ export default defineComponent({
                 return;
             }
             this.mainStore.removeReport(id)
+        },
+
+        routeTemplateEditor() {
+
         },
     },
     computed: {

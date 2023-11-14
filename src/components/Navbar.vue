@@ -96,12 +96,12 @@ export default {
           value: "archive",
           icon: "mdi-archive-outline",
         },
-        {
-          title: "TemplateEditor",
-          path: "/templateeditor",
-          value: "templateeditor",
-          icon: "mdi-archive-outline",
-        },
+        // {
+        //   title: "TemplateEditor",
+        //   path: "/templateeditor",
+        //   value: "templateeditor",
+        //   icon: "mdi-archive-outline",
+        // },
         {
           title: "Settings",
           path: "/settings",
