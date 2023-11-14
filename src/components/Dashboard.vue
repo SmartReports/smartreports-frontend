@@ -48,6 +48,7 @@
       :is-draggable="draggable"
       :is-resizable="resizable"
       :responsive="responsive"
+      @breakpoint-changed="onBreakpointChanged"
     >
       <template #item="{ item }">
         <DashboardElementWrapper
@@ -68,46 +69,20 @@ import DashboardDialog from "@/components/DashboardDialog.vue";
 import { ChartType, KpiReportElement, Kpi } from "@/models";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/store/app";
-import {Layout, LayoutItem} from "grid-layout-plus";
+import {Breakpoint, Layout, LayoutItem} from "grid-layout-plus";
 import {Chart, ChartConfiguration, ChartData} from "chart.js";
 import { PropType } from "vue";
 
 export default defineComponent({
   name: "Dashboard",
-  async created() {
-    try {
-      const id_and_layout = (await this.axios.get(`/dashboard-layout/?user_type=${this.user_type}`)).data[0];
-      this.layout_id = id_and_layout.id;
-      let saved_layout = id_and_layout.layout;
-      if (Object.keys(saved_layout).length == 0 || saved_layout.layout.length == 0) {
-          throw new Error("empty layout");
-      }
-
-      const test = saved_layout.layout.map((l: LayoutItem) => l.i);
-      this.last_used_index = Math.max(...test);
-      this.layout = saved_layout.layout;
-      this.kpi_map = saved_layout.kpi_map;
-      const chart_promise = {} as { [key: number]: Promise<ChartConfiguration> };
-
-      for (const layout_id in this.kpi_map)
-      {
-          chart_promise[layout_id] = this.getChart(this.kpi_map[layout_id].kpi_id, this.kpi_map[layout_id].chart_type as ChartType);
-      }
-      Object.keys(this.kpi_map).forEach(async (layout_id) => this.chart_map[parseInt(layout_id)] = await chart_promise[parseInt(layout_id)])
-
-    } catch (error) {
-      console.log(error)
-      await this.getDefaultLayout();
-      await this.saveLayout();
-    }
-    this.finished_layout_loading = true;
-  },
+  async created() { },
   props: {
     user_type: {
       type: String as PropType<string>,
       required: true,
     }
   },
+
   data() {
     return {
       smart_ordering: false,
@@ -132,7 +107,7 @@ export default defineComponent({
       },
       last_used_index: -1,
       layout_id: -1,
-      finished_layout_loading: false,
+      current_breakpoint: "lg",
     };
   },
   methods: {
@@ -178,6 +153,41 @@ export default defineComponent({
 
     onUpdateDialogOpen(value: boolean) {
       this.dialogOpen = value;
+    },
+
+    onBreakpointChanged(breakpoint: Breakpoint) {
+      this.current_breakpoint = breakpoint;
+      if(this.layout.length == 0) {
+        this.getLayout();
+      }
+    },
+
+    async getLayout() {
+      try {
+        const id_and_layout = (await this.axios.get(`/dashboard-layout/?user_type=${this.user_type}&display=${this.current_breakpoint}`)).data[0];
+
+        this.layout_id = id_and_layout.id;
+        let saved_layout = id_and_layout.layout;
+        if (Object.keys(saved_layout).length == 0 || saved_layout.layout.length == 0) {
+          throw new Error("empty layout");
+        }
+
+        const test = saved_layout.layout.map((l: LayoutItem) => l.i);
+        this.last_used_index = Math.max(...test);
+        this.layout = saved_layout.layout;
+        this.kpi_map = saved_layout.kpi_map;
+        const chart_promise = {} as { [key: number]: Promise<ChartConfiguration> };
+
+        for (const layout_id in this.kpi_map)
+        {
+          chart_promise[layout_id] = this.getChart(this.kpi_map[layout_id].kpi_id, this.kpi_map[layout_id].chart_type as ChartType);
+        }
+        Object.keys(this.kpi_map).forEach(async (layout_id) => this.chart_map[parseInt(layout_id)] = await chart_promise[parseInt(layout_id)])
+      } catch (error) {
+        console.log(error)
+        await this.getDefaultLayout();
+        await this.saveLayout();
+      }
     },
 
     async addChart(layout_id: number, kpi_id: string, chart_type: ChartType | null) {
@@ -244,14 +254,14 @@ export default defineComponent({
             layout: this.layout,
             kpi_map: this.kpi_map,
         };
-        console.log(saved_layout);
+
         if (this.layout_id == -1) {
-          await this.axios.post(`/dashboard-layout/`, {user_type: this.user_type, layout: saved_layout});
-          const id_and_layout = (await this.axios.get(`/dashboard-layout/?user_type=${this.user_type}`)).data[0];
+          await this.axios.post(`/dashboard-layout/`, {user_type: this.user_type, layout: saved_layout, display: this.current_breakpoint});
+          const id_and_layout = (await this.axios.get(`/dashboard-layout/?user_type=${this.user_type}&display=${this.current_breakpoint}`)).data[0];
           this.layout_id = id_and_layout.id;
         }
         else {
-          await this.axios.put(`/dashboard-layout/${this.layout_id}/`, {user_type: this.user_type, layout: saved_layout})
+          await this.axios.put(`/dashboard-layout/${this.layout_id}/`, {user_type: this.user_type, layout: saved_layout, display: this.current_breakpoint})
         }
     },
 
