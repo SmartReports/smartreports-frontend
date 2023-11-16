@@ -1,19 +1,12 @@
 <template>
-  <v-dialog width="1600" class="d-flex">
-    <template v-slot:activator="{ props }">
-      <v-icon class="bell-icn" color="primary" v-bind="props">mdi-bell</v-icon>
-    </template>
-    <template v-slot:default="{ isActive }">
       <v-card>
         <v-card-actions>
           <v-card-title class="text-h5">Notifications</v-card-title>
-
           <v-spacer></v-spacer>
           <v-btn
           text="Close"
           icon="mdi-close"
           color="error"
-          @click="isActive.value = false"
           ></v-btn>
         </v-card-actions>
         <v-divider :elevation="3"></v-divider>
@@ -39,8 +32,6 @@
           </v-container>
 
       </v-card>
-    </template>
-  </v-dialog>
 </template>
 
 

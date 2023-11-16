@@ -1,7 +1,12 @@
 <template>
-      <DashboardElementLoading v-if="chartConfiguration==undefined"></DashboardElementLoading>
-      <DashboardElement v-else @remove="$emit('remove')"
-          @edit="$emit('edit')" :options="options" :chart-configuration="(chartConfiguration as ChartConfiguration)"></DashboardElement>
+          <v-container :class="computedFilter()">
+            <!-- <v-card rounded="lg" color="white" elevation="4"> -->
+              <DashboardElementLoading v-if="chartConfiguration==undefined"></DashboardElementLoading>
+              <DashboardElement v-else @remove="$emit('remove')"
+              @edit="$emit('edit')" :options="options" :chart-configuration="(chartConfiguration as ChartConfiguration)"></DashboardElement>
+              <div class="pt-8"></div>
+            <!-- </v-card> -->
+          </v-container>
 </template>
 
 <script lang="ts">
@@ -22,6 +27,33 @@ export default defineComponent({
       default: true,
     }
   },
+  methods:{
+    computedFilter: function() {
+      return (this.$vuetify.theme as any).global.name == 'dark'? "container_dark" : "container"
+    }
+  },
+  computed:{
+
+  },
   components: { DashboardElementLoading, DashboardElement },
 })
 </script>
+
+
+<style>
+.container{
+  min-height: 100%;
+  max-height: 100%;
+  box-shadow: 0 3px 100px rgb(0 0 0 / 0.1);
+  border-radius: 15px;
+}
+
+.container_dark{
+  min-height: 100%;
+  max-height: 100%;
+  box-shadow: 0 3px 30px rgb(0 0 0 / 0.1);
+  border-radius: 15px;
+  -webkit-filter: invert();
+}
+
+</style>
