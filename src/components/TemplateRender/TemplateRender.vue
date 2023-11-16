@@ -21,16 +21,12 @@
           @click="isActive.value = false"
           ></v-btn>
         </v-card-actions>
-        <v-divider :elevation="3"></v-divider>
-            <v-divider></v-divider>
-            <v-container>
-            <v-container  flat rounded="10">
-            <v-window v-model="onboarding"    direction="vertical" >
+        <v-divider :elevation="0"></v-divider>
+            <v-window v-model="onboarding"    direction="vertical" style="overflow:auto">
               <v-window-item v-for="(page, i) in pages" :key="`card-${i}`" :value="i">
-                <v-divider></v-divider>
-                <div class="pt-12"></div>
+                <div class="pt-4"></div>
                 <v-container>
-                  <v-container class="d-flex justify-center align-center">
+                  <v-container class="d-flex justify-center align-center "  style="overflow:auto">
                     <template-render-page :user_type="user_type" :modelPage="page"></template-render-page>
                   </v-container>
                 </v-container>
@@ -42,8 +38,6 @@
               <v-btn :disabled="onboarding<=0" variant="plain" icon="mdi-chevron-left" @click="prev"></v-btn>
               <v-btn :disabled="onboarding==pages.length-1" variant="plain" icon="mdi-chevron-right" @click="next"></v-btn>
             </v-card-actions>
-          </v-container>
-        </v-container>
       </v-card>
 </template>
 </v-dialog>

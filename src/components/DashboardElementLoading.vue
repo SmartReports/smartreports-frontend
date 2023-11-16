@@ -1,9 +1,10 @@
 <template>
+  <div class="pt-8"></div>
   <div class="d-flex justify-center align-center div_center">
     <v-progress-circular
       :size="100"
       :width="8"
-      color="purple"
+      color="primary"
       indeterminate
     >Loading...</v-progress-circular>
   </div>

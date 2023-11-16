@@ -4,7 +4,7 @@
       <v-col  v-for="col in RowCols(row)">
         <v-card-title>{{ getKpiName (kpi_id_mapping[getIndex(row, col)]) }}</v-card-title>
         <v-container class="d-flex-fill justify-center align-center">
-          <v-card height="310" width="100%" color="white" variant="tonal">
+          <v-card height="310" width="100%" elevation="5" color="white" variant="tonal" class="rounded-xl">
             <DashboardElementWrapper
             :options="false"
             :chart-configuration="charts_data[getIndex(row, col)]"

@@ -1,12 +1,25 @@
 <template>
+
   <!-- APP BAR with menu button -->
-  <Appbar
-    :account-id="currentAccount.value"
-    :elevation="3"
-    @onMobileClick="onMobileClick"
-    @onNormalClick="onNormalClick"
-  />
-  <v-navigation-drawer floating :elevation="3" v-model="drawer" :rail="rail">
+  <v-navigation-drawer :class="!isMobile? 'drawer': ''" floating :elevation="0" v-model="drawer" :rail="rail">
+    <div class="d-flex align-center site-icn">
+        <div
+        class="rounded-circle d-flex justify-center align-center mr-3 pa-2 grad-bg">
+        <v-icon class="" size="x-large" color="company_color">
+          mdi-chart-timeline-variant-shimmer
+        </v-icon>
+      </div>
+      <!-- SITE NAME -->
+      <div class="px-1"></div>
+      <h2
+        v-if="!rail"
+        class="text-h4"
+        style="font-variant: small-caps; font-size: 1.7rem !important"
+      >
+      Smartlytics
+    </h2>
+  </div>
+    <div class="pt-8"></div>
     <!-- PAGES ICONS (BUTTONS) -->
     <v-list density="compact" nav>
       <v-list-item
@@ -21,42 +34,15 @@
         color="primary"
       ></v-list-item>
     </v-list>
-
     <!-- SPLIT LINE BETWEEN PAGES ICONS AND ACCOUNT ICON -->
-    <v-divider :elevation="3"></v-divider>
-
-    <!-- ACCOUNT ICON AND DROPDOWN SELECTOR -->
-    <template v-slot:append>
-      <v-list>
-        <v-menu>
-          <template v-slot:activator="{ props }">
-            <v-list-item
-              v-bind="props"
-              :prepend-avatar="currentAccount.image"
-              :title="currentAccount.name"
-              :subtitle="currentAccount.employment"
-              append-icon="mdi-arrow-down-drop-circle"
-              @click="rail = !rail"
-            >
-            </v-list-item>
-          </template>
-          <v-list>
-            <v-list-item
-              v-for="(account, index) in mainStore.accounts"
-              :key="index"
-              :value="index"
-              :prepend-avatar="account.image"
-              @click="onAccountChange(index, currentAccount)"
-              :title="account.name"
-              :subtitle="account.employment"
-            >
-            </v-list-item>
-          </v-list>
-        </v-menu>
-      </v-list>
-    </template>
-    <v-divider></v-divider>
+    <!-- <v-divider :elevation="3"></v-divider> -->
   </v-navigation-drawer>
+  <Appbar
+    :account-id="currentAccount.value"
+    @onMobileClick="onMobileClick"
+    @onNormalClick="onNormalClick"
+    @onAccountChange="onAccountChange"
+  />
 </template>
 
 <script lang="ts">
@@ -76,37 +62,31 @@ export default {
   data() {
     return {
       drawer: true,
-      rail: true && window.innerWidth < 600,
+      rail: true && window.innerWidth < 1350,
       items: [
         {
-          title: "Dashboard",
+          title: "Home",
           path: "/dashboard",
           value: "Home",
           icon: "mdi-view-dashboard",
         },
         {
-          title: "Templates",
+          title: "Dashes",
           path: "/templates",
           value: "templates",
           icon: "mdi-table-settings",
+        },
+        {
+          title: "Notifications",
+          path: "/notification",
+          value: "notification",
+          icon: "mdi-bell",
         },
         {
           title: "Archive",
           path: "/archive",
           value: "archive",
           icon: "mdi-archive-outline",
-        },
-        // {
-        //   title: "TemplateEditor",
-        //   path: "/templateeditor",
-        //   value: "templateeditor",
-        //   icon: "mdi-archive-outline",
-        // },
-        {
-          title: "Settings",
-          path: "/settings",
-          value: "settings",
-          icon: "mdi-cog",
         },
       ],
       isMobile: false,
@@ -151,7 +131,7 @@ export default {
 
     },
     onResize() {
-      this.isMobile = window.innerWidth < 600;
+      this.isMobile = window.innerWidth < 1300;
       this.rail = this.rail && this.isMobile;
     },
     onMobileClick() {
@@ -176,3 +156,17 @@ export default {
   components: { Appbar },
 };
 </script>
+
+<style>
+.site-icn{
+  position: relative;
+  margin-left: 5px;
+  margin-right: 0px;
+  margin-top: 10px;
+}
+
+.drawer{
+  margin-left: 5px;
+  margin-right: 5px
+}
+</style>

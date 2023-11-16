@@ -1,14 +1,15 @@
 <template>
   <v-row class="d-flex align-center">
-    <v-col>
+    <div class="px-2"></div>
+    <v-col cols="3">
       <v-btn
         color="primary"
         target="_blank"
         variant="flat"
+        icon="mdi-plus"
+        tooltip="Add"
         @click="clearDialogModel()"
-      >
-        <v-icon icon="mdi-plus" />
-        Add Chart
+      />
         <DashboardDialog
           :modelValue="dialogModel"
           :dialogOpen="dialogOpen"
@@ -16,26 +17,24 @@
           @update:dialogOpen="onUpdateDialogOpen($event)"
           @save="onAddChart()"
         />
-      </v-btn>
     </v-col>
     <v-col>
       <v-switch
         hide-details="auto"
         v-model="smart_ordering"
+        inset
         :label="smart_switch_tex"
       />
     </v-col>
-    <v-col>
+    <v-col cols="3">
       <v-btn
         v-if="!smart_ordering"
         color="primary"
         target="_blank"
         variant="flat"
+        icon="mdi-content-save"
         @click="saveLayout"
-      >
-        <v-icon icon="mdi-content-save" />
-        Save layout
-      </v-btn>
+      />
     </v-col>
   </v-row>
   <div style="margin-top: 10px">
@@ -45,7 +44,7 @@
       :cols="cols"
       :breakpoints="breakpoints"
       :row-height="250"
-      :is-draggable="false"
+      :is-draggable="true"
       :is-resizable="false"
       :responsive="responsive"
       @breakpoint-changed="onBreakpointChanged"
