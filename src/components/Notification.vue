@@ -14,7 +14,7 @@
             <v-container>
               <v-card>
                 <v-list-item>
-                  <notification-kpi-picker :accountId="accountId" @insert="onAddItem"></notification-kpi-picker>
+                  <notification-kpi-picker :accountId="user_type" @insert="onAddItem"></notification-kpi-picker>
                 </v-list-item>
               </v-card>
             </v-container>
@@ -53,7 +53,7 @@ export default defineComponent({
     },
     components: { NotificationKpiPicker, NotificationKpiElement },
     props:{
-      accountId: {
+      user_type: {
         type: String as PropType<string>,
         required: true,
       },
@@ -63,24 +63,24 @@ export default defineComponent({
         await this.axios.put(
           `/alarms-list/${id}/`, {
             id: id,
-            user_type: this.accountId,
+            user_type: this.user_type,
             min_value: min,
             max_value: max,
             kpi: kpiId,
           })
-        this.mainStore.getAlarms(this.accountId)
+        this.mainStore.getAlarms(this.user_type)
 
       },
       async onAddItem(id: string, kpiId: any, min:number, max:number) {
-        await this.axios.post(`/alarms-list/`, {id: id, user_type: this.accountId, min_value: min, max_value: max, kpi: kpiId.value})
-        this.mainStore.getAlarms(this.accountId)
+        await this.axios.post(`/alarms-list/`, {id: id, user_type: this.user_type, min_value: min, max_value: max, kpi: kpiId.value})
+        this.mainStore.getAlarms(this.user_type)
       },
       async onDeleteAlarm(index: string, deleting: any) {
         if (!confirm("Are you sure you want to delete this alarm?")) {
         return;
         }
         await this.axios.delete(`/alarms-list/${index}/`);
-        this.mainStore.getAlarms(this.accountId)
+        this.mainStore.getAlarms(this.user_type)
       },
     },
     computed: {

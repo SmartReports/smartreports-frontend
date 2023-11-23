@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <div ref="screenshotComponent">
     <v-row v-for="row in rows" :key="row">
       <v-col  v-for="col in RowCols(row)">
         <v-card-title>{{ getKpiName (kpi_id_mapping[getIndex(row, col)]) }}</v-card-title>
@@ -13,7 +13,7 @@
         </v-container>
       </v-col>
     </v-row>
-  </v-container>
+  </div>
 </template>
 
 <script lang="ts">
@@ -25,6 +25,7 @@ import DashboardElementWrapper from '../DashboardElementWrapper.vue';
 import { useMainStore } from "@/store/app";
 import { mapStores } from "pinia";
 import html2canvas from 'html2canvas'
+import { time } from 'console';
 export default {
   emits: ['screenshot'],
   data() {
@@ -64,14 +65,17 @@ export default {
     this.rows = rows==0?  1 : rows;
     this.cols = cols;
     await this.getKpisData()
-    if (this.modelPage.id==0 && !this.imgPresent) {
+    if (!this.imgPresent) {
       this.captureScreenshot()
     };
   },
   methods: {
+    activate() {
+        setTimeout(() => this.charts_data!=undefined, 500);
+    },
     captureScreenshot() {
-      const element = this.$refs.TemplateRenderPage as HTMLDivElement;
-
+      this.activate()
+      const element = this.$refs.screenshotComponent as HTMLDivElement;
       html2canvas(element).then((canvas) => {
         // imageData to base64
         const imageData = canvas.toDataURL('image/png');
