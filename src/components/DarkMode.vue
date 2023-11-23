@@ -33,7 +33,7 @@ export default {
       }
     },
   mounted() {
-    this.darkMode = getTheme() === 'white';
+    this.darkMode = getTheme() === 'dark';
   }
 }
 </script>
