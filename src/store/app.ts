@@ -1,10 +1,11 @@
 // Utilities
 import { defineStore } from "pinia";
-import { Kpi, Alarms, Account, ReportTemplate } from "../models";
+import { Kpi, Alarms, Account, ReportTemplate, ReportImage } from "../models";
 import axios from "axios";
 
 export const useMainStore = defineStore("main", {
   state: () => ({
+    currentModelValue: {} as ReportTemplate,
     alarms: [] as Alarms[],
     kpi: [] as Kpi[],
     user_reports: [] as ReportTemplate[],
@@ -54,6 +55,12 @@ export const useMainStore = defineStore("main", {
     },
   },
   actions: {
+    getCurrentModelValue() {
+      return this.currentModelValue
+    },
+    setCurrentModelValue(value: ReportTemplate) {
+      this.currentModelValue = value
+    },
     async getKpi(accountId: any) {
       // If accountId is undefined accountId = ''
       const account = accountId === undefined ? "" : accountId;
@@ -65,6 +72,11 @@ export const useMainStore = defineStore("main", {
       const account = accountId === undefined ? "" : accountId;
 
       this.user_reports = (await axios.get(`/report-templates/?user_type=${account}`)).data as ReportTemplate[];
+      let images = (await axios.get(`/report-img/?user_type=${account}`)).data as ReportImage[];
+
+      this.user_reports.forEach(report => {
+        report.img = images.filter(img => img.report_id == report.id)[0]?.img
+      })
     },
     async getAlarms(accountId: any) {
       this.alarms = (
@@ -76,9 +88,11 @@ export const useMainStore = defineStore("main", {
       await axios.delete(`/report-templates/${id}/`);
     },
     async saveScreen(report_id: number | string | undefined, imgScreen: string){
-      await axios.put(`/report-templates/${report_id}`, {
+      await axios.post(`/report-img/`, {
+        report_id: report_id,
         img: imgScreen,
+        user_type: this.currentAccount.value,
       });
-    }
+    },
   },
 });

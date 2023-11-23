@@ -1,5 +1,5 @@
 <template>
-  <div ref="screenshotComponent">
+  <div>
     <v-row v-for="row in rows" :key="row">
       <v-col  v-for="col in RowCols(row)">
         <v-card-title>{{ getKpiName (kpi_id_mapping[getIndex(row, col)]) }}</v-card-title>
@@ -24,10 +24,7 @@ import { ChartConfiguration, ChartData } from "chart.js";
 import DashboardElementWrapper from '../DashboardElementWrapper.vue';
 import { useMainStore } from "@/store/app";
 import { mapStores } from "pinia";
-import html2canvas from 'html2canvas'
-import { time } from 'console';
 export default {
-  emits: ['screenshot'],
   data() {
     return {
       numOfCharts: 0,
@@ -53,10 +50,6 @@ export default {
       type: Object as PropType<ReportTemplatePage>,
       required: true,
     },
-    imgPresent: {
-      type: Boolean,
-      required: true
-    }
   },
   async created() {
     this.pageKpis = this.modelPage.elements as KpiReportElement[];
@@ -65,24 +58,8 @@ export default {
     this.rows = rows==0?  1 : rows;
     this.cols = cols;
     await this.getKpisData()
-    if (!this.imgPresent) {
-      this.captureScreenshot()
-    };
   },
   methods: {
-    activate() {
-        setTimeout(() => this.charts_data!=undefined, 500);
-    },
-    captureScreenshot() {
-      this.activate()
-      const element = this.$refs.screenshotComponent as HTMLDivElement;
-      html2canvas(element).then((canvas) => {
-        // imageData to base64
-        const imageData = canvas.toDataURL('image/png');
-        // Send the imageData to the server
-        this.$emit('screenshot', imageData);
-      });
-    },
     getKpiName(index: string) {
         return this.mainStore.getKpiById(index)?.name
     },
@@ -111,13 +88,13 @@ export default {
     },
     getIndex(row: number, col: number){
       if (this.modelPage.layout == 'horizontal'){
-        console.log("Layout : Horizontal", this.rows, row)
+        // console.log("Layout : Horizontal", this.rows, row)
         return row-1
       }else if (this.modelPage.layout == 'vertical'){
-        console.log("Layout : vertical", this.cols, col)
+        // console.log("Layout : vertical", this.cols, col)
         return col-1
       }else if (this.modelPage.layout == 'grid'){
-        console.log("Layout : grid", this.rows, this.cols, row,col, (2*row)+col-3)
+        // console.log("Layout : grid", this.rows, this.cols, row,col, (2*row)+col-3)
         return (2*row)+col-3
       }
       return 0;

@@ -5,7 +5,6 @@
       <v-spacer/>
       <v-btn
         class="text-grey-darken-1"
-        @click="routeTemplateEditor"
         to="/templateeditor"
         icon="mdi-plus"
         variant="text"
@@ -25,9 +24,8 @@
     <v-card-title>Your Dashes</v-card-title>
     <v-divider></v-divider>
     <v-row>
-
-      <v-col v-for="(report, index) in reportsAsItem" :key="report.id" class ='grid'>
-        <template-render :user_type="user_type" @delete="deleteTemplate(report.id)" :modelValue="report"></template-render>
+      <v-col cols="3" v-for="(report, index) in reportsAsItem" :key="report.id" class ='grid'>
+        <mini-dash :user_type="user_type" @delete="deleteTemplate(report.id)" :modelValue="report"></mini-dash>
       </v-col>
     </v-row>
 </v-container>
@@ -40,7 +38,7 @@ import { defineComponent, PropType } from "vue";
 import { ReportTemplate, ReportTemplatePage } from "../models";
 import { useMainStore } from "../store/app";
 import { mapStores } from "pinia";
-import TemplateRender from "./TemplateRender/TemplateRender.vue";
+import MiniDash from "./Dashes/MiniDash.vue";
 export default defineComponent({
     emits: ['delete'],
     props: {
@@ -67,10 +65,6 @@ export default defineComponent({
             }
             this.mainStore.removeReport(id)
         },
-
-        routeTemplateEditor() {
-
-        },
     },
     computed: {
       ...mapStores(useMainStore),
@@ -83,10 +77,11 @@ export default defineComponent({
           name: report.name,
           frequency: report.frequency,
           pages: report.pages as ReportTemplatePage[],
+          img: report.img as String,
         })) as ReportTemplate[];
       },
     },
-    components: { TemplateRender }
+    components: { MiniDash }
 });
 </script>
 
