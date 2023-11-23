@@ -2,27 +2,19 @@
   <v-dialog width='900'>
     <template v-slot:activator="{ props }">
       <div class="pt-2"></div>
-      <v-card elevation="4">
+      <v-card elevation="8" height="100%">
+
         <v-img
           height="200"
           :src="`data:image/png;base64,${modelValue.img}`"
           cover
-          variant="text"
-          class="text-grey-darken-1"
           tooltip="View"
           v-bind="props"
-        ></v-img>
-        <v-toolbar
-            color="white"
-            >
-          <v-toolbar-title class="text-h6">
-              {{ modelValue.name }}
-          </v-toolbar-title>
-          <template v-slot:append>
-              <v-btn icon="mdi-dots-vertical" class="text-grey-darken-1" variant="text"></v-btn>
-              <v-list>
+        ><v-card-title>{{ modelValue.name }}</v-card-title></v-img>
+        <v-toolbar color="background">
+                <v-spacer></v-spacer>
                 <v-btn
-                v-if="false"
+                v-if="true"
                 class="text-grey-darken-1"
                 icon="mdi-pencil"
                 variant="text"
@@ -35,9 +27,6 @@
                 variant="text"
                 tooltip="Remove"
                 />
-              </v-list>
-          </template>
-
         </v-toolbar>
 
       </v-card>
@@ -102,6 +91,9 @@ import { mapStores } from "pinia";
               },
         async saveScreen(imgData: string){
           this.mainStore.saveScreen(this.modelValue.id, imgData)
+        },
+        computedFilter: function() {
+          return (this.$vuetify.theme as any).global.name == 'dark'? "container_dark" : "container"
         }
     },
     props: {
@@ -120,3 +112,21 @@ import { mapStores } from "pinia";
     components: { TemplateRenderPage }
 })
 </script>
+
+<style>
+.container{
+  min-height: 100%;
+  max-height: 100%;
+  box-shadow: 0 3px 100px rgb(0 0 0 / 0.1);
+  border-radius: 15px;
+}
+
+.container_dark{
+  min-height: 100%;
+  max-height: 100%;
+  box-shadow: 0 3px 30px rgb(0 0 0 / 0.1);
+  border-radius: 15px;
+  -webkit-filter: invert();
+}
+
+</style>
