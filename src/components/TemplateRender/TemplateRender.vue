@@ -1,13 +1,46 @@
 <template>
-  <v-dialog >
+  <v-dialog width='900'>
     <template v-slot:activator="{ props }">
-        <v-btn
-          class="text-grey-darken-1"
-          icon="mdi-eye"
+      <div class="pt-2"></div>
+      <v-card elevation="4">
+        <v-img
+          height="200"
+          :src="`data:image/png;base64,${modelValue.img}`"
+          cover
           variant="text"
+          class="text-grey-darken-1"
           tooltip="View"
           v-bind="props"
-        />
+        ></v-img>
+        <v-toolbar
+            color="white"
+            >
+          <v-toolbar-title class="text-h6">
+              {{ modelValue.name }}
+          </v-toolbar-title>
+          <template v-slot:append>
+              <v-btn icon="mdi-dots-vertical" class="text-grey-darken-1" variant="text"></v-btn>
+              <v-list>
+                <v-btn
+                v-if="false"
+                class="text-grey-darken-1"
+                icon="mdi-pencil"
+                variant="text"
+                tooltip="Edit"
+                />
+                <v-btn
+                class="text-grey-darken-1"
+                @click="$emit('delete')"
+                icon="mdi-delete"
+                variant="text"
+                tooltip="Remove"
+                />
+              </v-list>
+          </template>
+
+        </v-toolbar>
+
+      </v-card>
       </template>
       <template v-slot:default="{ isActive }">
           <v-card>
@@ -27,7 +60,7 @@
                 <div class="pt-4"></div>
                 <v-container>
                   <v-container class="d-flex justify-center align-center "  style="overflow:auto">
-                    <template-render-page :user_type="user_type" :modelPage="page"></template-render-page>
+                    <template-render-page @screenshot="saveScreen" :imgPresent="modelValue.img!=undefined" :user_type="user_type" :modelPage="page"></template-render-page>
                   </v-container>
                 </v-container>
                 <div class="pt-12"></div>
@@ -47,6 +80,8 @@
 import { defineComponent, PropType } from 'vue';
 import { ReportTemplate, ReportTemplatePage } from "@/models"
 import TemplateRenderPage from './TemplateRenderPage.vue';
+import { useMainStore } from "@/store/app";
+import { mapStores } from "pinia";
 
   export default defineComponent({
     data() {
@@ -65,6 +100,9 @@ import TemplateRenderPage from './TemplateRenderPage.vue';
             this.onboarding =
                 this.onboarding - 1 < 0 ? this.pages.length : this.onboarding - 1;
               },
+        async saveScreen(imgData: string){
+          this.mainStore.saveScreen(this.modelValue.id, imgData)
+        }
     },
     props: {
         modelValue: {
@@ -75,6 +113,9 @@ import TemplateRenderPage from './TemplateRenderPage.vue';
             type: String as PropType<string>,
             required: true,
         }
+    },
+    computed:{
+      ...mapStores(useMainStore),
     },
     components: { TemplateRenderPage }
 })

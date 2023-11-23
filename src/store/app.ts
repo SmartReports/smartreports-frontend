@@ -75,5 +75,10 @@ export const useMainStore = defineStore("main", {
       this.user_reports = this.user_reports.filter((report) => report.id != id);
       await axios.delete(`/report-templates/${id}/`);
     },
+    async saveScreen(report_id: number | string | undefined, imgScreen: string){
+      await axios.put(`/report-templates/${report_id}`, {
+        img: imgScreen,
+      });
+    }
   },
 });

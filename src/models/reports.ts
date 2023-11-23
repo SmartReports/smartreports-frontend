@@ -3,6 +3,7 @@ export interface ReportTemplate {
   name: string;
   frequency: "daily" | "weekly" | "monthly" | "yearly" | "quarterly";
   pages: ReportTemplatePage[];
+  img?: string;
 }
 
 export interface ReportTemplatePage {

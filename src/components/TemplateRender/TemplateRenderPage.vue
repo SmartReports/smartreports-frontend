@@ -24,7 +24,9 @@ import { ChartConfiguration, ChartData } from "chart.js";
 import DashboardElementWrapper from '../DashboardElementWrapper.vue';
 import { useMainStore } from "@/store/app";
 import { mapStores } from "pinia";
+import html2canvas from 'html2canvas'
 export default {
+  emits: ['screenshot'],
   data() {
     return {
       numOfCharts: 0,
@@ -50,6 +52,10 @@ export default {
       type: Object as PropType<ReportTemplatePage>,
       required: true,
     },
+    imgPresent: {
+      type: Boolean,
+      required: true
+    }
   },
   async created() {
     this.pageKpis = this.modelPage.elements as KpiReportElement[];
@@ -58,8 +64,21 @@ export default {
     this.rows = rows==0?  1 : rows;
     this.cols = cols;
     await this.getKpisData()
+    if (this.modelPage.id==0 && !this.imgPresent) {
+      this.captureScreenshot()
+    };
   },
   methods: {
+    captureScreenshot() {
+      const element = this.$refs.TemplateRenderPage as HTMLDivElement;
+
+      html2canvas(element).then((canvas) => {
+        // imageData to base64
+        const imageData = canvas.toDataURL('image/png');
+        // Send the imageData to the server
+        this.$emit('screenshot', imageData);
+      });
+    },
     getKpiName(index: string) {
         return this.mainStore.getKpiById(index)?.name
     },

@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <h3 class="text-h4 mt-4">Templates</h3>
+      <h3 class="text-h4 mt-4">Dashes</h3>
       <v-spacer/>
       <v-btn
         class="text-grey-darken-1"
@@ -12,61 +12,26 @@
         tooltip="Add"
       />
     </v-row>
+    <div class="pt-4"></div>
 
     <v-container>
-      <v-list>
-        <v-container>
-          <v-list-item class="d-none d-sm-block">
-            <v-row>
-              <v-col cols="7" md="4" sm="5">
-                <v-card-title class="text-h5">Report Name</v-card-title>
-              </v-col>
-              <v-col cols="3" md="4" sm="4">
-                <v-card-title class="text-h5">Frequency</v-card-title>
-              </v-col>
-              <v-col cols="2" md="4" sm="3">
-                <v-card-title class="text-h5">Options</v-card-title>
-              </v-col>
-            </v-row>
-          </v-list-item>
-        </v-container>
-        <v-divider></v-divider>
-        <v-container>
-          <v-list-item v-for="report in reportsAsItem" :key="report.id">
-            <v-row>
-              <v-col cols="7" md="4" sm="5">
-                <v-card-subtitle class="text-h6">{{
-                  report.name
-                }}</v-card-subtitle>
-              </v-col>
-              <v-col cols="3" md="4" sm="4">
-                <v-card-subtitle class="text-h6">{{
-                  report.frequency
-                }}</v-card-subtitle>
-              </v-col>
-              <v-col cols="2" md="4" sm="3">
-                <template-render :user_type="user_type" :modelValue="report"></template-render>
-                <v-btn
-                  v-if="false"
-                  class="text-grey-darken-1"
-                  icon="mdi-pencil"
-                  variant="text"
-                  tooltip="Edit"
-                />
-                <v-btn
-                  class="text-grey-darken-1"
-                  @click="deleteTemplate(report.id)"
-                  icon="mdi-delete"
-                  variant="text"
-                  tooltip="Remove"
-                />
-              </v-col>
-              <v-divider></v-divider>
-            </v-row>
-          </v-list-item>
-        </v-container>
-      </v-list>
+      <v-card-title>Suggested Dashes</v-card-title>
+      <v-divider></v-divider>
+      <div class="pt-12"></div>
     </v-container>
+
+
+    <v-container>
+    <v-card-title>Your Dashes</v-card-title>
+    <v-divider></v-divider>
+    <v-row>
+
+      <v-col v-for="(report, index) in reportsAsItem" :key="report.id" class ='grid'>
+        <template-render :user_type="user_type" @delete="deleteTemplate(report.id)" :modelValue="report"></template-render>
+      </v-col>
+    </v-row>
+</v-container>
+
   </v-container>
 </template>
 
@@ -77,6 +42,7 @@ import { useMainStore } from "../store/app";
 import { mapStores } from "pinia";
 import TemplateRender from "./TemplateRender/TemplateRender.vue";
 export default defineComponent({
+    emits: ['delete'],
     props: {
       user_type: {
         type: String as PropType<string>,
@@ -87,6 +53,7 @@ export default defineComponent({
         return {
             reports: [
             ] as ReportTemplate[],
+            cols: 4,
         };
     },
     methods: {
@@ -122,3 +89,11 @@ export default defineComponent({
     components: { TemplateRender }
 });
 </script>
+
+<style>
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5);
+  gap: 10px
+}
+</style>
