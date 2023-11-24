@@ -124,7 +124,7 @@ export default defineComponent({
       this.onUpdate("elements", [
         ...this.modelValue.elements,
         {
-          kpi: "",
+          kpis: [],
           chart_type: null,
         },
       ]);

@@ -92,7 +92,7 @@ export default defineComponent ({
     },
     kpiWithoutAlarms() {
       return this.kpi.map((kpi) => ({
-        title: kpi.name,
+        title: kpi.kb_name,
         value: kpi.id,
       }));
     },

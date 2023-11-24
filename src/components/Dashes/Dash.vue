@@ -1,9 +1,7 @@
 <template>
-    <v-breadcrumbs :items="items">
-      <template v-slot:divider>
-        <v-icon icon="mdi-chevron-right"></v-icon>
-      </template>
-    </v-breadcrumbs>
+        <v-btn v-for="item in items" class="back-btn" elevation="0" small :color="item.color" :disabled="item.disabled" :to="item.href">
+          <v-icon icon="mdi-chevron-left"></v-icon>{{ item.title }}
+          </v-btn>
     <v-card-text class="text-h3 mt-1">{{ modelValue.name }}</v-card-text>
     <v-card-text class="text-h6">You Receive a snapshot of this Dash {{ modelValue.frequency }}</v-card-text>
     <v-divider :elevation="0"></v-divider>
@@ -30,6 +28,7 @@ import { useMainStore } from "@/store/app";
 import DashPage from './DashPage.vue';
 import { mapStores } from "pinia";
 import html2canvas from 'html2canvas'
+import { it } from 'node:test';
 
 export default defineComponent({
   data() {
@@ -39,9 +38,10 @@ export default defineComponent({
         onboarding: 0,
         items: [
           {
-            title: 'Dashes',
+            title: 'Back',
             disabled: false,
             href: '/dashes',
+            color: 'primary'
           },
         ],
     };
@@ -101,13 +101,6 @@ export default defineComponent({
   created() {
     this.modelValue = this.mainStore.getCurrentModelValue() as ReportTemplate;
     this.pages = this.modelValue.pages as ReportTemplatePage[];
-    this.items.push(
-        {
-          title: this.modelValue.name,
-          disabled: true,
-          href: ''
-        }
-    )
   },
   mounted() {
     if (this.modelValue.img == undefined) {
@@ -120,3 +113,6 @@ export default defineComponent({
   components: { DashPage }
 })
 </script>
+
+<style>
+</style>
