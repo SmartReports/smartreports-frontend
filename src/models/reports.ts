@@ -20,7 +20,7 @@ export interface ReportTemplatePage {
 }
 
 export interface KpiReportElement {
-  kpi: string;
+  kpis: string[];
   chart_type: ChartType | null;
 }
 

@@ -50,6 +50,7 @@ export default defineComponent({
           this.mainStore.setCurrentModelValue(value)
         },
         getImg(){
+          console.log(this.modelValue)
           if (this.modelValue.img!=undefined){
             return `${this.modelValue.img}`
           }else {

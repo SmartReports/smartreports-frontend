@@ -94,7 +94,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import { ReportTemplate, ReportTemplatePage } from "../models";
+import { KpiReportElement, ReportTemplate, ReportTemplatePage } from "../models";
 import TemplatePageEditor from "./TemplatePageEditor.vue";
 import { mapStores } from "pinia";
 import { useMainStore } from "../store/app";
@@ -117,7 +117,7 @@ export default defineComponent({
             elements: [
               {
                 chart_type: null,
-                kpi: "",
+                kpis: [],
               },
             ],
             layout: "grid",
@@ -132,10 +132,22 @@ export default defineComponent({
     async onSave() {
       this.saving = true;
       try {
-        await this.axios.post("/report-templates/", {
-          ...this.modelValue,
+        const requestData = {
+          name: this.modelValue.name,
+          frequency: this.modelValue.frequency,
+          pages: this.modelValue.pages.map((page) => ({
+            layout: page.layout,
+            elements: page.elements.map((element) => ({
+              chart_type: element.chart_type,
+              kpis: element.kpis.map((kpi: any) => kpi.value),
+            })),
+          })),
           user_type: this.mainStore.currentAccount.value,
-        });
+        };
+        console.log("Request Data:", requestData);
+        await this.axios.post("/report-templates/",
+          requestData
+        );
         this.mainStore.getReports(this.mainStore.currentAccount.value)
         this.saving = false;
         this.showSuccess = true;
@@ -154,7 +166,7 @@ export default defineComponent({
       this.modelValue.pages.push({
         elements: [
           {
-            kpi: "",
+            kpis: [] as string[],
             chart_type: null,
           },
         ],

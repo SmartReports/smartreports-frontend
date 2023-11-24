@@ -60,7 +60,7 @@ export default {
       this.kpimin = this.alarm.min_value
     },
     getKpiName(index: string) {
-        return this.mainStore.getKpiById(index)?.name
+        return this.mainStore.getKpiById(index)?.kb_name
     },
   },
   computed: {

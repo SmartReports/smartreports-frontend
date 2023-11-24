@@ -7,7 +7,7 @@ export const useMainStore = defineStore("main", {
   state: () => ({
     currentModelValue: {} as ReportTemplate,
     alarms: [] as Alarms[],
-    kpi: [] as Kpi[],
+    kpis: [] as Kpi[],
     user_reports: [] as ReportTemplate[],
     user_suggested_reports: [] as ReportTemplate[],
     currentAccount: {
@@ -41,12 +41,14 @@ export const useMainStore = defineStore("main", {
   }),
   getters: {
     getKpiById: (state) => (id: string) =>
-      state.kpi.find((kpi) => kpi.id == id),
+      state.kpis.find((kpi) => kpi.id == id),
+    getKpisAllowedCharts: (state) => (ids: string[]) =>
+    state.kpis.find((kpi) => kpi.id in ids),
     getAlarmById: (state) => (id: string) =>
       state.alarms.find((alarm) => alarm.id == id),
     // Get kpi that don't have alarms setted
     getKpiWithoutAlarms: (state) => {
-      const kpiWithoutAlarms = state.kpi.filter((kpi) => {
+      const kpiWithoutAlarms = state.kpis.filter((kpi) => {
         const hasMatchingAlarms = state.alarms.some(
           (alarm) => alarm.kpi == kpi.id
         );
@@ -66,7 +68,7 @@ export const useMainStore = defineStore("main", {
       // If accountId is undefined accountId = ''
       const account = accountId === undefined ? "" : accountId;
 
-      this.kpi = (await axios.get(`/kpi-list/?user_type=${account}`)).data;
+      this.kpis = (await axios.get(`/kpi-list/?user_type=${account}`)).data;
     },
     async getReports(accountId: any) {
       // If accountId is undefined accountId = ''
@@ -78,6 +80,7 @@ export const useMainStore = defineStore("main", {
       this.user_reports.forEach(report => {
         report.img = images.filter(img => img.report_id == report.id)[0]?.img
       })
+      console.log(this.user_reports)
     },
     async getSuggestedReports(accountId: any) {
       this.user_suggested_reports = (
