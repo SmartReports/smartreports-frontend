@@ -72,8 +72,8 @@ export default {
         },
         {
           title: "Dashes",
-          path: "/templates",
-          value: "templates",
+          path: "/dashes",
+          value: "dashes",
           icon: "mdi-table-settings",
         },
         {

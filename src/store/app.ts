@@ -1,13 +1,15 @@
 // Utilities
 import { defineStore } from "pinia";
-import { Kpi, Alarms, Account, ReportTemplate } from "../models";
+import { Kpi, Alarms, Account, ReportTemplate, ReportImage } from "../models";
 import axios from "axios";
 
 export const useMainStore = defineStore("main", {
   state: () => ({
+    currentModelValue: {} as ReportTemplate,
     alarms: [] as Alarms[],
-    kpi: [] as Kpi[],
+    kpis: [] as Kpi[],
     user_reports: [] as ReportTemplate[],
+    user_suggested_reports: [] as ReportTemplate[],
     currentAccount: {
       name: "Caterina",
       employment: "Machine Maintainer",
@@ -39,12 +41,14 @@ export const useMainStore = defineStore("main", {
   }),
   getters: {
     getKpiById: (state) => (id: string) =>
-      state.kpi.find((kpi) => kpi.id == id),
+      state.kpis.find((kpi) => kpi.id == id),
+    getKpisAllowedCharts: (state) => (ids: string[]) =>
+    state.kpis.find((kpi) => kpi.id in ids),
     getAlarmById: (state) => (id: string) =>
       state.alarms.find((alarm) => alarm.id == id),
     // Get kpi that don't have alarms setted
     getKpiWithoutAlarms: (state) => {
-      const kpiWithoutAlarms = state.kpi.filter((kpi) => {
+      const kpiWithoutAlarms = state.kpis.filter((kpi) => {
         const hasMatchingAlarms = state.alarms.some(
           (alarm) => alarm.kpi == kpi.id
         );
@@ -54,17 +58,34 @@ export const useMainStore = defineStore("main", {
     },
   },
   actions: {
+    getCurrentModelValue() {
+      return this.currentModelValue
+    },
+    setCurrentModelValue(value: ReportTemplate) {
+      this.currentModelValue = value
+    },
     async getKpi(accountId: any) {
       // If accountId is undefined accountId = ''
       const account = accountId === undefined ? "" : accountId;
 
-      this.kpi = (await axios.get(`/kpi-list/?user_type=${account}`)).data;
+      this.kpis = (await axios.get(`/kpi-list/?user_type=${account}`)).data;
     },
     async getReports(accountId: any) {
       // If accountId is undefined accountId = ''
       const account = accountId === undefined ? "" : accountId;
 
       this.user_reports = (await axios.get(`/report-templates/?user_type=${account}`)).data as ReportTemplate[];
+      let images = (await axios.get(`/report-img/?user_type=${account}`)).data as ReportImage[];
+
+      this.user_reports.forEach(report => {
+        report.img = images.filter(img => img.report_id == report.id)[0]?.img
+      })
+      console.log(this.user_reports)
+    },
+    async getSuggestedReports(accountId: any) {
+      this.user_suggested_reports = (
+        await axios.get(`/suggested-reports/?user_type=${accountId}`)
+      ).data as ReportTemplate[];
     },
     async getAlarms(accountId: any) {
       this.alarms = (
@@ -74,6 +95,14 @@ export const useMainStore = defineStore("main", {
     async removeReport(id: number | string) {
       this.user_reports = this.user_reports.filter((report) => report.id != id);
       await axios.delete(`/report-templates/${id}/`);
+    },
+    async saveScreen(report_id: number | string | undefined, imgScreen: string){
+      await axios.post(`/report-img/`, {
+        report_id: report_id,
+        img: imgScreen,
+        user_type: this.currentAccount.value,
+      });
+      this.user_reports.filter((report) => {report_id==report.id})[0].img=imgScreen
     },
   },
 });

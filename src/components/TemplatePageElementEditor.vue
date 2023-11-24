@@ -14,14 +14,15 @@
       >
       <v-combobox
         hide-details="auto"
-        :items="kpiAsItems"
+        :items="kpisAsItems"
         label="KPI"
+        :multiple="true"
         v-model="proxyModelValueKpi"
       />
     </v-col>
     <v-col cols="6">
       <div
-        v-if="kpiAllowedChartTypes.length > 0"
+        v-if="kpisAllowedChartTypes.length > 0"
         class="d-flex align-start flex-column justify-center"
       >
         <!-- <div class="text-subtitle-2">Default</div> -->
@@ -34,7 +35,7 @@
         >
           <v-btn
             size="x-large"
-            v-for="chartType in kpiAllowedChartTypes"
+            v-for="chartType in kpisAllowedChartTypes"
             :value="chartType"
             :key="chartType"
           >
@@ -50,6 +51,7 @@
 import { defineComponent, PropType } from "vue";
 import { KpiReportElement } from "../models";
 import { mapStores } from "pinia";
+import { ChartType } from "chart.js";
 import { useMainStore } from "../store/app";
 export default defineComponent({
   name: "TemplatePageElementEditor",
@@ -68,67 +70,59 @@ export default defineComponent({
     getImgUrl(chartType: string) {
       return new URL(`../assets/${chartType}.png`, import.meta.url).href;
     },
-    onUpdate<K extends keyof KpiReportElement>(
-      key: K,
-      value: KpiReportElement[K]
-    ) {
-      this.$emit("update:modelValue", {
-        ...this.modelValue,
-        [key]: value,
-      });
-    },
     onRemove() {
       this.$emit("remove");
     },
   },
   computed: {
     ...mapStores(useMainStore),
-    kpi() {
-      return this.mainStore.kpi;
+    kpis() {
+      return this.mainStore.kpis;
     },
-    kpiAllowedChartTypes() {
-      return (
-        this.mainStore.getKpiById(this.modelValue.kpi)?.allowed_charts ?? []
-      );
+    kpisAllowedChartTypes() {
+      const selectedKpis = this.modelValue.kpis.map((kpi: any) => this.mainStore.getKpiById(kpi.value));
+      // Ensure that there are selected KPIs
+      if (selectedKpis.length > 0) {
+        // Find the intersection of allowed chart types for selected KPIs
+        const intersection = selectedKpis.reduce((commonChartTypes: any, kpi) => {
+          const kpiChartTypes = kpi?.allowed_charts || [];
+          return commonChartTypes.length === 0
+            ? kpiChartTypes
+            : commonChartTypes.filter((chartType: any) => kpiChartTypes.includes(chartType));
+        }, [] as ChartType[]); // Provide an explicit type for the initial value
+
+        return intersection;
+      } else {
+        return [];
+      }
     },
-    kpiAsItems() {
-      return this.kpi.map((kpi) => ({
-        title: kpi.name,
+    kpisAsItems() {
+      return this.kpis.map((kpi) => ({
+        title: kpi.kb_name,
         value: kpi.id,
       }));
     },
-    modelValueKpiAsItem() {
-      // TODO  workaround for v-combobox to make search work - find a better way
-      const kpi = this.mainStore.getKpiById(this.modelValue.kpi);
-      if (!kpi) {
-        return this.modelValue.kpi;
-      }
-      return {
-        title: kpi.name,
-        value: this.modelValue.kpi,
-      };
-    },
     proxyModelValueKpi: {
       get() {
-        return this.modelValueKpiAsItem;
+        return this.modelValue.kpis;
       },
       set(value: any) {
         // TODO only update the value if it is a valid kpi, but keep the search value otherwise
-        this.onUpdate("kpi", value.value);
+        this.modelValue.kpis = value
       },
     },
     proxyModelValueChartType: {
       get() {
         if (
           !this.modelValue.chart_type ||
-          !this.kpiAllowedChartTypes.includes(this.modelValue.chart_type)
+          !this.kpisAllowedChartTypes.includes(this.modelValue.chart_type)
         ) {
-          this.proxyModelValueChartType = this.kpiAllowedChartTypes[0];
+          this.proxyModelValueChartType = this.kpisAllowedChartTypes[0];
         }
         return this.modelValue.chart_type;
       },
       set(value: any) {
-        this.onUpdate("chart_type", value);
+        this.modelValue.chart_type = value
       },
     },
   },

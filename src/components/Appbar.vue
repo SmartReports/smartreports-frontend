@@ -12,7 +12,6 @@
   <div class="px-4"></div>
   <!-- ACCOUNT ICON AND DROPDOWN SELECTOR -->
   <template v-slot:append>
-      <v-list>
         <v-menu>
           <template v-slot:activator="{ props }">
             <v-avatar >
@@ -36,7 +35,6 @@
             </v-list-item>
           </v-list>
         </v-menu>
-      </v-list>
     </template>
 </v-app-bar>
 </template>

@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <div>
     <v-row v-for="row in rows" :key="row">
       <v-col  v-for="col in RowCols(row)">
         <v-card-title>{{ getKpiName (kpi_id_mapping[getIndex(row, col)]) }}</v-card-title>
@@ -13,7 +13,7 @@
         </v-container>
       </v-col>
     </v-row>
-  </v-container>
+  </div>
 </template>
 
 <script lang="ts">
@@ -38,7 +38,7 @@ export default {
         maintainAspectRatio: false,
       },
       charts_data: {} as { [id: number]: ChartConfiguration},
-      kpi_id_mapping: {} as { [id: number]: string},
+      kpi_id_mapping: {} as { [id: number]: string[]},
     };
   },
   props: {
@@ -60,8 +60,9 @@ export default {
     await this.getKpisData()
   },
   methods: {
-    getKpiName(index: string) {
-        return this.mainStore.getKpiById(index)?.name
+    getKpiName(index: string[]) {
+        const names = index.map((id: any) => this.mainStore.getKpiById(id)?.kb_name)
+        return names.join(', ')
     },
     RowCols(row: number) {
       if (row==this.rows && this.numOfCharts%2==1) {
@@ -88,13 +89,13 @@ export default {
     },
     getIndex(row: number, col: number){
       if (this.modelPage.layout == 'horizontal'){
-        console.log("Layout : Horizontal", this.rows, row)
+        // console.log("Layout : Horizontal", this.rows, row)
         return row-1
       }else if (this.modelPage.layout == 'vertical'){
-        console.log("Layout : vertical", this.cols, col)
+        // console.log("Layout : vertical", this.cols, col)
         return col-1
       }else if (this.modelPage.layout == 'grid'){
-        console.log("Layout : grid", this.rows, this.cols, row,col, (2*row)+col-3)
+        // console.log("Layout : grid", this.rows, this.cols, row,col, (2*row)+col-3)
         return (2*row)+col-3
       }
       return 0;
@@ -114,14 +115,14 @@ export default {
         await Promise.all(
           this.pageKpis.map(async (kpi, index) => {
             const type = kpi.chart_type as ChartType;
-            const kpi_id = kpi.kpi as string;
+            const kpi_id = kpi.kpis as string[];
 
 
             try {
               // Use Vue.set to ensure reactivity
               this.kpi_id_mapping[index] = kpi_id
               this.charts_data[index] = {
-                data: ( await this.axios.get(`/kpi-data/${kpi_id}/?user_type=${this.user_type}&chart_type=${type}`)).data['data'] as ChartData,
+                data: ( await this.axios.get(`/kpi-data/?kpis=${kpi_id}&user_type=${this.user_type}&chart_type=${type}`)).data['data'] as ChartData,
                 options: this.default_chart_options,
                 type: type,
               } as ChartConfiguration;
