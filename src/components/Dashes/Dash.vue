@@ -41,7 +41,7 @@ export default defineComponent({
           {
             title: 'Dashes',
             disabled: false,
-            href: '/templates',
+            href: '/dashes',
           },
         ],
     };

@@ -6,7 +6,7 @@ const routerOptions = [
   { path: "/", component: "Dashboard" },
   { path: "/dashboard", component: "Dashboard" },
   { path: "/templateeditor", component: "TemplateEditor" },
-  { path: "/templates", component: "Templates" },
+  { path: "/dashes", component: "Dashes" },
   { path: "/archive", component: "Archive" },
   { path: "/notification", component: "Notification" },
 ];

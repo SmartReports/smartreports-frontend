@@ -9,6 +9,7 @@ export const useMainStore = defineStore("main", {
     alarms: [] as Alarms[],
     kpi: [] as Kpi[],
     user_reports: [] as ReportTemplate[],
+    user_suggested_reports: [] as ReportTemplate[],
     currentAccount: {
       name: "Caterina",
       employment: "Machine Maintainer",
@@ -78,6 +79,11 @@ export const useMainStore = defineStore("main", {
         report.img = images.filter(img => img.report_id == report.id)[0]?.img
       })
     },
+    async getSuggestedReports(accountId: any) {
+      this.user_suggested_reports = (
+        await axios.get(`/suggested-reports/?user_type=${accountId}`)
+      ).data as ReportTemplate[];
+    },
     async getAlarms(accountId: any) {
       this.alarms = (
         await axios.get(`/alarms-list/?user_type=${accountId}`)
@@ -93,6 +99,7 @@ export const useMainStore = defineStore("main", {
         img: imgScreen,
         user_type: this.currentAccount.value,
       });
+      this.user_reports.filter((report) => {report_id==report.id})[0].img=imgScreen
     },
   },
 });

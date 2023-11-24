@@ -1,17 +1,11 @@
 <template>
-      <v-card>
+      <v-container>
         <v-card-actions>
-          <v-card-title class="text-h5">Notifications</v-card-title>
+          <v-card-title class="text-h5">Add Notifications</v-card-title>
           <v-spacer></v-spacer>
-          <v-btn
-          text="Close"
-          icon="mdi-close"
-          color="error"
-          ></v-btn>
         </v-card-actions>
         <v-divider :elevation="3"></v-divider>
           <v-container>
-            <v-container>
               <v-card>
                 <v-list-item>
                   <notification-kpi-picker :accountId="user_type" @insert="onAddItem"></notification-kpi-picker>
@@ -29,9 +23,8 @@
                 </v-container>
               </v-card>
             </v-container>
-          </v-container>
 
-      </v-card>
+      </v-container>
 </template>
 
 

@@ -18,13 +18,14 @@
         <v-card-text>{{ modelValue.name }}</v-card-text >
         <v-spacer></v-spacer>
         <v-btn
-        v-if="false"
+        v-if="options && false"
         class="text-grey-darken-1"
         icon="mdi-pencil"
         variant="text"
         tooltip="Edit"
         />
         <v-btn
+        v-if="options"
         class="text-grey-darken-1"
         @click="$emit('delete')"
         icon="mdi-delete"
@@ -69,6 +70,10 @@ export default defineComponent({
         user_type: {
             type: String as PropType<string>,
             required: true,
+        },
+        options: {
+          type: Boolean,
+          default: true,
         }
     },
     computed:{

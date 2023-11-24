@@ -18,8 +18,11 @@
       <v-divider></v-divider>
       <div class="pt-12"></div>
     </v-container>
-
-
+    <v-row>
+      <v-col cols="3" v-for="(report, index) in suggestedReportsAsItem" :key="report.id" class ='grid'>
+        <mini-dash :user_type="user_type" :options="false" :modelValue="report"></mini-dash>
+      </v-col>
+    </v-row>
     <v-container>
     <v-card-title>Your Dashes</v-card-title>
     <v-divider></v-divider>
@@ -54,6 +57,9 @@ export default defineComponent({
             cols: 4,
         };
     },
+    created(){
+      this.mainStore.getSuggestedReports(this.user_type)
+    },
     methods: {
         async deleteTemplate(id: string| number |undefined) {
             if (id==undefined){
@@ -68,11 +74,23 @@ export default defineComponent({
     },
     computed: {
       ...mapStores(useMainStore),
+      user_suggested_reports(){
+        return this.mainStore.user_suggested_reports;
+      },
       user_reports() {
         return this.mainStore.user_reports;
       },
       reportsAsItem() {
         return this.user_reports.map((report) =>  ({
+          id: report.id,
+          name: report.name,
+          frequency: report.frequency,
+          pages: report.pages as ReportTemplatePage[],
+          img: report.img as String,
+        })) as ReportTemplate[];
+      },
+      suggestedReportsAsItem() {
+        return this.user_suggested_reports.map((report) =>  ({
           id: report.id,
           name: report.name,
           frequency: report.frequency,
