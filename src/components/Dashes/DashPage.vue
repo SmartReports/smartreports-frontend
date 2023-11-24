@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <div>
     <v-row v-for="row in rows" :key="row">
       <v-col  v-for="col in RowCols(row)">
         <v-card-title>{{ getKpiName (kpi_id_mapping[getIndex(row, col)]) }}</v-card-title>
@@ -13,7 +13,7 @@
         </v-container>
       </v-col>
     </v-row>
-  </v-container>
+  </div>
 </template>
 
 <script lang="ts">
@@ -88,13 +88,13 @@ export default {
     },
     getIndex(row: number, col: number){
       if (this.modelPage.layout == 'horizontal'){
-        console.log("Layout : Horizontal", this.rows, row)
+        // console.log("Layout : Horizontal", this.rows, row)
         return row-1
       }else if (this.modelPage.layout == 'vertical'){
-        console.log("Layout : vertical", this.cols, col)
+        // console.log("Layout : vertical", this.cols, col)
         return col-1
       }else if (this.modelPage.layout == 'grid'){
-        console.log("Layout : grid", this.rows, this.cols, row,col, (2*row)+col-3)
+        // console.log("Layout : grid", this.rows, this.cols, row,col, (2*row)+col-3)
         return (2*row)+col-3
       }
       return 0;

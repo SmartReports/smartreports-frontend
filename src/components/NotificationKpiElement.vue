@@ -12,12 +12,12 @@
           <v-card-item v-else>Max: {{ alarm.max_value }}</v-card-item>
         </v-col>
         <v-col cols="3" md="2" sm="3" xs="1">
-          <v-btn v-if="!editing" @click="editing=!editing" color="white" height="40" width="100%">
+          <v-btn v-if="!editing" @click="editing=!editing; reset()" color="white" height="40" width="100%">
           <v-icon>
             mdi-pencil
           </v-icon>
           </v-btn>
-          <v-btn v-else @click="$emit('update', alarm.id, alarm.kpi, kpimin, kpimax); editing=!editing" color="green" height="40" width="100%">
+          <v-btn v-else @click="$emit('update', alarm.id, alarm.kpi, kpimin, kpimax); editing=!editing;" color="green" height="40" width="100%">
           <v-icon>
             mdi-checkbox-marked-circle
           </v-icon>
@@ -55,6 +55,10 @@ export default {
     }
   },
   methods: {
+    reset(){
+      this.kpimax = this.alarm.max_value,
+      this.kpimin = this.alarm.min_value
+    },
     getKpiName(index: string) {
         return this.mainStore.getKpiById(index)?.name
     },
