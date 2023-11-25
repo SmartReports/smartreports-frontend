@@ -4,20 +4,29 @@
         <v-row>
             <v-col cols="12" md="6">
               <v-combobox
-              label="Select KPI"
+              :label="getLabel()"
               :items="kpiWithoutAlarms"
               variant="solo-inverted"
               v-model="kpiId"
+              :disabled="kpiWithoutAlarms.length==0"
               />
             </v-col>
             <v-col cols="4" md="2" sm="4" xs="2">
-              <v-text-field v-model="min" label="min"/>
+              <v-text-field :disabled="kpiWithoutAlarms.length==0" type="number" v-model="min" label="min"/>
             </v-col>
             <v-col  cols="4" md="2" sm="4" xs="2">
-              <v-text-field type="number" v-model="max" label="max"/>
+              <v-text-field :disabled="kpiWithoutAlarms.length==0" type="number" v-model="max" label="max"/>
             </v-col>
             <v-col cols="4" md="2" sm="4" xs="1">
-              <v-btn color="primary" height="55" width="100%" @click="$emit('insert', '', kpiId, min, max)">
+              <v-btn
+                :loading="saving"
+                variant="flat"
+                color="primary"
+                height="55"
+                width="100%"
+                @click="onAdd(kpiId, min, max)"
+                :disabled="kpiWithoutAlarms.length==0"
+                >
               <v-icon>
                 mdi-check
               </v-icon>
@@ -25,6 +34,7 @@
             </v-btn>
             </v-col>
         </v-row>
+        <v-snackbar v-model="showSuccess">Alarm added</v-snackbar>
 
       </v-card>
 </template>
@@ -41,6 +51,8 @@ export default defineComponent ({
       min: '',
       max: '',
       kpiId: '',
+      showSuccess: false,
+      saving: false,
     }
   },
   props: {
@@ -50,8 +62,27 @@ export default defineComponent ({
     }
   },
   methods: {
-    onAdd(item: any) {
-      this.$emit('onAddItem', {KPI:"ciao", min:10, max:100})
+    reset(){
+      this.kpiId= '',
+      this.min= '',
+      this.max = ''
+    },
+    getLabel(){
+      if (this.kpiWithoutAlarms.length==0) {
+        return "No Kpis to add"
+      }else{
+        return "Select Kpi"
+      }
+    },
+    onAdd(kpiId: number|string, min:number|string, max:number|string) {
+      this.saving = true;
+      setTimeout(() => {
+        this.saving = false;
+        this.showSuccess=true
+      }, 1500);
+      this.$emit('insert', '', kpiId, min, max)
+      this.showSuccess = false;
+      this.reset();
     }
   },
   computed: {
@@ -61,7 +92,7 @@ export default defineComponent ({
     },
     kpiWithoutAlarms() {
       return this.kpi.map((kpi) => ({
-        title: kpi.name,
+        title: kpi.kb_name,
         value: kpi.id,
       }));
     },

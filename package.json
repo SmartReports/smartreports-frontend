@@ -13,6 +13,7 @@
     "axios": "^1.6.0",
     "chart.js": "^4.4.0",
     "grid-layout-plus": "https://github.com/filippo-biondi/grid-layout-plus/tarball/main",
+    "html2canvas": "^1.4.1",
     "pinia": "^2.0.23",
     "roboto-fontface": "*",
     "vue": "^3.2.25",

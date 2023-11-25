@@ -1,9 +1,10 @@
 <template>
-  <div class="loading-wrapper">
+  <div class="pt-8"></div>
+  <div class="d-flex justify-center align-center div_center">
     <v-progress-circular
       :size="100"
       :width="8"
-      color="purple"
+      color="primary"
       indeterminate
     >Loading...</v-progress-circular>
   </div>
@@ -19,11 +20,8 @@
   .v-progress-circular {
     margin: 1rem;
   }
-  .loading-wrapper {
+
+  .div_center {
     height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
   }
 </style>

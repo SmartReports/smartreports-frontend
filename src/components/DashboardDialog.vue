@@ -70,7 +70,7 @@ export default defineComponent({
   },
   computed: {
     enableSave() {
-      return this.modelValue.kpi == "" || this.modelValue.chart_type == null;
+      return this.modelValue.kpis.length == 0 || this.modelValue.chart_type == null;
     },
 
     dialogOpenProxy: {

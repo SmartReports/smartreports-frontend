@@ -3,6 +3,14 @@ export interface ReportTemplate {
   name: string;
   frequency: "daily" | "weekly" | "monthly" | "yearly" | "quarterly";
   pages: ReportTemplatePage[];
+  img?: string;
+}
+
+export interface ReportImage {
+  id?: string | number;
+  report_id: string | number;
+  user_type: string;
+  img: string;
 }
 
 export interface ReportTemplatePage {
@@ -12,7 +20,7 @@ export interface ReportTemplatePage {
 }
 
 export interface KpiReportElement {
-  kpi: string;
+  kpis: string[];
   chart_type: ChartType | null;
 }
 

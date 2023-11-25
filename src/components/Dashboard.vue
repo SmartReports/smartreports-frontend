@@ -1,14 +1,15 @@
 <template>
-  <v-row>
-    <v-col>
+  <v-row class="d-flex align-center">
+    <div class="px-2"></div>
+    <v-col cols="3">
       <v-btn
         color="primary"
         target="_blank"
         variant="flat"
+        icon="mdi-plus"
+        tooltip="Add"
         @click="clearDialogModel()"
-      >
-        <v-icon icon="mdi-plus" />
-        Add Chart
+      />
         <DashboardDialog
           :modelValue="dialogModel"
           :dialogOpen="dialogOpen"
@@ -16,25 +17,24 @@
           @update:dialogOpen="onUpdateDialogOpen($event)"
           @save="onAddChart()"
         />
-      </v-btn>
     </v-col>
     <v-col>
       <v-switch
+        hide-details="auto"
         v-model="smart_ordering"
+        inset
         :label="smart_switch_tex"
       />
     </v-col>
-    <v-col>
+    <v-col cols="3">
       <v-btn
         v-if="!smart_ordering"
         color="primary"
         target="_blank"
         variant="flat"
+        icon="mdi-content-save"
         @click="saveLayout"
-      >
-        <v-icon icon="mdi-content-save" />
-        Save layout
-      </v-btn>
+      />
     </v-col>
   </v-row>
   <div style="margin-top: 10px">
@@ -44,9 +44,10 @@
       :cols="cols"
       :breakpoints="breakpoints"
       :row-height="250"
-      :is-draggable="draggable"
-      :is-resizable="resizable"
+      :is-draggable="true"
+      :is-resizable="true"
       :responsive="responsive"
+      @breakpoint-changed="onBreakpointChanged"
     >
       <template #item="{ item }">
         <DashboardElementWrapper
@@ -67,47 +68,20 @@ import DashboardDialog from "@/components/DashboardDialog.vue";
 import { ChartType, KpiReportElement, Kpi } from "@/models";
 import { mapStores } from "pinia";
 import { useMainStore } from "@/store/app";
-import {Layout, LayoutItem} from "grid-layout-plus";
+import {Breakpoint, Layout, LayoutItem} from "grid-layout-plus";
 import {Chart, ChartConfiguration, ChartData} from "chart.js";
 import { PropType } from "vue";
 
 export default defineComponent({
   name: "Dashboard",
-  async created() {
-    try {
-      const id_and_layout = (await this.axios.get(`/dashboard-layout/?user_type=${this.user_type}`)).data[0];
-      this.layout_id = id_and_layout.id;
-      let saved_layout = id_and_layout.layout;
-      if (Object.keys(saved_layout).length == 0 || saved_layout.layout.length == 0) {
-          throw new Error("empty layout");
-      }
-
-      const test = saved_layout.layout.map((l: LayoutItem) => l.i);
-      this.last_used_index = Math.max(...test);
-      this.kpi_map = saved_layout.kpi_map;
-      let chart_promise = {} as { [key: number]: Promise<ChartConfiguration> };
-      for (const layout_id in this.kpi_map)
-      {
-          chart_promise[layout_id] = this.getChart(this.kpi_map[layout_id].kpi_id, this.kpi_map[layout_id].chart_type as ChartType);
-      }
-      for (const layout_id in this.kpi_map)
-      {
-        this.chart_map[layout_id] = await chart_promise[layout_id];
-      }
-      this.layout = saved_layout.layout;
-    } catch (error) {
-      console.log(error)
-      await this.getDefaultLayout();
-      await this.saveLayout();
-    }
-    this.finished_layout_loading = true;
-  },
+  async created() { },
   props: {
     user_type: {
       type: String as PropType<string>,
       required: true,
     }
   },
+
   data() {
     return {
       smart_ordering: false,
@@ -118,12 +92,12 @@ export default defineComponent({
       colNum: 4,
       layout: reactive([]) as Layout,
       old_layout: reactive([]) as Layout,
-      kpi_map: {} as { [key: number]: { kpi_id: string, chart_type: string } },
+      kpi_map: {} as { [key: number]: { kpis_id: string[], chart_type: string } },
       chart_map: {} as { [key: number]: ChartConfiguration },
       dialogOpen: false,
       dialogModel: {
         chart_type: null,
-        kpi: "",
+        kpis: [],
       } as KpiReportElement,
       editing: -1,
       default_chart_options: {
@@ -132,7 +106,7 @@ export default defineComponent({
       },
       last_used_index: -1,
       layout_id: -1,
-      finished_layout_loading: false,
+      current_breakpoint: "lg",
     };
   },
   methods: {
@@ -140,16 +114,15 @@ export default defineComponent({
       let layout_id: number;
       if (this.editing != -1) {
         layout_id = this.editing;
-        this.chart_map[layout_id] = (await this.getChart(this.dialogModel.kpi, this.dialogModel.chart_type))
+        this.chart_map[layout_id] = (await this.getChart(this.dialogModel.kpis, this.dialogModel.chart_type))
         this.kpi_map[layout_id] = {
-          kpi_id: this.dialogModel.kpi,
+          kpis_id: this.dialogModel.kpis,
           chart_type: this.chart_map[layout_id].type
         };
         this.editing = -1;
-        await this.saveLayout();
       } else {
         layout_id = ++this.last_used_index;
-        await this.addChart(layout_id, this.dialogModel.kpi, this.dialogModel.chart_type);
+        await this.addChart(layout_id, this.dialogModel.kpis, this.dialogModel.chart_type);
       }
     },
 
@@ -164,10 +137,10 @@ export default defineComponent({
 
     onChartEdit(layout_id: number) {
       this.editing = layout_id;
-      const kpi_id = this.kpi_map[layout_id].kpi_id;
+      const kpis_id = this.kpi_map[layout_id].kpis_id;
       const chart = this.chart_map[layout_id];
       this.dialogModel = {
-        kpi: kpi_id,
+        kpis: kpis_id,
         chart_type: chart.type as ChartType,
       };
       this.dialogOpen = true;
@@ -181,28 +154,64 @@ export default defineComponent({
       this.dialogOpen = value;
     },
 
-    async addChart(layout_id: number, kpi_id: string, chart_type: ChartType | null) {
-      this.chart_map[layout_id] = (await this.getChart(kpi_id, chart_type));
+    onBreakpointChanged(breakpoint: Breakpoint) {
+      this.current_breakpoint = breakpoint;
+      if(this.layout.length == 0) {
+        this.getLayout();
+      }
+    },
+
+    async getLayout() {
+      try {
+        const id_and_layout = (await this.axios.get(`/dashboard-layout/?user_type=${this.user_type}&display=${this.current_breakpoint}`)).data[0];
+
+        this.layout_id = id_and_layout.id;
+        let saved_layout = id_and_layout.layout;
+        if (Object.keys(saved_layout).length == 0 || saved_layout.layout.length == 0) {
+          throw new Error("empty layout");
+        }
+
+        const test = saved_layout.layout.map((l: LayoutItem) => l.i);
+        this.last_used_index = Math.max(...test);
+        this.layout = saved_layout.layout;
+        this.kpi_map = saved_layout.kpi_map;
+        const chart_promise = {} as { [key: number]: Promise<ChartConfiguration> };
+
+        for (const layout_id in this.kpi_map)
+        {
+          chart_promise[layout_id] = this.getChart(this.kpi_map[layout_id].kpis_id, this.kpi_map[layout_id].chart_type as ChartType);
+        }
+        Object.keys(this.kpi_map).forEach(async (layout_id) => this.chart_map[parseInt(layout_id)] = await chart_promise[parseInt(layout_id)])
+      } catch (error) {
+        console.log(error)
+        await this.getDefaultLayout();
+        await this.saveLayout();
+      }
+    },
+
+    async addChart(layout_id: number, kpis_id: string[], chart_type: ChartType | null) {
+      this.layout.push({x: this.layout.length * 2 % 4, y: this.layout.length + 1, w: 2, h: 1, i: layout_id});
+      this.chart_map[layout_id] = (await this.getChart(kpis_id, chart_type));
       this.kpi_map[layout_id] = {
-        kpi_id: kpi_id,
+        kpis_id: kpis_id,
         chart_type: this.chart_map[layout_id].type
       };
-      this.layout.push({x: this.layout.length * 2 % 4, y: this.layout.length + 1, w: 2, h: 1, i: layout_id});
     },
 
     clearDialogModel() {
       this.editing = -1;
       this.dialogModel = {
         chart_type: null,
-        kpi: "",
+        kpis: [],
       } as KpiReportElement;
     },
 
-    async getChart(kpi_id: string, type: ChartType | null) {
+    async getChart(kpis_id: string[], type: ChartType | null) {
+      const kpi_value = kpis_id.map((entry: any) => entry.value)
       if (!type) {
-        type = this.kpiAllowedChartTypes(kpi_id)[0];
+        type = this.kpiAllowedChartTypes(kpis_id)[0];
       }
-      let chart_data = (await this.axios.get(`/kpi-data/${kpi_id}/?user_type=${this.user_type}&chart_type=${type}`)).data["data"];
+      let chart_data = (await this.axios.get(`/kpi-data/?kpis=${kpi_value}&user_type=${this.user_type}&chart_type=${type}`)).data["data"];
       return {
         data: chart_data,
         options: this.default_chart_options,
@@ -211,18 +220,19 @@ export default defineComponent({
     },
 
      async getDefaultLayout() {
-      for (let i=0; i < this.mainStore.kpi.length; i++)
+      for (let i=0; i < this.mainStore.kpis.length; i++)
       {
         const new_index = ++this.last_used_index;
-        await this.addChart(new_index, this.mainStore.kpi[i].id, null);
+        // TODO manage layout
+        // await this.addChart(new_index, this.mainStore.kpis[i], null);
       }
     },
 
     orderLayout() {
       this.old_layout = this.layout
-      const orderedKpi = this.mainStore.kpi.sort((a, b) => {
-        if (a.name < b.name) { return -1 }
-        if (a.name > b.name) {return 1}
+      const orderedKpi = this.mainStore.kpis.sort((a, b) => {
+        if (a.kb_name < b.kb_name) { return -1 }
+        if (a.kb_name > b.kb_name) {return 1}
         return 0
       });
 
@@ -245,21 +255,32 @@ export default defineComponent({
             layout: this.layout,
             kpi_map: this.kpi_map,
         };
-        console.log(saved_layout);
+
         if (this.layout_id == -1) {
-          await this.axios.post(`/dashboard-layout/`, {user_type: this.user_type, layout: saved_layout});
-          const id_and_layout = (await this.axios.get(`/dashboard-layout/?user_type=${this.user_type}`)).data[0];
+          await this.axios.post(`/dashboard-layout/`, {user_type: this.user_type, layout: saved_layout, display: this.current_breakpoint});
+          const id_and_layout = (await this.axios.get(`/dashboard-layout/?user_type=${this.user_type}&display=${this.current_breakpoint}`)).data[0];
           this.layout_id = id_and_layout.id;
         }
         else {
-          await this.axios.put(`/dashboard-layout/${this.layout_id}/`, {user_type: this.user_type, layout: saved_layout})
+          await this.axios.put(`/dashboard-layout/${this.layout_id}/`, {user_type: this.user_type, layout: saved_layout, display: this.current_breakpoint})
         }
     },
 
-    kpiAllowedChartTypes(kpi_id: string) {
-      return (
-        this.mainStore.getKpiById(kpi_id)?.allowed_charts ?? []
-      );
+    kpiAllowedChartTypes(kpis_id: string[]) {
+      const selectedKpis = this.mainStore.getKpisAllowedCharts(kpis_id)?.allowed_charts ?? []
+      if (selectedKpis.length > 0) {
+        // Find the intersection of allowed chart types for selected KPIs
+        const intersection = selectedKpis.reduce((commonChartTypes: any, allowed_charts) => {
+          const kpiChartTypes = allowed_charts || [];
+          return commonChartTypes.length === 0
+            ? kpiChartTypes
+            : commonChartTypes.filter((chartType: any) => kpiChartTypes.includes(chartType));
+        }, [] as ChartType[]); // Provide an explicit type for the initial value
+
+        return intersection;
+      } else {
+        return [];
+      }
     },
   },
   watch: {

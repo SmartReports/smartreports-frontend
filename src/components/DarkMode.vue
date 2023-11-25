@@ -1,28 +1,11 @@
 <template>
-  <v-container>
-    <h3 class="text-h4 mt-4">Settings</h3>
-    <v-divider></v-divider>
-
-    <v-container>
-      <v-list>
-        <v-list-item>
-          <v-container class="pa-4">
-            <v-list-item>
-              <v-switch
-                :model-value="darkMode"
-                :v-model="darkMode"
-                @change="toggleDarkMode"
-                :label="`toggle ${switchLabel} mode`"
-                hide-details inset
-                color="orange">
-              </v-switch>
-            </v-list-item>
-          </v-container>
-        </v-list-item>
-      </v-list>
-    </v-container>
-  </v-container>
-
+    <v-icon
+        :model-value="darkMode"
+        :v-model="darkMode"
+        @click="toggleDarkMode"
+        :icon="darkMode? 'mdi-white-balance-sunny': 'mdi-weather-night'"
+        :color="darkMode? 'white':'black'">
+      </v-icon>
 </template>
 
 <script lang="ts">

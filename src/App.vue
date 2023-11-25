@@ -3,7 +3,7 @@
       <Navbar @user_pass="onEmit">
       </Navbar>
       <v-main>
-            <v-container class="rounded-xl px-12 py-6 my-8 pb-10 bg-surface">
+            <v-container class="rounded-xl px-12 py-1 my-8 pb-10 bg-light">
               <router-view
               :user_type="user_type"
               ></router-view>
