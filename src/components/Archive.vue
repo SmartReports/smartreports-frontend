@@ -77,22 +77,18 @@ export default defineComponent({
   methods: {
     async fetchReports() {
       try {
-        console.log('Fetching reports for user_type:', this.user_type);
         const response = await axios.get("/report-archive/");
-        console.log('Response:', response.data);
-
         const reports = response.data.map((report: any) => ({
           ...report,
           created: format(new Date(report.created), 'yyyy-MM-dd HH:mm:ss'),
         })) as Report[];
-
-        // Filter reports based on user_type
         this.reports = reports.filter(report => report.user_type === this.user_type);
-        console.log('Filtered Reports:', this.reports);
+        this.reports.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
       } catch (error) {
         console.error("Error fetching reports:", error);
       }
     },
+
 
     downloadReport(file: string) {
       window.open(file, '_blank');
@@ -108,23 +104,22 @@ export default defineComponent({
     },
 
     getFrequency(reportId: number): string {
-  const template = this.templates.find((t) => t.id === reportId);
-  return template ? template.frequency : 'N/A';
-},
+      const template = this.templates.find((t) => t.id === reportId);
+      return template ? template.frequency : 'N/A';
+    },
 
-getName(reportId: number): string {
-  const template = this.templates.find((t) => t.id === reportId);
-  return template ? template.name : 'N/A';
-},
+    getName(reportId: number): string {
+      const template = this.templates.find((t) => t.id === reportId);
+      return template ? template.name : 'N/A';
+    },
 
 
-    
+
   },
   watch: {
     user_type: 'fetchReports', // Watch for changes in user_type and call fetchReports
   },
   mounted() {
-    console.log('Component mounted.');
     this.fetchReports();
   },
 });
