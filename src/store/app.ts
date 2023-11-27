@@ -2,6 +2,7 @@
 import { defineStore } from "pinia";
 import { Kpi, Alarms, Account, ReportTemplate, ReportImage } from "../models";
 import axios from "axios";
+import {ChartType} from "chart.js";
 
 export const useMainStore = defineStore("main", {
   state: () => ({
@@ -43,7 +44,23 @@ export const useMainStore = defineStore("main", {
     getKpiById: (state) => (id: string) =>
       state.kpis.find((kpi) => kpi.id == id),
     getKpisAllowedCharts: (state) => (ids: string[]) =>
-    state.kpis.find((kpi) => kpi.id in ids),
+    {
+      const selectedKpis = ids.map((kpi_id: any) => state.kpis.find((kpi) => kpi.id == kpi_id));
+      // Ensure that there are selected KPIs
+      if (selectedKpis.length > 0) {
+        // Find the intersection of allowed chart types for selected KPIs
+        const intersection = selectedKpis.reduce((commonChartTypes: any, kpi) => {
+          const kpiChartTypes = kpi?.allowed_charts || [];
+          return commonChartTypes.length === 0
+            ? kpiChartTypes
+            : commonChartTypes.filter((chartType: any) => kpiChartTypes.includes(chartType));
+        }, [] as ChartType[]); // Provide an explicit type for the initial value
+
+        return intersection;
+      } else {
+        return [];
+      }
+    },
     getAlarmById: (state) => (id: string) =>
       state.alarms.find((alarm) => alarm.id == id),
     // Get kpi that don't have alarms setted

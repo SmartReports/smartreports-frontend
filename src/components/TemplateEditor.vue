@@ -139,7 +139,7 @@ export default defineComponent({
             layout: page.layout,
             elements: page.elements.map((element) => ({
               chart_type: element.chart_type,
-              kpis: element.kpis.map((kpi: any) => kpi.value),
+              kpis: element.kpis,
             })),
           })),
           user_type: this.mainStore.currentAccount.value,
