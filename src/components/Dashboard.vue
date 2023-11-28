@@ -165,7 +165,6 @@ export default defineComponent({
       try {
         const id_and_layout = (await this.axios.get(`/dashboard-layout/?user_type=${this.user_type}&display=${this.current_breakpoint}`)).data[0];
 
-        this.layout_id = id_and_layout.id;
         let saved_layout = id_and_layout.layout;
         if (Object.keys(saved_layout).length == 0 || saved_layout.layout.length == 0) {
           throw new Error("empty layout");
@@ -185,7 +184,6 @@ export default defineComponent({
       } catch (error) {
         console.log(error)
         await this.getDefaultLayout();
-        await this.saveLayout();
       }
     },
 
@@ -207,11 +205,10 @@ export default defineComponent({
     },
 
     async getChart(kpis_id: string[], type: ChartType | null) {
-      const kpi_value = kpis_id.map((entry: any) => entry.value)
       if (!type) {
-        type = this.kpiAllowedChartTypes(kpis_id)[0];
+        type = this.mainStore.getKpisAllowedCharts(kpis_id)[0];
       }
-      let chart_data = (await this.axios.get(`/kpi-data/?kpis=${kpi_value}&user_type=${this.user_type}&chart_type=${type}`)).data["data"];
+      let chart_data = (await this.axios.get(`/kpi-data/?kpis=${kpis_id}&user_type=${this.user_type}&chart_type=${type}`)).data["data"];
       return {
         data: chart_data,
         options: this.default_chart_options,
@@ -220,12 +217,11 @@ export default defineComponent({
     },
 
      async getDefaultLayout() {
-      for (let i=0; i < this.mainStore.kpis.length; i++)
-      {
-        const new_index = ++this.last_used_index;
-        // TODO manage layout
-        // await this.addChart(new_index, this.mainStore.kpis[i], null);
-      }
+       for (let i=0; i < this.mainStore.kpis.length; i++)
+       {
+         const new_index = ++this.last_used_index;
+         await this.addChart(new_index, [this.mainStore.kpis[i].id], null);
+       }
     },
 
     orderLayout() {
@@ -256,31 +252,15 @@ export default defineComponent({
             kpi_map: this.kpi_map,
         };
 
-        if (this.layout_id == -1) {
+        const id = (await this.axios.get(`/dashboard-layout/?user_type=${this.user_type}&display=${this.current_breakpoint}`)).data[0]?.id ?? -1;
+
+        if (id == -1) {
           await this.axios.post(`/dashboard-layout/`, {user_type: this.user_type, layout: saved_layout, display: this.current_breakpoint});
           const id_and_layout = (await this.axios.get(`/dashboard-layout/?user_type=${this.user_type}&display=${this.current_breakpoint}`)).data[0];
-          this.layout_id = id_and_layout.id;
         }
         else {
-          await this.axios.put(`/dashboard-layout/${this.layout_id}/`, {user_type: this.user_type, layout: saved_layout, display: this.current_breakpoint})
+          await this.axios.put(`/dashboard-layout/${id}/`, {user_type: this.user_type, layout: saved_layout, display: this.current_breakpoint})
         }
-    },
-
-    kpiAllowedChartTypes(kpis_id: string[]) {
-      const selectedKpis = this.mainStore.getKpisAllowedCharts(kpis_id)?.allowed_charts ?? []
-      if (selectedKpis.length > 0) {
-        // Find the intersection of allowed chart types for selected KPIs
-        const intersection = selectedKpis.reduce((commonChartTypes: any, allowed_charts) => {
-          const kpiChartTypes = allowed_charts || [];
-          return commonChartTypes.length === 0
-            ? kpiChartTypes
-            : commonChartTypes.filter((chartType: any) => kpiChartTypes.includes(chartType));
-        }, [] as ChartType[]); // Provide an explicit type for the initial value
-
-        return intersection;
-      } else {
-        return [];
-      }
     },
   },
   watch: {

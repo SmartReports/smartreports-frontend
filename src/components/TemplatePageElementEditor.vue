@@ -80,21 +80,7 @@ export default defineComponent({
       return this.mainStore.kpis;
     },
     kpisAllowedChartTypes() {
-      const selectedKpis = this.modelValue.kpis.map((kpi: any) => this.mainStore.getKpiById(kpi.value));
-      // Ensure that there are selected KPIs
-      if (selectedKpis.length > 0) {
-        // Find the intersection of allowed chart types for selected KPIs
-        const intersection = selectedKpis.reduce((commonChartTypes: any, kpi) => {
-          const kpiChartTypes = kpi?.allowed_charts || [];
-          return commonChartTypes.length === 0
-            ? kpiChartTypes
-            : commonChartTypes.filter((chartType: any) => kpiChartTypes.includes(chartType));
-        }, [] as ChartType[]); // Provide an explicit type for the initial value
-
-        return intersection;
-      } else {
-        return [];
-      }
+      return this.mainStore.getKpisAllowedCharts(this.modelValue.kpis);
     },
     kpisAsItems() {
       return this.kpis.map((kpi) => ({
@@ -104,11 +90,11 @@ export default defineComponent({
     },
     proxyModelValueKpi: {
       get() {
-        return this.modelValue.kpis;
+        return this.modelValue.kpis.map((kpi) => {return {title: this.mainStore.getKpiById(kpi)?.kb_name ?? "", value: kpi}});
       },
       set(value: any) {
         // TODO only update the value if it is a valid kpi, but keep the search value otherwise
-        this.modelValue.kpis = value
+        this.modelValue.kpis = value.map((item: any) => item.value);
       },
     },
     proxyModelValueChartType: {
