@@ -12,6 +12,7 @@
     "@mdi/font": "7.0.96",
     "axios": "^1.6.0",
     "chart.js": "^4.4.0",
+    "date-fns": "^2.30.0",
     "grid-layout-plus": "https://github.com/filippo-biondi/grid-layout-plus/tarball/main",
     "html2canvas": "^1.4.1",
     "pinia": "^2.0.23",
