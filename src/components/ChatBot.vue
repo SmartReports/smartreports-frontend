@@ -26,7 +26,7 @@
                 chatbotContainer.style.display = "block";
               }
               if (chatbot) {
-                chatbot.setAttribute('src', "https://www.youtube.com/embed/dQw4w9WgXcQ?si=R6HpR5Bo7N2drZxI&autoplay=1")
+                chatbot.setAttribute('src', "https://sa-prj2.vercel.app/")
               }
           },
           closeChatbot() {
