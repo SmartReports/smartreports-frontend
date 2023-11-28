@@ -101,7 +101,7 @@ export const useMainStore = defineStore("main", {
     },
     async getSuggestedReports(accountId: any) {
       this.user_suggested_reports = (
-        await axios.get(`/suggested-reports/?user_type=${accountId}`)
+        await axios.get(`/smart-reports/?user_type=${accountId}`)
       ).data as ReportTemplate[];
     },
     async getAlarms(accountId: any) {
