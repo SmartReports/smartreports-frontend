@@ -2,6 +2,7 @@
 import { defineStore } from "pinia";
 import { Kpi, Alarms, Account, ReportTemplate, ReportImage } from "../models";
 import axios from "axios";
+import { format } from 'date-fns';
 import {ChartType} from "chart.js";
 
 export const useMainStore = defineStore("main", {
@@ -11,6 +12,7 @@ export const useMainStore = defineStore("main", {
     kpis: [] as Kpi[],
     user_reports: [] as ReportTemplate[],
     user_suggested_reports: [] as ReportTemplate[],
+    archived_reports: [],
     currentAccount: {
       name: "Caterina",
       employment: "Machine Maintainer",
@@ -97,7 +99,7 @@ export const useMainStore = defineStore("main", {
       this.user_reports.forEach(report => {
         report.img = images.filter(img => img.report_id == report.id)[0]?.img
       })
-      console.log(this.user_reports)
+      // console.log(this.user_reports)
     },
     async getSuggestedReports(accountId: any) {
       this.user_suggested_reports = (
@@ -108,6 +110,18 @@ export const useMainStore = defineStore("main", {
       this.alarms = (
         await axios.get(`/alarms-list/?user_type=${accountId}`)
       ).data;
+    },
+    async getArchivedReports(accountId: any) {
+      this.archived_reports = (
+        await axios.get(`/report-archive/?user_type=${accountId}`)
+      ).data;
+      this.archived_reports.map((report: any) => {
+        report.created = format(new Date(report.created), 'dd/MM/yyyy')
+        report.file = report.file
+        report.file_name = report.file_name
+        report.user_type = report.user_type
+        report.id = report.id
+      })
     },
     async removeReport(id: number | string) {
       this.user_reports = this.user_reports.filter((report) => report.id != id);
