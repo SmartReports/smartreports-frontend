@@ -1,33 +1,34 @@
 <template>
   <v-container>
-    <v-row>
-      <h3 class="text-h4 mt-4">Dashes</h3>
-      <v-spacer/>
-      <v-btn
-        class="text-grey-darken-1"
-        to="/templateeditor"
-        icon="mdi-plus"
-        variant="text"
-        tooltip="Add"
-      />
-    </v-row>
+  <v-row>
+  <v-card-title class="text-h4 mt-4">Dashes</v-card-title>
+  <v-spacer/>
+  <v-card-actions>
+    <v-btn
+    class="text-white"
+    to="/templateeditor"
+    icon="mdi-plus"
+    variant="text"
+    tooltip="Add"
+    />
+  </v-card-actions>
+  </v-row>
     <div class="pt-4"></div>
 
     <v-container>
-      <v-card-title>Suggested Dashes</v-card-title>
+      <v-card-title>Smart Dashes</v-card-title>
       <v-divider></v-divider>
-      <div class="pt-12"></div>
-    </v-container>
     <v-row>
-      <v-col cols="3" v-for="(report, index) in suggestedReportsAsItem" :key="report.id" class ='grid'>
+      <v-col cols="12" md="6" xl="3" lg="3" sm="6" v-for="(report, index) in suggestedReportsAsItem" :key="report.id">
         <mini-dash :user_type="user_type" :options="false" :modelValue="report"></mini-dash>
       </v-col>
     </v-row>
+    </v-container>
     <v-container>
     <v-card-title>Your Dashes</v-card-title>
     <v-divider></v-divider>
     <v-row>
-      <v-col cols="3" v-for="(report, index) in reportsAsItem" :key="report.id" class ='grid'>
+      <v-col cols="12" md="6" xl="3" lg="3" sm="6" v-for="(report, index) in reportsAsItem" :key="report.id">
         <mini-dash :user_type="user_type" @delete="deleteTemplate(report.id)" :modelValue="report"></mini-dash>
       </v-col>
     </v-row>
@@ -35,6 +36,9 @@
 
   </v-container>
 </template>
+"""
+
+""""
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
