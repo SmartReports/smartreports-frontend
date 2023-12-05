@@ -105,7 +105,7 @@ export default defineComponent({
       default_chart_options: {
         responsive: true,
         maintainAspectRatio: false
-      },
+      } as any,
       last_used_index: -1,
       layout_id: -1,
       current_breakpoint: "lg",
@@ -213,9 +213,16 @@ export default defineComponent({
         type = this.mainStore.getKpisAllowedCharts(kpis_id)[0];
       }
       let chart_data = (await this.axios.get(`/kpi-data/?kpis=${kpis_id}&user_type=${this.user_type}&chart_type=${type}`)).data["data"];
+      let chart_option = this.default_chart_options;
+      chart_option["plugins"] = {
+        title: {
+          display: true,
+          text: this.getChartTitle(kpis_id)
+        }
+      }
       return {
         data: chart_data,
-        options: this.default_chart_options,
+        options: chart_option,
         type: type
       } as ChartConfiguration;
     },
