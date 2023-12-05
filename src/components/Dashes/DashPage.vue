@@ -4,7 +4,7 @@
       <v-col  v-for="col in RowCols(row)">
         <v-card-title>{{ getKpiName (kpi_id_mapping[getIndex(row, col)]) }}</v-card-title>
         <v-container class="d-flex-fill justify-center align-center">
-          <v-card height="310" width="100%" elevation="5" color="white" variant="tonal" class="rounded-xl">
+          <v-card height="310" min-width="400" elevation="5" color="white" variant="tonal" class="rounded-xl">
             <DashboardElementWrapper
             :options="false"
             :chart-configuration="charts_data[getIndex(row, col)]"
@@ -24,6 +24,7 @@ import { ChartConfiguration, ChartData } from "chart.js";
 import DashboardElementWrapper from '../DashboardElementWrapper.vue';
 import { useMainStore } from "@/store/app";
 import { mapStores } from "pinia";
+import { ro, th } from 'date-fns/locale';
 export default {
   data() {
     return {

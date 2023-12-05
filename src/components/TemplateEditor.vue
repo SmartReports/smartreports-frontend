@@ -152,8 +152,9 @@ export default defineComponent({
         this.saving = false;
         this.showSuccess = true;
         setTimeout(() => {
+          window.location.href = "/dashes"
           this.showSuccess = false;
-        }, 2500);
+        }, 800);
       } catch (e) {
         this.saving = false;
         console.error(e);
