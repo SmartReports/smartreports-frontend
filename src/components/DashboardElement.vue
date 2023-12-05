@@ -41,7 +41,7 @@
       />
       <div v-if="chartConfiguration.type === 'value'">
         <div class="text-center">
-          <h3 v-text="chartTitle"/>
+          <span v-text="chartTitle"/>
           <h1 ref="content" class="number" v-text="chartConfiguration.data.value"/>
         </div>
       </div>
@@ -252,7 +252,7 @@ export default defineComponent ({
         this.imgHeight = idealHeight;
       }
 
-      this.imageStyle.top = `${containerHeight / 2}px`;
+      this.imageStyle.top = `${containerHeight / 2 + 15}px`;
       this.imageStyle.left = `${containerWidth / 2}px`;
 
       if(containerHeight > containerWidth) {

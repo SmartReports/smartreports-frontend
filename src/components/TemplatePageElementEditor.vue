@@ -26,22 +26,50 @@
         class="d-flex align-start flex-column justify-center"
       >
         <!-- <div class="text-subtitle-2">Default</div> -->
-        <v-btn-toggle
-          style="height: 80px"
-          class="border pa-0"
-          v-model="proxyModelValueChartType"
-          divided
-          mandatory
-        >
-          <v-btn
-            size="x-large"
-            v-for="chartType in kpisAllowedChartTypes"
-            :value="chartType"
-            :key="chartType"
+<!--        <v-btn-toggle-->
+<!--          style="height: 80px"-->
+<!--          class="border pa-0"-->
+<!--          v-model="proxyModelValueChartType"-->
+<!--          divided-->
+<!--          mandatory-->
+<!--        >-->
+<!--          <v-btn-->
+<!--            size="x-large"-->
+<!--            v-for="chartType in kpisAllowedChartTypes"-->
+<!--            :value="chartType"-->
+<!--            :key="chartType"-->
+<!--          >-->
+<!--            <v-img width="62" height="62" :src="getImgUrl(chartType)" />-->
+<!--          </v-btn>-->
+<!--        </v-btn-toggle>-->
+
+        <v-sheet max-width="100%">
+          <v-slide-group
+              v-model="proxyModelValueChartType"
+              class="border pa-0"
+              selected-class="light-grey"
+              mandatory
+              show-arrows
           >
-            <v-img width="62" height="62" :src="getImgUrl(chartType)" />
-          </v-btn>
-        </v-btn-toggle>
+            <v-slide-group-item
+                v-for="chartType in kpisAllowedChartTypes"
+                :key="chartType"
+                :value="chartType"
+                v-slot="{ toggle, selectedClass }"
+            >
+              <div class="d-flex fill-height align-center justify-center">
+                <v-btn
+                    :class="['ma-4', selectedClass]"
+                    size="x-large"
+                    @click="toggle"
+                >
+                  <v-img width="50" height="50" :src="getImgUrl(chartType)" />
+                </v-btn>
+              </div>
+            </v-slide-group-item>
+          </v-slide-group>
+        </v-sheet>
+
       </div>
     </v-col>
   </v-row>
@@ -115,4 +143,10 @@ export default defineComponent({
 });
 </script>
 
-<style></style>
+<style>
+
+.light-grey{
+  background-color: #DBDBDB;
+}
+
+</style>
