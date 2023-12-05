@@ -39,28 +39,39 @@
         :options="scatterCastedOption"
         :data="scatterCastedData"
       />
-      <div v-if="chartConfiguration.type === 'number'">
+      <div v-if="chartConfiguration.type === 'value'">
         <div class="text-center">
-          <h3 v-text="chartTitle"/>
-          <h1 ref="content" class="number" v-text="chartConfiguration.data"/>
+          <span v-text="chartTitle"/>
+          <h1 ref="content" class="number" v-text="chartConfiguration.data.value"/>
         </div>
       </div>
 
-  <div v-if="chartConfiguration.type === 'semaphore'">-->
+  <div v-if="chartConfiguration.type === 'semaphore'">
     <div class="text-center">
-      <h3 v-text="chartTitle"/>
-      <v-img src="src/assets/semaphore/red.jpg"
-             v-if="chartConfiguration.data === 'red'"
-             :max-height="maxHeight"
-             :max-width="maxWidth"/>
-      <v-img src="src/assets/semaphore/yellow.jpg"
-             v-if="chartConfiguration.data === 'yellow'"
-             :max-height="maxHeight"
-             :max-width="maxWidth"/>
-      <v-img src="src/assets/semaphore/green.jpg"
-             v-if="chartConfiguration.data === 'green'"
-             :max-height="maxHeight"
-             :max-width="maxWidth"/>
+      <span v-text="chartTitle"/>
+      <div class="container">
+        <img ref="semaphore" src="../assets/semaphore/red.jpg"
+             v-if="chartConfiguration.data.color === 'red'"
+             :style="imageStyle"
+             :height="imgHeight"
+             :width="imgWidth"
+
+             alt=""/>
+        <img ref="semaphore" src="../assets/semaphore/yellow.jpg"
+             v-if="chartConfiguration.data.color === 'yellow'"
+             :style="imageStyle"
+             :height="imgHeight"
+             :width="imgWidth"
+             alt=""
+        />
+        <img ref="semaphore" src="../assets/semaphore/green.jpg"
+             v-if="chartConfiguration.data.color === 'green'"
+             :style="imageStyle"
+             :height="imgHeight"
+             :width="imgWidth"
+             alt=""
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -80,7 +91,7 @@ import {Chart as
   PointElement,
   LineElement,
   Filler} from 'chart.js'
-import {defineComponent, PropType} from "vue";
+import {defineComponent, PropType, StyleValue} from "vue";
 import {ChartConfiguration} from 'chart.js';
 import {
   BarChartData,
@@ -96,7 +107,6 @@ import {
   RadarChartOption,
   ScatterChartOption
 } from "@/models";
-import {FLOAT} from "html2canvas/dist/types/css/property-descriptors/float";
 
 ChartJS.register(Title, Tooltip, Legend,
   BarElement, CategoryScale, LinearScale,
@@ -105,7 +115,7 @@ ChartJS.register(Title, Tooltip, Legend,
 
 export default defineComponent ({
   name: 'DashboardElement',
-  emits: ["remove", "edit", "resizeHandler"],
+  emits: ["remove", "edit"],
   computed: {
     barCastedData() {
       return (<BarChartData>this.chartConfiguration.data);
@@ -163,25 +173,36 @@ export default defineComponent ({
     },
   },
   mounted() {
-    if(this.chartConfiguration.type === 'number') {
+    if(this.chartConfiguration.type === 'value') {
       this.ro = new ResizeObserver(this.resizeText);
       this.ro.observe(this.$parent?.$el)
       this.resizeText(); // Call the function on mounted to set the initial font size
     }
-    this.ro = new ResizeObserver(this.resizeImage);
-    this.ro.observe(this.$parent?.$el)
-    this.resizeImage();
+    else if(this.chartConfiguration.type === 'semaphore') {
+      this.ro = new ResizeObserver(this.resizeImage);
+      this.ro.observe(this.$parent?.$el)
+      this.resizeImage();
+    }
   },
   beforeUnmount() {
-    if(this.chartConfiguration.type === 'number') {
+    if(this.chartConfiguration.type === 'value') {
       this.ro.unobserve(this.$parent?.$el)
+    }
+    else if (this.chartConfiguration.type === 'semaphore') {
+      this.ro.unobserve(this.$parent?.$el);
     }
   },
   data() {
     return {
       ro: null as any,
-      maxHeight: 0,
-      maxWidth: 0
+      imgHeight: 460,
+      imgWidth: 917,
+      imageStyle: {
+        transform: 'translate(-50%, -50%) rotate(0deg)',
+        position: 'absolute',
+        // top: '0',
+        // left: '0',
+      } as any,
     }
   },
   methods: {
@@ -217,8 +238,29 @@ export default defineComponent ({
       const containerHeight = container.offsetHeight;
       const containerWidth = container.offsetWidth;
 
-      this.maxHeight = containerHeight;
-      this.maxWidth = containerWidth;
+      const imgRatio = this.imgWidth / this.imgHeight;
+
+      const idealWidth = (containerHeight - 70) * imgRatio;
+      const idealHeight = (containerWidth - 20) / imgRatio;
+
+      if(idealWidth < (containerWidth - 20)) {
+        this.imgHeight = containerHeight - 70;
+        this.imgWidth = idealWidth;
+      }
+      else {
+        this.imgWidth = containerWidth - 20;
+        this.imgHeight = idealHeight;
+      }
+
+      this.imageStyle.top = `${containerHeight / 2 + 15}px`;
+      this.imageStyle.left = `${containerWidth / 2}px`;
+
+      if(containerHeight > containerWidth) {
+        this.imageStyle.transform = 'translate(-50%, -50%) rotate(90deg)';
+      }
+      else {
+        this.imageStyle.transform = 'translate(-50%, -50%) rotate(0deg)';
+      }
     }
   },
 })
