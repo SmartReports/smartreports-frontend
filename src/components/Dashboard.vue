@@ -52,6 +52,7 @@
       <template #item="{ item }">
         <DashboardElementWrapper
           :chart-configuration="chart_map[item.i]"
+          :chart-title="title_map[item.i]"
           @remove="onChartRemove(item.i)"
           @edit="onChartEdit(item.i)"
         />
@@ -94,6 +95,7 @@ export default defineComponent({
       old_layout: reactive([]) as Layout,
       kpi_map: {} as { [key: number]: { kpis_id: string[], chart_type: string } },
       chart_map: {} as { [key: number]: ChartConfiguration },
+      title_map: {} as { [key: number]: string },
       dialogOpen: false,
       dialogModel: {
         chart_type: null,
@@ -119,6 +121,7 @@ export default defineComponent({
           kpis_id: this.dialogModel.kpis,
           chart_type: this.chart_map[layout_id].type
         };
+        this.title_map[layout_id] = this.getChartTitle(this.kpi_map[layout_id].kpis_id);
         this.editing = -1;
       } else {
         layout_id = ++this.last_used_index;
@@ -194,6 +197,7 @@ export default defineComponent({
         kpis_id: kpis_id,
         chart_type: this.chart_map[layout_id].type
       };
+      this.title_map[layout_id] = this.getChartTitle(this.kpi_map[layout_id].kpis_id);
     },
 
     clearDialogModel() {
@@ -262,6 +266,15 @@ export default defineComponent({
           await this.axios.put(`/dashboard-layout/${id}/`, {user_type: this.user_type, layout: saved_layout, display: this.current_breakpoint})
         }
     },
+
+    getChartTitle(kpi_ids: string[]){
+      const kpi_names = kpi_ids.map((id) => this.mainStore.getKpiById(id)?.kb_name);
+      let title: string = "";
+      kpi_names.forEach((name) => {
+        title += " / " + name;
+      })
+      return title.slice(3);
+    }
   },
   watch: {
       smart_ordering(new_value) {
