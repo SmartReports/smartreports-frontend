@@ -2,8 +2,13 @@
           <v-container :class="computedFilter()">
             <!-- <v-card rounded="lg" color="white" elevation="4"> -->
               <DashboardElementLoading v-if="chartConfiguration==undefined"></DashboardElementLoading>
-              <DashboardElement v-else @remove="$emit('remove')"
-              @edit="$emit('edit')" :options="options" :chart-configuration="(chartConfiguration as ChartConfiguration)"></DashboardElement>
+              <DashboardElement v-else
+                @remove="$emit('remove')"
+                @edit="$emit('edit')"
+                :options="options"
+                :chart-configuration="(chartConfiguration as ChartConfiguration)"
+                :chart-title="chartTitle"
+              />
               <div class="pt-8"></div>
             <!-- </v-card> -->
           </v-container>
@@ -25,15 +30,17 @@ export default defineComponent({
       type: Boolean as PropType<Boolean>,
       required: false,
       default: true,
-    }
+    },
+    chartTitle: {
+      type: String as PropType<String>,
+      required: true,
+      default: ""
+    },
   },
   methods:{
     computedFilter: function() {
       return (this.$vuetify.theme as any).global.name == 'dark'? "container_dark" : "container"
-    }
-  },
-  computed:{
-
+    },
   },
   components: { DashboardElementLoading, DashboardElement },
 })
