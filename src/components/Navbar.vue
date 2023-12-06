@@ -118,6 +118,7 @@ export default {
   },
   created() {
     this.$emit("user_pass", this.currentAccount.value);
+    this.mainStore.getSuggestedReports(this.currentAccount.value)
     this.mainStore.getReports(this.currentAccount.value);
     this.mainStore.getAlarms(this.currentAccount.value);
     this.mainStore.getKpi(this.currentAccount.value);
@@ -141,6 +142,7 @@ export default {
       this.mainStore.accounts.splice(value, 1)
       this.rail = true;
       this.$emit("user_pass", this.currentAccount.value);
+      this.mainStore.getSuggestedReports(this.currentAccount.value)
       this.mainStore.getReports(this.currentAccount.value);
       this.mainStore.getAlarms(this.currentAccount.value);
       this.mainStore.getKpi(this.currentAccount.value);
