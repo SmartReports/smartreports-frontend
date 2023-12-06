@@ -33,6 +33,15 @@
         class="rounded-pill"
         color="primary"
       ></v-list-item>
+      <v-list-item
+        :prepend-icon="admin.icon"
+        :title="admin.title"
+        :value="admin.value"
+        :href="admin.href"
+        @click="rail = true"
+        class="rounded-pill"
+        color="primary"
+      ></v-list-item>
     </v-list>
     <!-- SPLIT LINE BETWEEN PAGES ICONS AND ACCOUNT ICON -->
     <!-- <v-divider :elevation="3"></v-divider> -->
@@ -89,6 +98,12 @@ export default {
           icon: "mdi-archive-outline",
         },
       ],
+      admin: {
+          title: "Admin",
+          href: "https://smart-apps.cloud",
+          value: "admin",
+          icon: "mdi-dns",
+        },
       isMobile: false,
       notificationSetting: false,
     };

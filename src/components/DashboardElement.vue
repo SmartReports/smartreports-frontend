@@ -46,18 +46,18 @@
         </div>
       </div>
 
-  <div v-if="chartConfiguration.type === 'semaphore'">-->
+  <div v-if="chartConfiguration.type === 'semaphore'">
     <div class="text-center">
       <h3 v-text="chartTitle"/>
-      <v-img src="src/assets/semaphore/red.jpg"
+      <v-img src="../assets/semaphore/red.jpg"
              v-if="chartConfiguration.data === 'red'"
              :max-height="maxHeight"
              :max-width="maxWidth"/>
-      <v-img src="src/assets/semaphore/yellow.jpg"
+      <v-img src="../assets/semaphore/yellow.jpg"
              v-if="chartConfiguration.data === 'yellow'"
              :max-height="maxHeight"
              :max-width="maxWidth"/>
-      <v-img src="src/assets/semaphore/green.jpg"
+      <v-img src="../assets/semaphore/green.jpg"
              v-if="chartConfiguration.data === 'green'"
              :max-height="maxHeight"
              :max-width="maxWidth"/>

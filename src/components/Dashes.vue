@@ -5,7 +5,6 @@
   <v-spacer/>
   <v-card-actions>
     <v-btn
-    class="text-white"
     to="/templateeditor"
     icon="mdi-plus"
     variant="text"
