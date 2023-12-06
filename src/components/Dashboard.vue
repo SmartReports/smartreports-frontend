@@ -237,9 +237,9 @@ export default defineComponent({
 
     orderLayout() {
       this.old_layout = this.layout
-      const orderedKpi = this.mainStore.kpis.sort((a, b) => {
-        if (a.kb_name < b.kb_name) { return -1 }
-        if (a.kb_name > b.kb_name) {return 1}
+      const orderedKpi = this.mainStore.kpis.sort((a: any, b: any) => {
+        if (a.priority < b.priority) { return -1 }
+        if (a.priority > b.priority) {return 1}
         return 0
       });
 
