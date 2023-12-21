@@ -177,6 +177,9 @@ export default defineComponent({
         this.last_used_index = Math.max(...test);
         this.layout = saved_layout.layout;
         this.kpi_map = saved_layout.kpi_map;
+        for (const [key, value] of Object.entries(this.kpi_map)) {
+          this.title_map[parseInt(key)] = this.getChartTitle(value.kpis_id);
+        }
         const chart_promise = {} as { [key: number]: Promise<ChartConfiguration> };
 
         for (const layout_id in this.kpi_map)
