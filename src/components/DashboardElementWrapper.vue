@@ -5,6 +5,7 @@
               <DashboardElement v-else
                 @remove="$emit('remove')"
                 @edit="$emit('edit')"
+                @switchPredict="onSwitchPredict"
                 :options="options"
                 :chart-configuration="(chartConfiguration as ChartConfiguration)"
                 :chart-title="chartTitle"
@@ -20,7 +21,7 @@ import DashboardElementLoading from "./DashboardElementLoading.vue"
 import DashboardElement from "./DashboardElement.vue"
 import { ChartConfiguration } from "chart.js";
 export default defineComponent({
-  emits: ['remove', 'edit'],
+  emits: ['remove', 'edit', 'switchPredict'],
   props:{
     chartConfiguration: {
       type: undefined,
@@ -38,6 +39,10 @@ export default defineComponent({
     },
   },
   methods:{
+    onSwitchPredict(predict: boolean){
+      this.$emit('switchPredict', predict);
+    },
+
     computedFilter: function() {
       return (this.$vuetify.theme as any).global.name == 'dark'? "container_dark" : "container"
     },
