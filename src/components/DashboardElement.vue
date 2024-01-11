@@ -9,6 +9,12 @@
               @click="onEdit()"
               variant="text"
               tooltip="Edit">mdi-pencil</v-icon>
+      <v-icon class="text-grey-darken-1 predict-button"
+              :class="{ 'predict-button-active': predictActive }"
+              v-if="options && chartConfiguration.type === 'line'"
+              @click="onPredict()"
+              variant="text"
+              tooltip="Predict">mdi-trending-up</v-icon>
       <Bar
         v-if="chartConfiguration.type === 'bar'"
         :options="barCastedOption"
@@ -115,7 +121,7 @@ ChartJS.register(Title, Tooltip, Legend,
 
 export default defineComponent ({
   name: 'DashboardElement',
-  emits: ["remove", "edit"],
+  emits: ["remove", "edit", "switchPredict"],
   computed: {
     barCastedData() {
       return (<BarChartData>this.chartConfiguration.data);
@@ -194,6 +200,7 @@ export default defineComponent ({
   },
   data() {
     return {
+      predictActive: false,
       ro: null as any,
       imgHeight: 460,
       imgWidth: 917,
@@ -210,7 +217,13 @@ export default defineComponent ({
       this.$emit("remove");
     },
     onEdit() {
+      this.predictActive = false;
+      this.$emit("switchPredict", false);
       this.$emit("edit");
+    },
+    onPredict() {
+      this.predictActive = !this.predictActive;
+      this.$emit("switchPredict", this.predictActive);
     },
     resizeText() {
       const container: any = this.$parent?.$el;
@@ -280,6 +293,16 @@ export default defineComponent ({
   right: 35px; /* Adjust right positioning as needed */
   z-index: 1; /* Ensure the button is displayed on top of the plot */
   opacity: 60%;
+}
+.predict-button {
+  position: absolute;
+  top: 5px; /* Adjust top positioning as needed */
+  right: 60px; /* Adjust right positioning as needed */
+  z-index: 1; /* Ensure the button is displayed on top of the plot */
+  opacity: 60%;
+}
+.predict-button-active {
+  background-color: #c8c8c8;
 }
 .delete-button:hover {
   opacity: 1.0;
