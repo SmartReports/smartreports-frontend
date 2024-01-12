@@ -80,9 +80,6 @@ export default defineComponent({
       cols: 4,
     };
   },
-  created() {
-    this.mainStore.getSuggestedReports(this.user_type);
-  },
   methods: {
     async deleteTemplate(id: string | number | undefined) {
       if (id == undefined) {
