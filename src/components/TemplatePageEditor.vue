@@ -18,7 +18,12 @@
       </div>
 
       <div class="hide-on-drag">
-        <div class="d-flex justify-end align-center">
+        <div
+          :class="[
+            'd-flex align-center',
+            $vuetify.display.mdAndUp ? 'justify-end' : 'mb-10',
+          ]"
+        >
           <p class="text-overline mr-4">Page layout</p>
           <v-btn-toggle
             class="border"

@@ -10,11 +10,19 @@
     <div class="pt-12" />
 
     <v-row class="d-flex align-center">
-      <v-col cols="8">
+      <v-col
+        :class="{ 'my-0 py-0': $vuetify.display.smAndDown }"
+        cols="12"
+        md="8"
+      >
         <v-text-field label="Name" v-model="modelValue.name" />
       </v-col>
 
-      <v-col cols="4">
+      <v-col
+        :class="{ 'my-0 py-0': $vuetify.display.smAndDown }"
+        cols="12"
+        md="4"
+      >
         <v-select
           :items="frequencyItems"
           label="Frequency"
@@ -94,7 +102,11 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import { KpiReportElement, ReportTemplate, ReportTemplatePage } from "../models";
+import {
+  KpiReportElement,
+  ReportTemplate,
+  ReportTemplatePage,
+} from "../models";
 import TemplatePageEditor from "./TemplatePageEditor.vue";
 import { mapStores } from "pinia";
 import { useMainStore } from "../store/app";
@@ -145,14 +157,12 @@ export default defineComponent({
           user_type: this.mainStore.currentAccount.value,
         };
         console.log("Request Data:", requestData);
-        await this.axios.post("/report-templates/",
-          requestData
-        );
-        this.mainStore.getReports(this.mainStore.currentAccount.value)
+        await this.axios.post("/report-templates/", requestData);
+        this.mainStore.getReports(this.mainStore.currentAccount.value);
         this.saving = false;
         this.showSuccess = true;
         setTimeout(() => {
-          window.location.href = "/dashes"
+          window.location.href = "/dashes";
           this.showSuccess = false;
         }, 800);
       } catch (e) {

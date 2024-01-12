@@ -1,6 +1,6 @@
 <template>
   <v-row class="d-flex align-center">
-    <v-col cols="5" class="d-flex align-center">
+    <v-col cols="12" md="5" class="d-flex align-center">
       <v-btn
         v-if="allow_remove"
         class="mr-1 ml-n3 text-grey-darken-1"
@@ -8,8 +8,10 @@
         @click="onRemove()"
         icon="mdi-close"
       />
-      <v-icon class="drag-handle mr-2 ml-n1" style="cursor: pointer"
-          v-if="allow_remove"
+      <v-icon
+        class="drag-handle mr-2 ml-n1"
+        style="cursor: pointer"
+        v-if="allow_remove"
         >mdi-drag-vertical</v-icon
       >
       <v-combobox
@@ -20,48 +22,51 @@
         v-model="proxyModelValueKpi"
       />
     </v-col>
-    <v-col cols="6">
+    <v-col cols="12" md="6">
       <div
         v-if="kpisAllowedChartTypes.length > 0"
         class="d-flex align-start flex-column justify-center"
       >
         <!-- <div class="text-subtitle-2">Default</div> -->
-<!--        <v-btn-toggle-->
-<!--          style="height: 80px"-->
-<!--          class="border pa-0"-->
-<!--          v-model="proxyModelValueChartType"-->
-<!--          divided-->
-<!--          mandatory-->
-<!--        >-->
-<!--          <v-btn-->
-<!--            size="x-large"-->
-<!--            v-for="chartType in kpisAllowedChartTypes"-->
-<!--            :value="chartType"-->
-<!--            :key="chartType"-->
-<!--          >-->
-<!--            <v-img width="62" height="62" :src="getImgUrl(chartType)" />-->
-<!--          </v-btn>-->
-<!--        </v-btn-toggle>-->
+        <!--        <v-btn-toggle-->
+        <!--          style="height: 80px"-->
+        <!--          class="border pa-0"-->
+        <!--          v-model="proxyModelValueChartType"-->
+        <!--          divided-->
+        <!--          mandatory-->
+        <!--        >-->
+        <!--          <v-btn-->
+        <!--            size="x-large"-->
+        <!--            v-for="chartType in kpisAllowedChartTypes"-->
+        <!--            :value="chartType"-->
+        <!--            :key="chartType"-->
+        <!--          >-->
+        <!--            <v-img width="62" height="62" :src="getImgUrl(chartType)" />-->
+        <!--          </v-btn>-->
+        <!--        </v-btn-toggle>-->
 
         <v-sheet max-width="100%">
           <v-slide-group
-              v-model="proxyModelValueChartType"
-              class="border pa-0"
-              selected-class="light-grey"
-              mandatory
-              show-arrows
+            v-model="proxyModelValueChartType"
+            class="border pa-0"
+            selected-class="light-grey"
+            mandatory
+            show-arrows
           >
             <v-slide-group-item
-                v-for="chartType in kpisAllowedChartTypes"
-                :key="chartType"
-                :value="chartType"
-                v-slot="{ toggle, selectedClass }"
+              v-for="chartType in kpisAllowedChartTypes"
+              :key="chartType"
+              :value="chartType"
+              v-slot="{ toggle, selectedClass }"
             >
               <div class="d-flex fill-height align-center justify-center">
                 <v-btn
-                    :class="['ma-4', selectedClass]"
-                    size="x-large"
-                    @click="toggle"
+                  :class="[
+                    $vuetify.display.mdAndUp ? 'ma-4' : 'mx-1 my-2',
+                    selectedClass,
+                  ]"
+                  size="x-large"
+                  @click="toggle"
                 >
                   <v-img width="50" height="50" :src="getImgUrl(chartType)" />
                 </v-btn>
@@ -69,7 +74,6 @@
             </v-slide-group-item>
           </v-slide-group>
         </v-sheet>
-
       </div>
     </v-col>
   </v-row>
@@ -118,7 +122,12 @@ export default defineComponent({
     },
     proxyModelValueKpi: {
       get() {
-        return this.modelValue.kpis.map((kpi) => {return {title: this.mainStore.getKpiById(kpi)?.kb_name ?? "", value: kpi}});
+        return this.modelValue.kpis.map((kpi) => {
+          return {
+            title: this.mainStore.getKpiById(kpi)?.kb_name ?? "",
+            value: kpi,
+          };
+        });
       },
       set(value: any) {
         // TODO only update the value if it is a valid kpi, but keep the search value otherwise
@@ -136,7 +145,7 @@ export default defineComponent({
         return this.modelValue.chart_type;
       },
       set(value: any) {
-        this.modelValue.chart_type = value
+        this.modelValue.chart_type = value;
       },
     },
   },
@@ -144,9 +153,7 @@ export default defineComponent({
 </script>
 
 <style>
-
-.light-grey{
-  background-color: #DBDBDB;
+.light-grey {
+  background-color: #dbdbdb;
 }
-
 </style>
