@@ -95,14 +95,18 @@ m1272 -364 c227 -30 415 -116 563 -259 271 -261 394 -657 366 -1178 -31 -561
         :value="menuitem.value"
         :to="menuitem.path"
         color="primary"
-      ></v-btn>
+      >
+      <span>{{ menuitem.title }}</span>
+      </v-btn>
       <v-btn
         :prepend-icon="admin.icon"
         :title="admin.title"
         :value="admin.value"
         :href="admin.href"
         color="primary"
-      ></v-btn>
+      >
+      <span>{{ admin.title }}</span>
+      </v-btn>
 </v-bottom-navigation>
 </template>
 
