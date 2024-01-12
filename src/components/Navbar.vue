@@ -86,10 +86,10 @@ m1272 -364 c227 -30 415 -116 563 -259 271 -261 394 -657 366 -1178 -31 -561
     @onNormalClick="onNormalClick"
     @onAccountChange="onAccountChange"
   />
-  <v-bottom-navigation v-if="isMobile || isSmall" :elevation="0" mode="shift">
+  <v-bottom-navigation v-if="isMobile || isSmall" :elevation="8" grow>
       <v-btn
         v-for="(menuitem, i) in items"
-        :key="i"
+        :key="menuitem.order"
         :prepend-icon="menuitem.icon"
         :title="menuitem.title"
         :value="menuitem.value"
@@ -98,7 +98,7 @@ m1272 -364 c227 -30 415 -116 563 -259 271 -261 394 -657 366 -1178 -31 -561
       >
       <span>{{ menuitem.title }}</span>
       </v-btn>
-      <v-btn
+      <!-- <v-btn
         :prepend-icon="admin.icon"
         :title="admin.title"
         :value="admin.value"
@@ -106,7 +106,7 @@ m1272 -364 c227 -30 415 -116 563 -259 271 -261 394 -657 366 -1178 -31 -561
         color="primary"
       >
       <span>{{ admin.title }}</span>
-      </v-btn>
+      </v-btn> -->
 </v-bottom-navigation>
 </template>
 
@@ -135,24 +135,28 @@ export default {
           path: "/dashboard",
           value: "Home",
           icon: "mdi-view-dashboard",
+          order: 2,
         },
         {
           title: "Dashes",
           path: "/dashes",
           value: "dashes",
           icon: "mdi-table-settings",
+          order: 1,
         },
         {
           title: "Notifications",
           path: "/notification",
           value: "notification",
           icon: "mdi-bell",
+          order: 3,
         },
         {
           title: "Archive",
           path: "/archive",
           value: "archive",
           icon: "mdi-archive-outline",
+          order: 4,
         },
       ],
       admin: {

@@ -1,7 +1,7 @@
 <template>
   <v-btn class="chat-btn d-none d-lg-block" icon="mdi-robot" size="x-large" @click="btnClick"></v-btn>
   <v-btn class="chat-btn d-none d-md-block d-lg-none" icon="mdi-robot" size="large" @click="btnClick"></v-btn>
-  <v-btn class="chat-btn d-block d-md-none d-lg-none" icon="mdi-robot" @click="btnClick"></v-btn>
+  <v-btn class="chat-btn-mobile d-block d-md-none d-lg-none" icon="mdi-robot" @click="btnClick"></v-btn>
   <div class="chatbot-container" id="chatbot-container">
     <v-btn
           text="Close"
@@ -44,6 +44,13 @@
 </script>
 
 <style>
+.chat-btn-mobile{
+  position: fixed;
+  right: 30px;
+  bottom: 70px;
+  background: rgb(var(--v-theme-secondary));
+}
+
 .chat-btn {
   position: fixed;
   right: 30px;
