@@ -5,7 +5,7 @@
   </v-icon>
   <v-icon @click="$emit('onMediumClick')" class="d-none d-sm-block d-md-block d-lg-none menu-icn">mdi-menu</v-icon>
     <!-- SITE ICON -->
-    <img :class="{ 'invert-color': invert }"  v-if="isMobile || small_screen" src="../assets/logo.svg" alt="logo" height="40px" />
+    <img :class="{ 'invert-color': invert }"  v-if="isMobile || small_screen" src="../assets/logo.png" alt="logo" height="40px" />
   <v-spacer></v-spacer>
   <DarkMode></DarkMode>
   <div class="px-4"></div>
