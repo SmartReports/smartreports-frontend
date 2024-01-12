@@ -1,9 +1,9 @@
 <template>
-  <v-app-bar class="px-8" :elevation="0">
-  <v-icon  @click="$emit('onNormalClick')" class="d-none d-md-none d-lg-block menu-icn">
+  <v-app-bar v-if="!isLoading" class="px-8" :elevation="0">
+  <v-icon v-if="!isLoading"  @click="$emit('onNormalClick')" class="d-none d-md-none d-lg-block menu-icn">
     mdi-menu
   </v-icon>
-  <v-icon @click="$emit('onMediumClick')" class="d-none d-sm-block d-md-block d-lg-none menu-icn">mdi-menu</v-icon>
+  <v-icon v-if="!isLoading" @click="$emit('onMediumClick')" class="d-none d-sm-block d-md-block d-lg-none menu-icn">mdi-menu</v-icon>
     <!-- SITE ICON -->
   <svg :class="{ 'invert-color': invert }" version="1.0" xmlns="http://www.w3.org/2000/svg"
  width="90px" v-if="isMobile || small_screen" viewBox="0 0 1672.000000 794.000000"
@@ -47,10 +47,10 @@ m1272 -364 c227 -30 415 -116 563 -259 271 -261 394 -657 366 -1178 -31 -561
 </svg>
 
   <v-spacer></v-spacer>
-  <DarkMode></DarkMode>
+  <DarkMode v-if="!isLoading"></DarkMode>
   <div class="px-4"></div>
   <!-- ACCOUNT ICON AND DROPDOWN SELECTOR -->
-  <template v-slot:append>
+  <template v-if="!isLoading" v-slot:append>
         <v-menu>
           <template v-slot:activator="{ props }">
             <v-avatar >
@@ -101,6 +101,7 @@ export default defineComponent({
     computed:{
     ...mapStores(useMainStore),
     invert() { return (this.$vuetify.theme as any).global.name == 'dark'; },
+    isLoading() { return this.mainStore.splashScreen; },
     isMobile() { return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); },
     },
     methods: {
