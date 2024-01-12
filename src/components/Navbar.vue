@@ -1,7 +1,7 @@
 <template>
 
   <!-- APP BAR with menu button -->
-  <v-navigation-drawer :class="!isMobile? 'drawer': ''" floating :elevation="0" v-model="drawer" :rail="rail">
+  <v-navigation-drawer v-if="!isMobile" :class="!isMedium? 'drawer': ''" floating :elevation="0" v-model="drawer" :rail="rail">
     <div class="d-flex align-center site-icn">
         <div
         class="rounded-circle d-flex justify-center align-center mr-3 pa-2 grad-bg">
@@ -11,13 +11,7 @@
       </div>
       <!-- SITE NAME -->
       <div class="px-1"></div>
-      <h2
-        v-if="!rail"
-        class="text-h4"
-        style="font-variant: small-caps; font-size: 1.7rem !important"
-      >
-      Smartlytics
-    </h2>
+      <img class='svg' :class="{ 'invert-color': invert }" src="@/assets/logo.svg" alt="logo" height="40px" />
   </div>
     <div class="pt-8"></div>
     <!-- PAGES ICONS (BUTTONS) -->
@@ -48,10 +42,28 @@
   </v-navigation-drawer>
   <Appbar
     :account-id="currentAccount.value"
-    @onMobileClick="onMobileClick"
+    @onMobileClick="onMediumClick"
     @onNormalClick="onNormalClick"
     @onAccountChange="onAccountChange"
   />
+  <v-bottom-navigation v-if="isMobile || isSmall" :elevation="0" mode="shift">
+      <v-btn
+        v-for="(menuitem, i) in items"
+        :key="i"
+        :prepend-icon="menuitem.icon"
+        :title="menuitem.title"
+        :value="menuitem.value"
+        :to="menuitem.path"
+        color="primary"
+      ></v-btn>
+      <v-btn
+        :prepend-icon="admin.icon"
+        :title="admin.title"
+        :value="admin.value"
+        :href="admin.href"
+        color="primary"
+      ></v-btn>
+</v-bottom-navigation>
 </template>
 
 <script lang="ts">
@@ -60,6 +72,7 @@ import { useTheme } from "vuetify";
 import { Account, Alarms, Kpi } from "../models";
 import { useMainStore } from "../store/app";
 import { mapStores } from "pinia";
+import { tr } from "date-fns/locale";
 
 
 export default {
@@ -71,7 +84,7 @@ export default {
   data() {
     return {
       drawer: true,
-      rail: true && window.innerWidth < 1350,
+      rail: false && window.innerWidth < 1400 && window.innerWidth > 600,
       items: [
         {
           title: "Home",
@@ -104,7 +117,8 @@ export default {
           value: "admin",
           icon: "mdi-dns",
         },
-      isMobile: false,
+      isMedium: false,
+      isSmall: false,
       notificationSetting: false,
     };
   },
@@ -150,10 +164,11 @@ export default {
 
     },
     onResize() {
-      this.isMobile = window.innerWidth < 1300;
-      this.rail = this.rail && this.isMobile;
+      this.isMedium = window.innerWidth < 1400 && window.innerWidth > 600;
+      this.isSmall = window.innerWidth < 600;
+      this.rail = this.rail && this.isMedium;
     },
-    onMobileClick() {
+    onMediumClick() {
       this.drawer = !this.drawer;
       this.rail = false;
     },
@@ -171,12 +186,19 @@ export default {
         this.mainStore.currentAccount = value;
       },
     },
+    invert() {
+      return (this.$vuetify.theme as any).global.name == 'dark'
+    },
+    isMobile() { return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); },
   },
   components: { Appbar },
 };
 </script>
 
 <style>
+.invert-color {
+  filter: invert(1); /* Invert the color */
+}
 .site-icn{
   position: relative;
   margin-left: 5px;
@@ -187,5 +209,10 @@ export default {
 .drawer{
   margin-left: 5px;
   margin-right: 5px
+}
+
+svg{
+    fill: #fff;
+    stroke: #fff;
 }
 </style>
