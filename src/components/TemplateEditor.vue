@@ -158,7 +158,6 @@ export default defineComponent({
         };
         console.log("Request Data:", requestData);
         await this.axios.post("/report-templates/", requestData);
-        this.mainStore.getReports(this.mainStore.currentAccount.value);
         this.saving = false;
         this.showSuccess = true;
         setTimeout(() => {

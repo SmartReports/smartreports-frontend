@@ -207,11 +207,11 @@ export default {
       this.rail = true;
       this.$emit("user_pass", this.currentAccount.value);
 
-      this.mainStore.getKpi(this.currentAccount.value);
-      this.mainStore.getAlarms(this.currentAccount.value);
-      this.mainStore.getArchivedReports(this.currentAccount.value);
       this.mainStore.getSuggestedReports(this.currentAccount.value);
       this.mainStore.getReports(this.currentAccount.value);
+      this.mainStore.getAlarms(this.currentAccount.value);
+      this.mainStore.getKpi(this.currentAccount.value);
+      this.mainStore.getArchivedReports(this.currentAccount.value);
 
     },
     onResize() {
@@ -240,9 +240,9 @@ export default {
     invert() {
       return (this.$vuetify.theme as any).global.name == 'dark'
     },
-    isLoading() { return this.mainStore.activeRequests; },
+    isLoading() { return this.mainStore.activeRequests > 0; },
     isMobile() {
-      this.drawer = false;
+      this.drawer = !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 600;
       return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); },
   },
   components: { Appbar },
