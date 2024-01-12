@@ -1,12 +1,11 @@
 <template>
   <v-app-bar class="px-8" :elevation="0">
-  <v-icon  @click="$emit('onNormalClick')" class="d-none d-lg-block menu-icn">
+  <v-icon  @click="$emit('onNormalClick')" class="d-none d-md-none d-lg-block menu-icn">
     mdi-menu
   </v-icon>
-  <v-icon @click="$emit('onMobileClick')" class="d-block d-lg-none menu-icn">mdi-menu</v-icon>
+  <v-icon @click="$emit('onMediumClick')" class="d-none d-sm-block d-md-block d-lg-none menu-icn">mdi-menu</v-icon>
     <!-- SITE ICON -->
-
-
+    <img :class="{ 'invert-color': invert }"  v-if="isMobile || small_screen" src="@/assets/logo.svg" alt="logo" height="40px" />
   <v-spacer></v-spacer>
   <DarkMode></DarkMode>
   <div class="px-4"></div>
@@ -45,11 +44,12 @@ import { useMainStore } from "../store/app";
 import { mapStores } from "pinia";
 import DarkMode from "./DarkMode.vue"
 export default defineComponent({
-    emits: ['onAccountChange', 'onMobileClick', 'onNormalClick'],
+    emits: ['onAccountChange', 'onMediumClick', 'onNormalClick'],
     name: "Appbar",
     data() {
       return{
         isMobile: false,
+        small_screen : window.innerWidth < 1300,
       }
     },
     props:{
@@ -59,13 +59,14 @@ export default defineComponent({
       }
     },
     computed:{
-      ...mapStores(useMainStore),
-
+    ...mapStores(useMainStore),
+    invert() { return (this.$vuetify.theme as any).global.name == 'dark'; },
+    isMobile() { return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); },
     },
     methods: {
       onResize() {
-      this.isMobile = window.innerWidth < 600;
-    },
+        this.small_screen = window.innerWidth < 1300;
+      }
     },
     components: { DarkMode },
     beforeDestroy() {
@@ -80,6 +81,9 @@ export default defineComponent({
 </script>
 
 <style>
+.invert-color {
+  filter: invert(1); /* Invert the color */
+}
 .menu-icn {
   position: relative;
   margin-left: -15px;
