@@ -101,7 +101,7 @@ export default defineComponent({
     computed:{
     ...mapStores(useMainStore),
     invert() { return (this.$vuetify.theme as any).global.name == 'dark'; },
-    isLoading() { return this.mainStore.splashScreen; },
+    isLoading() { return this.mainStore.activeRequests>0; },
     isMobile() { return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); },
     },
     methods: {
