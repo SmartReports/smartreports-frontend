@@ -11,7 +11,7 @@
       </div>
       <!-- SITE NAME -->
       <div class="px-1"></div>
-      <img class='svg' :class="{ 'invert-color': invert }" src="@/assets/logo.svg" alt="logo" height="40px" />
+      <img class='svg' :class="{ 'invert-color': invert }" src="../assets/logo.svg" alt="logo" height="40px" />
   </div>
     <div class="pt-8"></div>
     <!-- PAGES ICONS (BUTTONS) -->
