@@ -6,7 +6,7 @@
       color="black"
       indeterminate
     >
-      <svg :class="{ 'invert-color': invert }" version="1.0" xmlns="http://www.w3.org/2000/svg"
+      <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
            width='100%' viewBox="0 0 1672.000000 794.000000"
            preserveAspectRatio="xMidYMid meet">
         <g transform="translate(0.000000,794.000000) scale(0.100000,-0.100000)"
