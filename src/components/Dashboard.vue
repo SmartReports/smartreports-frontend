@@ -165,7 +165,7 @@ export default defineComponent({
     async onChartPredict(layout_it: number, predict: boolean) {
       const chart_type = this.chart_map[layout_it].type;
       const kpis_id = this.kpi_map[layout_it].kpis_id;
-      if(chart_type !== "line" || kpis_id.length != 1)
+      if(chart_type !== "line")
       {
         return;
       }
