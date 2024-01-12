@@ -44,7 +44,7 @@ export default defineComponent({
     },
 
     computedFilter: function() {
-      return (this.$vuetify.theme as any).global.name == 'dark'? "container_dark" : "container"
+      return (this.$vuetify.theme as any).global.name == 'dark' ? "container_dark" : "container"
     },
   },
   components: { DashboardElementLoading, DashboardElement },

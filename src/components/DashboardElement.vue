@@ -46,31 +46,33 @@
         :data="scatterCastedData"
       />
       <div v-if="chartConfiguration.type === 'value'">
-        <div class="text-center">
+        <div class="text-center" :class="{'dark-number': isDark}">
           <span v-text="chartTitle"/>
-          <h1 ref="content" class="number" v-text="chartConfiguration.data.value"/>
+          <h1 ref="content" class="number"
+              v-text="chartConfiguration.data.value"
+          />
         </div>
       </div>
 
   <div v-if="chartConfiguration.type === 'semaphore'">
     <div class="text-center">
-      <span v-text="chartTitle"/>
+      <span v-text="chartTitle" :class="{'dark-number': isDark}"/>
       <div class="container">
-        <img ref="semaphore" src="../assets/semaphore/red.jpg"
+        <img ref="semaphore" src="../assets/semaphore/red.svg"
              v-if="chartConfiguration.data.color === 'red'"
              :style="imageStyle"
              :height="imgHeight"
              :width="imgWidth"
 
              alt=""/>
-        <img ref="semaphore" src="../assets/semaphore/yellow.jpg"
+        <img ref="semaphore" src="../assets/semaphore/yellow.svg"
              v-if="chartConfiguration.data.color === 'yellow'"
              :style="imageStyle"
              :height="imgHeight"
              :width="imgWidth"
              alt=""
         />
-        <img ref="semaphore" src="../assets/semaphore/green.jpg"
+        <img ref="semaphore" src="../assets/semaphore/green.svg"
              v-if="chartConfiguration.data.color === 'green'"
              :style="imageStyle"
              :height="imgHeight"
@@ -160,6 +162,14 @@ export default defineComponent ({
     scatterCastedOption() {
       return (<ScatterChartOption>this.chartConfiguration.options);
     },
+
+    isDark: function() {
+      return (this.$vuetify.theme as any).global.name == 'dark';
+    },
+
+    invert_dark: function() {
+      return (this.$vuetify.theme as any).global.name == 'dark' ? 'invert(1)' : 'invert(0)';
+    },
   },
   components: { Bar, Doughnut, Pie, Line, Radar, Scatter },
   props: {
@@ -189,6 +199,16 @@ export default defineComponent ({
       this.ro.observe(this.$parent?.$el)
       this.resizeImage();
     }
+
+    this.imageStyle.filter = (this.$vuetify.theme.global.name == 'dark' ? 'invert(1)' : 'invert(0)')
+    this.$watch(
+      () => {
+        return this.$vuetify.theme.global.name
+      },
+      (val) => {
+        this.imageStyle.filter = (val == 'dark' ? 'invert(1)' : 'invert(0)')
+      }
+    )
   },
   beforeUnmount() {
     if(this.chartConfiguration.type === 'value') {
@@ -202,11 +222,12 @@ export default defineComponent ({
     return {
       predictActive: false,
       ro: null as any,
-      imgHeight: 460,
-      imgWidth: 917,
+      imgHeight: 329,
+      imgWidth: 165,
       imageStyle: {
-        transform: 'translate(-50%, -50%) rotate(0deg)',
+        transform: 'translate(-50%, -50%) rotate(90deg)',
         position: 'absolute',
+        filter: 'invert(0)',
         // top: '0',
         // left: '0',
       } as any,
@@ -269,10 +290,10 @@ export default defineComponent ({
       this.imageStyle.left = `${containerWidth / 2}px`;
 
       if(containerHeight > containerWidth) {
-        this.imageStyle.transform = 'translate(-50%, -50%) rotate(90deg)';
+        this.imageStyle.transform = 'translate(-50%, -50%) rotate(0deg)';
       }
       else {
-        this.imageStyle.transform = 'translate(-50%, -50%) rotate(0deg)';
+        this.imageStyle.transform = 'translate(-50%, -50%) rotate(90deg)';
       }
     }
   },
@@ -300,15 +321,20 @@ export default defineComponent ({
   right: 60px; /* Adjust right positioning as needed */
   z-index: 1; /* Ensure the button is displayed on top of the plot */
   opacity: 60%;
+  round-clip: 1px;
 }
 .predict-button-active {
   background-color: #c8c8c8;
+  opacity: 1.0;
 }
 .delete-button:hover {
   opacity: 1.0;
 }
 .change-button:hover {
   opacity: 1.0;
+}
+.predict-button:hover {
+  opacity: 1.0
 }
 
 .number {
@@ -317,5 +343,9 @@ export default defineComponent ({
   top: 0; /* Adjust top positioning as needed */
   left: 0;
   font-size: 10rem;
+}
+
+.dark-number {
+  color: #1e1e1e;
 }
 </style>
