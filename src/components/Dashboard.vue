@@ -1,7 +1,7 @@
 <template>
-  <v-row class="d-flex align-center">
-    <div class="px-2"></div>
-    <v-col cols="3">
+  <v-container class="d-flex align-center">
+    <!-- <div class="px-2"></div> -->
+    <v-col class="d-flex align-center justify-center">
       <v-btn
         color="primary"
         target="_blank"
@@ -17,26 +17,37 @@
           @update:dialogOpen="onUpdateDialogOpen($event)"
           @save="onAddChart()"
         />
+      <div class="px-4 d-none d-md-block">
+        <v-cart-title>Add Chart</v-cart-title>
+      </div>
     </v-col>
-    <v-col>
-      <v-switch
-        hide-details="auto"
-        v-model="smart_ordering"
-        inset
-        :label="smart_switch_tex"
-      />
-    </v-col>
-    <v-col cols="3">
+    <v-col class="d-flex align-center justify-center">
       <v-btn
-        v-if="!smart_ordering"
+      :disabled="smart_ordering"
+      color="primary"
+      target="_blank"
+      variant="flat"
+      icon="mdi-content-save"
+      @click="saveLayout"
+      />
+      <div class="px-4 d-none d-md-block">
+        <v-cart-title>Save Layout</v-cart-title>
+      </div>
+    </v-col>
+    <v-col class="d-flex align-center justify-center">
+      <v-btn
+        hide-details="auto"
+        @click="smart_ordering=!smart_ordering"
         color="primary"
         target="_blank"
-        variant="flat"
-        icon="mdi-content-save"
-        @click="saveLayout"
-      />
+        :icon= '!smart_ordering? "mdi-lightbulb-outline": "mdi-lightbulb-on-outline"'
+        inset
+        />
+      <div class="px-4 d-none d-md-block">
+        <v-cart-title>Smart Ordering</v-cart-title>
+      </div>
     </v-col>
-  </v-row>
+  </v-container>
   <div style="margin-top: 10px">
     <GridLayout
       v-model:layout="layout"
@@ -86,6 +97,7 @@ export default defineComponent({
 
   data() {
     return {
+      // isSmall: false,
       smart_ordering: false,
       resizable: true,
       responsive: true,
@@ -316,7 +328,7 @@ export default defineComponent({
     },
 
     draggable() { return !this.smart_ordering },
-
+    isSmall() { return window.innerWidth < 600 },
     isMobile() { return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); },
   },
   components: { DashboardDialog, Doughnut, DashboardElementWrapper },
