@@ -7,6 +7,7 @@ import {ChartType} from "chart.js";
 
 export const useMainStore = defineStore("main", {
   state: () => ({
+    debug: false,
     activeRequests: 0,
     currentModelValue: {} as ReportTemplate,
     alarms: [] as Alarms[],
@@ -85,15 +86,15 @@ export const useMainStore = defineStore("main", {
       this.currentModelValue = value
     },
     async getKpi(accountId: any) {
-      this.activeRequests++;
+      if(!this.debug) if(!this.debug) this.activeRequests++;
       // If accountId is undefined accountId = ''
       const account = accountId === undefined ? "" : accountId;
 
       this.kpis = (await axios.get(`/kpi-list/?user_type=${account}`)).data;
-      this.activeRequests--;
+      if(!this.debug) this.activeRequests--;
     },
     async getReports(accountId: any) {
-      this.activeRequests++;
+      if(!this.debug) this.activeRequests++;
       // If accountId is undefined accountId = ''
       const account = accountId === undefined ? "" : accountId;
 
@@ -104,24 +105,24 @@ export const useMainStore = defineStore("main", {
         report.img = images.filter(img => img.report_id == report.id)[0]?.img
       })
       // console.log(this.user_reports)
-      this.activeRequests--;
+      if(!this.debug) this.activeRequests--;
     },
     async getSuggestedReports(accountId: any) {
-      this.activeRequests++;
+      if(!this.debug) this.activeRequests++;
       this.user_suggested_reports = (
         await axios.get(`/smart-reports/?user_type=${accountId}`)
       ).data as ReportTemplate[];
-      this.activeRequests--;
+      if(!this.debug) this.activeRequests--;
     },
     async getAlarms(accountId: any) {
-      this.activeRequests++;
+      if(!this.debug) this.activeRequests++;
       this.alarms = (
         await axios.get(`/alarms-list/?user_type=${accountId}`)
       ).data;
-      this.activeRequests--;
+      if(!this.debug) this.activeRequests--;
     },
     async getArchivedReports(accountId: any) {
-      this.activeRequests++;
+      if(!this.debug) this.activeRequests++;
       this.archived_reports = (
         await axios.get(`/report-archive/?user_type=${accountId}`)
       ).data;
@@ -132,7 +133,7 @@ export const useMainStore = defineStore("main", {
         report.user_type = report.user_type
         report.id = report.id
       })
-      this.activeRequests--;
+      if(!this.debug) this.activeRequests--;
     },
     async removeReport(id: number | string) {
       this.user_reports = this.user_reports.filter((report) => report.id != id);
