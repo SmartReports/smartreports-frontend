@@ -1,5 +1,6 @@
 <template>
     <v-icon
+        id="dark-mode-switch"
         :model-value="darkMode"
         :v-model="darkMode"
         @click="toggleDarkMode"
