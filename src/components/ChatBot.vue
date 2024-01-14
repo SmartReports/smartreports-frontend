@@ -240,7 +240,7 @@ export default {
       }
     },
 
-    onUpdateRoomName(e) {
+    onUpdateRoomName(e: any) {
       this.editingRoomName = false;
       this.selectedRoomName = e.target.innerText;
       this.storage.rooms.filter((room: any) => room.roomId === this.selectedRoomId)[0].roomName = this.selectedRoomName;
