@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import Navbar from "./components/Navbar.vue";
-import ChatBot from "./components/ChatBot.vue";
+import ChatBot from "./components/ChatBotButton.vue";
 import AppWrapper from "@/components/AppWrapper.vue";
 </script>
 

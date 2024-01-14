@@ -66,7 +66,7 @@ export default defineComponent({
 
 <style>
 .loader {
-  background-color: #bdbdbd;
+  background-color: whitesmoke;
   bottom: 0;
   color: black;
   display: block;
