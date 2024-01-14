@@ -4,11 +4,10 @@ import { Kpi, Alarms, Account, ReportTemplate } from "../models";
 import axios from "axios";
 import { format } from 'date-fns';
 import {ChartType} from "chart.js";
-import { truncate } from "node:fs/promises";
 
 export const useMainStore = defineStore("main", {
   state: () => ({
-    debug: true,
+    debug: false,
     activeRequests: 0,
     currentModelValue: {} as ReportTemplate,
     alarms: [] as Alarms[],

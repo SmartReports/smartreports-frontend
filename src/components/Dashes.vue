@@ -106,7 +106,6 @@ export default defineComponent({
         name: report.name,
         frequency: report.frequency,
         pages: report.pages as ReportTemplatePage[],
-        img: report.img as String,
       })) as ReportTemplate[];
     },
     suggestedReportsAsItem() {
@@ -115,7 +114,6 @@ export default defineComponent({
         name: report.name,
         frequency: report.frequency,
         pages: report.pages as ReportTemplatePage[],
-        img: report.img as String,
       })) as ReportTemplate[];
     },
   },
