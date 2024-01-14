@@ -1,7 +1,7 @@
 <script lang="ts">
 
 import Navbar from "@/components/Navbar.vue";
-import ChatBot from "@/components/ChatBot.vue";
+import ChatBot from "@/components/ChatBotButton.vue";
 import LoadingScreen from "@/components/Splash.vue";
 import {defineComponent} from "vue";
 import { useMainStore } from "@/store/app";
