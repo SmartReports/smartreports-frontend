@@ -29,6 +29,7 @@
         v-if="chartConfiguration.type === 'pie'"
         :options="pieCastedOption"
         :data="pieCastedData"
+        style=""
       />
       <Line
         v-if="chartConfiguration.type === 'line'"
