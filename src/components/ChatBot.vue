@@ -134,7 +134,7 @@ export default {
       userBot: {
         _id: '1',
         username: 'Bot',
-        avatar: 'src/assets/robot.svg',
+        avatar: 'src/assets/robot.png',
       },
       dont_touch_this: true,
       typingIndicator: '0',
