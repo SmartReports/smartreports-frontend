@@ -58,16 +58,19 @@ import {register, Room} from "vue-advanced-chat";
 import {useMainStore} from "@/store/app";
 import {mapStores} from "pinia";
 import {Account} from "@/models";
+import axios from "axios";
+
+const axiosBot = axios.create();
+axiosBot.defaults.baseURL = "https://datax_chatbot.ianniciello.me/"
 
 register()
-
 
 
 export default {
   mounted() {
     const style = document.createElement('style');
     style.innerHTML = ''
-    style.innerHTML += '.vac-rooms-container {min-width: 150px !important; max-width:1000px !important; }\n';
+    style.innerHTML += '.vac-rooms-container {min-width: 200px !important; max-width:1000px !important; }\n';
     style.innerHTML += '.vac-menu-options {min-width: 100px !important;}\n';
     style.innerHTML += '.vac-add-icon {margin-right: auto !important; margin-left: 0px !important;}\n';
     style.innerHTML += '.vac-format-message-wrapper {padding-bottom: 4px !important; padding-top: 2px !important;}\n';
@@ -76,12 +79,38 @@ export default {
 
     (this.$refs.chatWindow as any).shadowRoot.appendChild(style);
   },
-  created() {
+  async created() {
       this.userMe.avatar = this.currentAccount.image;
 
-      // TODO load rooms from backend
+      const simoRoom = (await axiosBot.get(`/chat?user_type=${this.mainStore.currentAccount.name}`)).data;
+      console.log(simoRoom);
 
-      if(this.storage.rooms.length == 0) {
+      if(simoRoom.length != 0) {
+        for(let i=0; i < simoRoom.length; i++) {
+
+          const lastMessage = (await axiosBot.get(`/chat/${simoRoom[i].id}?lastmessage`)).data;
+          const lastUser = lastMessage[1] === 'USER' ? this.userMe : this.userBot;
+
+          this.lastRoomId++;
+          this.lastMessageId++;
+          this.storage.rooms.push(
+            {
+              roomId: this.lastRoomId.toString(),
+              roomName: simoRoom[i].name,
+              users: [this.userMe, this.userBot],
+              lastMessage: {
+                _id: this.lastMessageId,
+                content: lastMessage[0],
+                senderId: lastUser._id,
+                avatar: lastUser.avatar,
+                seen: lastUser === this.userBot,
+                disableActions: true,
+                disableReactions: true,
+              }
+            });
+          this.mapRoomIdToSimoID[this.lastRoomId] = simoRoom[i].id;
+        }
+      } else {
         this.storage.rooms = [
           {
             roomId: '0',
@@ -115,6 +144,7 @@ export default {
       currentUserId: '0',
       lastRoomId: -1,
       lastMessageId: 0,
+      mapRoomIdToSimoID: {} as any,
       roomsLoaded: false,
       loadingRooms: true,
       loadingBotAnswer: false,
@@ -140,26 +170,53 @@ export default {
   },
   methods: {
     async fetchMessages({ room, options = {} }: any){
+
       this.messagesLoaded = false;
+      this.currentMessages = [];
       this.selectedRoomId = room.roomId;
       this.selectedRoomName = room.roomName;
-      if(this.storage.messages[room.roomId] == undefined) {
-        this.storage.messages[room.roomId] = [];
-      }
-      this.currentMessages = this.storage.messages[room.roomId];
-      await new Promise(r => setTimeout(r, 500));
-      this.messagesLoaded = true;
-      return;
+
+      setTimeout(async () => {
+        if(this.mapRoomIdToSimoID[room.roomId] != undefined && this.storage.messages[room.roomId] == undefined) {
+          this.storage.messages[room.roomId] = [];
+
+          let messages = (await axiosBot.get(`/chat/${this.mapRoomIdToSimoID[room.roomId]}`)).data.messages;
+          for(let i=0; i < messages.length; i++) {
+            this.lastMessageId++;
+
+            let user = (messages[i][1] === 'USER') ? this.userMe : this.userBot;
+
+            this.storage.messages[room.roomId].push({
+              _id: this.lastMessageId,
+              content: messages[i][0],
+              senderId: user._id,
+              avatar: user.avatar,
+              seen: user === this.userBot,
+              disableActions: true,
+              disableReactions: true,
+            });
+          }
+        } else if (this.storage.messages[room.roomId] == undefined) {
+          this.storage.messages[room.roomId] = [];
+        }
+        else {
+          await new Promise(r => setTimeout(r, 100));
+        }
+
+        this.currentMessages = this.storage.messages[room.roomId];
+        this.messagesLoaded = true;
+      })
+
     },
 
     addMessage(content: string, user: any, roomId: string) {
       this.lastMessageId++;
+
       let newMessage = {
         _id: this.lastMessageId,
         content: content,
         senderId: user._id,
         avatar: user.avatar,
-        date: new Date().toDateString(),
         seen: user === this.userBot,
         disableActions: true,
         disableReactions: true,
@@ -202,27 +259,58 @@ export default {
     },
 
     async sendMessage(message: any) {
+      if(this.mapRoomIdToSimoID[message.roomId] == undefined){
+        this.mapRoomIdToSimoID[message.roomId] = (await axiosBot.post(`/chat`, {
+          user_type: this.mainStore.currentAccount.name,
+          name: this.selectedRoomName
+        })).data.id;
+      }
+
       if(this.loadingBotAnswer) {
         return;
       }
+
       this.loadingBotAnswer = true;
       const roomId = message.roomId;
 
-      const botAnswerPromise = this.sendRequest(message.content, roomId);
+      try{
+        const botAnswerPromise = this.sendRequest(message.content, this.mapRoomIdToSimoID[roomId]);
 
-      this.addMessage(message.content, this.userMe, roomId);
+        this.addMessage(message.content, this.userMe, roomId);
 
-      await this.addThreeDots(roomId);
-      await botAnswerPromise;
-      this.removeThreeDots(roomId);
+        await this.addThreeDots(roomId);
+        const botAnswer = (await botAnswerPromise as any)[0];
+        this.removeThreeDots(roomId);
 
-      this.storage.rooms.filter((room: any) => room.roomId === roomId)[0].lastMessage = await this.addMessageProgressively("default bot reply: now are " + new Date().toString().substring(16, 21), this.userBot, roomId);
-      this.storage.rooms = [...this.storage.rooms];
+        this.storage.rooms.filter((room: any) => room.roomId === roomId)[0].lastMessage = await this.addMessageProgressively(botAnswer as string, this.userBot, roomId);
+        this.storage.rooms = [...this.storage.rooms];
+      } catch (e) {
+        console.log(e);
+      }
+
       this.loadingBotAnswer = false;
     },
 
-    sendRequest(message: string, threadId: string) {
-      return new Promise(r => setTimeout(r, 2000));
+    async sendRequest(message: string, simoId: string) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          await axiosBot.post('/message', {
+            id: simoId,
+            value: message
+          });
+
+          let ready = false;
+          while (!ready) {
+            await new Promise(r => setTimeout(r, 1000));
+            ready = (await axiosBot.get(`/chat/${simoId}?ready`)).data;
+          }
+
+          const answer = (await axiosBot.get(`/chat/${simoId}?lastmessage`)).data;
+          resolve(answer);
+        } catch (error) {
+          reject(error);
+        }
+      });
     },
 
     addRoom(){
@@ -234,17 +322,22 @@ export default {
         typingUsers: []
       }, ...this.storage.rooms];
     },
-    menuActionHandler({ action, roomId }: any) {
+    async menuActionHandler({ action, roomId }: any) {
       if(action.name === 'deleteRoom') {
+        if(this.mapRoomIdToSimoID[roomId] != undefined) {
+          await axiosBot.delete(`/chat/${this.mapRoomIdToSimoID[roomId]}`)
+        }
         this.storage.rooms = this.storage.rooms.filter((room: Room) => !(room.roomId == roomId));
       }
     },
 
-    onUpdateRoomName(e: any) {
+    async onUpdateRoomName(e: any) {
       this.editingRoomName = false;
       this.selectedRoomName = e.target.innerText;
       this.storage.rooms.filter((room: any) => room.roomId === this.selectedRoomId)[0].roomName = this.selectedRoomName;
       this.storage.rooms = [...this.storage.rooms];
+
+      await axiosBot.put(`/chat/${this.mapRoomIdToSimoID[this.selectedRoomId]}`, {name: this.selectedRoomName});
     },
 
     async onEditingFocusout() {
