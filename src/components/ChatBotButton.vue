@@ -94,7 +94,7 @@
   right: 0.5em;
   width: 1em;
   height: 1em;
-  z-index: 100;
+  z-index: 50;
   border: none;
 }
 </style>
