@@ -6,13 +6,6 @@ export interface ReportTemplate {
   img?: string;
 }
 
-export interface ReportImage {
-  id?: string | number;
-  report_id: string | number;
-  user_type: string;
-  img: string;
-}
-
 export interface ReportTemplatePage {
   id?: string | number;
   layout: "horizontal" | "vertical" | "grid";

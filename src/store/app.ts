@@ -1,13 +1,14 @@
 // Utilities
 import { defineStore } from "pinia";
-import { Kpi, Alarms, Account, ReportTemplate, ReportImage } from "../models";
+import { Kpi, Alarms, Account, ReportTemplate } from "../models";
 import axios from "axios";
 import { format } from 'date-fns';
 import {ChartType} from "chart.js";
+import { truncate } from "node:fs/promises";
 
 export const useMainStore = defineStore("main", {
   state: () => ({
-    debug: false,
+    debug: true,
     activeRequests: 0,
     currentModelValue: {} as ReportTemplate,
     alarms: [] as Alarms[],
@@ -99,11 +100,6 @@ export const useMainStore = defineStore("main", {
       const account = accountId === undefined ? "" : accountId;
 
       this.user_reports = (await axios.get(`/report-templates/?user_type=${account}`)).data as ReportTemplate[];
-      let images = (await axios.get(`/report-img/?user_type=${account}`)).data as ReportImage[];
-
-      this.user_reports.forEach(report => {
-        report.img = images.filter(img => img.report_id == report.id)[0]?.img
-      })
       // console.log(this.user_reports)
       if(!this.debug) this.activeRequests--;
     },
@@ -138,14 +134,6 @@ export const useMainStore = defineStore("main", {
     async removeReport(id: number | string) {
       this.user_reports = this.user_reports.filter((report) => report.id != id);
       await axios.delete(`/report-templates/${id}/`);
-    },
-    async saveScreen(report_id: number | string | undefined, imgScreen: string){
-      await axios.post(`/report-img/`, {
-        report_id: report_id,
-        img: imgScreen,
-        user_type: this.currentAccount.value,
-      });
-      this.user_reports.filter((report) => {report_id==report.id})[0].img=imgScreen
     },
   },
 });

@@ -9,7 +9,7 @@
         <v-window-item v-for="(page, i) in pages" :key="`card-${i}`" :value="i">
           <div class="pt-4"></div>
             <v-container class="d-flex justify-center align-center "  style="overflow:auto">
-              <dash-page :imgPresent="modelValue.img!=undefined" :user_type="user_type" :modelPage="page"></dash-page>
+              <dash-page :user_type="user_type" :modelPage="page"></dash-page>
             </v-container>
           <div class="pt-12"></div>
           <v-card-subtitle class="d-flex justify-center align-center">Page: {{ i + 1  }} Kind: {{ page.layout }}</v-card-subtitle>
@@ -64,31 +64,6 @@ export default defineComponent({
     getPages(){
       return this.modelValue.pages as ReportTemplatePage[]
     },
-    async captureScreenshot() {
-          if (this.modelValue.img!=undefined){
-            console.log("image not undefine")
-            return
-          }
-          await this.$nextTick()
-          const element = document.getElementById('TemplateRender');
-
-          if (element) {
-            setTimeout(() => {
-              html2canvas(element).then((canvas) => {
-                // imageData to base64
-                const imageData = canvas.toDataURL('image/png');
-                // Send the imageData to the server
-                this.modelValue.img = imageData;
-                this.saveScreen(imageData);
-              });
-            }, 1500); // You can adjust the delay as needed
-          } else {
-            console.error('Element not found');
-          }
-        },
-        async saveScreen(imgData: string){
-          this.mainStore.saveScreen(this.modelValue.id, imgData)
-        },
     next() {
         this.onboarding =
             this.onboarding + 1 > this.pages.length ? 1 : this.onboarding + 1;
@@ -101,11 +76,6 @@ export default defineComponent({
   created() {
     this.modelValue = this.mainStore.getCurrentModelValue() as ReportTemplate;
     this.pages = this.modelValue.pages as ReportTemplatePage[];
-  },
-  mounted() {
-    if (this.modelValue.img == undefined) {
-      this.captureScreenshot();
-    }
   },
   computed:{
       ...mapStores(useMainStore),

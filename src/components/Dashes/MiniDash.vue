@@ -2,17 +2,10 @@
       <div class="pt-2"></div>
       <v-card elevation="8" height="100%">
         <router-link to="/dash"  @click="setModel(modelValue)">
-          <v-img
-          height="200"
-          :src="getImg()"
-          cover
-          tooltip="View"
-          >
-          <v-card height="100%" v-if="modelValue.img==undefined" class="d-flex justify-center align-center">
+          <v-card height="100%" class="d-flex justify-center align-center">
             <v-icon size="48" v-if="modelValue.pages[0].layout=='grid'">mdi-view-grid-outline</v-icon>
             <v-icon size="48" v-if="modelValue.pages[0].layout!='grid'">mdi-land-rows-{{modelValue.pages[0].layout}}</v-icon>
           </v-card>
-        </v-img>
       </router-link>
       <v-toolbar color="background">
         <v-card-text>{{ modelValue.name }}</v-card-text >
@@ -48,14 +41,6 @@ export default defineComponent({
     methods: {
         setModel(value: ReportTemplate){
           this.mainStore.setCurrentModelValue(value)
-        },
-        getImg(){
-          if (this.modelValue.img!=undefined){
-            return `${this.modelValue.img}`
-          }else {
-            // console.log('No image')
-            return ''
-          }
         },
         computedFilter: function() {
           return (this.$vuetify.theme as any).global.name == 'dark'? "container_dark" : "container"
