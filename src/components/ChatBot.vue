@@ -23,6 +23,7 @@
       @send-message="sendMessage($event.detail[0])"
       @add-room="addRoom()"
       @room-action-handler="menuActionHandler($event.detail[0])"
+      @open-file="onFileClick($event.detail[0])"
     >
       <div :slot="'message_' + typingIndicator">
           <div class="px-10">
@@ -59,6 +60,8 @@ import {useMainStore} from "@/store/app";
 import {mapStores} from "pinia";
 import {Account} from "@/models";
 import axios from "axios";
+import Axios from "axios"
+import { Buffer } from 'buffer';
 
 const axiosBot = axios.create();
 axiosBot.defaults.baseURL = "https://datax_chatbot.ianniciello.me/"
@@ -164,7 +167,7 @@ export default {
       textMessages: {
         MESSAGES_EMPTY: 'To get started, ask something to the chatbot',
         TYPE_MESSAGE: 'Write here your question',
-        SEARCH: 'Rechercher',
+        CONVERSATION_STARTED: '',
       },
     }
   },
@@ -186,7 +189,7 @@ export default {
 
             let user = (messages[i][1] === 'USER') ? this.userMe : this.userBot;
 
-            this.storage.messages[room.roomId].push({
+            let chatMessage = {
               _id: this.lastMessageId,
               content: messages[i][0],
               senderId: user._id,
@@ -194,7 +197,17 @@ export default {
               seen: user === this.userBot,
               disableActions: true,
               disableReactions: true,
-            });
+              files: [] as any,
+            }
+
+            for(let j=0; j < messages[i][2].length; j++) {
+              chatMessage.files.push({
+                url: axiosBot.defaults.baseURL + messages[i][2][j],
+                type: 'png',
+              });
+            }
+
+            this.storage.messages[room.roomId].push(chatMessage);
           }
         } else if (this.storage.messages[room.roomId] == undefined) {
           this.storage.messages[room.roomId] = [];
@@ -209,7 +222,7 @@ export default {
 
     },
 
-    addMessage(content: string, user: any, roomId: string) {
+    addMessage(content: string, user: any, roomId: string, images: string[] = []) {
       this.lastMessageId++;
 
       let newMessage = {
@@ -220,17 +233,26 @@ export default {
         seen: user === this.userBot,
         disableActions: true,
         disableReactions: true,
+        files: [] as any[],
       }
+
+      for(let i=0; i < images.length; i++) {
+        newMessage.files.push({
+          url: axiosBot.defaults.baseURL + images[i],
+          type: 'png',
+        });
+      }
+
       this.storage.messages[roomId].push(newMessage);
       this.messages = this.storage.messages[roomId];
 
       return newMessage;
     },
 
-    async addMessageProgressively(content: string, user: any, roomId: string){
+    async addMessageProgressively(content: string, user: any, roomId: string, images: string[] = []){
       this.lastMessageId++;
 
-      let newMessage = this.addMessage('', user, roomId);
+      let newMessage = this.addMessage('', user, roomId, images);
 
       const words = content.split(" ")
       for(let i=0; i < words.length; i++) {
@@ -279,10 +301,11 @@ export default {
         this.addMessage(message.content, this.userMe, roomId);
 
         await this.addThreeDots(roomId);
-        const botAnswer = (await botAnswerPromise as any)[0];
+        const botAnswer = (await botAnswerPromise as any);
         this.removeThreeDots(roomId);
 
-        this.storage.rooms.filter((room: any) => room.roomId === roomId)[0].lastMessage = await this.addMessageProgressively(botAnswer as string, this.userBot, roomId);
+        this.storage.rooms.filter((room: any) => room.roomId === roomId)[0].lastMessage =
+          await this.addMessageProgressively(botAnswer[0] as string, this.userBot, roomId, botAnswer[2]);
         this.storage.rooms = [...this.storage.rooms];
       } catch (e) {
         console.log(e);
@@ -348,6 +371,45 @@ export default {
       this.editingRoomName = false;
       this.dont_touch_this = true;
     },
+
+    onFileClick(e: any) {
+      if(e.file.action === "download") {
+        this.downloadImage(e.file.file.url, "Image.png");
+      }
+    },
+
+    downloadImage (url: string, label: string) {
+      Axios.get(url, { responseType: 'blob' })
+        .then(response => {
+          const blob = new Blob([response.data], { type: 'image/png' })
+          const link = document.createElement('a')
+          link.href = URL.createObjectURL(blob)
+          link.download = label
+          link.click()
+          URL.revokeObjectURL(link.href)
+        }).catch(console.error)
+    }
+    // async downloadImage(imageUrl: string) {
+    //   try {
+    //     const response = await fetch(imageUrl, {
+    //       cache: 'no-store', // Force revalidation
+    //     });
+    //     const blob = await response.blob();
+    //
+    //     const url = window.URL.createObjectURL(new Blob([blob]));
+    //     const link = document.createElement('a');
+    //     link.href = url;
+    //     link.download = 'downloaded_image.png';
+    //
+    //     document.body.appendChild(link);
+    //     link.click();
+    //     document.body.removeChild(link);
+    //
+    //     window.URL.revokeObjectURL(url);
+    //   } catch (error) {
+    //     console.error('Error downloading image:', error);
+    //   }
+    // },
   },
   computed: {
     ...mapStores(useMainStore),
