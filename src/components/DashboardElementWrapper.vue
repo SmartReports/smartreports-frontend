@@ -3,8 +3,7 @@
     <!-- <v-card rounded="lg" color="white" elevation="4"> -->
     <DashboardElementLoading v-if="chartConfiguration==undefined"></DashboardElementLoading>
     <DashboardElement
-      v-else
-      v-if="!refreshElement"
+      v-else-if="!refreshElement"
       @remove="$emit('remove')"
       @edit="$emit('edit')"
       @switchPredict="onSwitchPredict"
@@ -22,6 +21,7 @@
 import {defineComponent, PropType} from "vue";
 import DashboardElementLoading from "./DashboardElementLoading.vue"
 import DashboardElement from "./DashboardElement.vue"
+import { ChartConfiguration } from "chart.js";
 
 export default defineComponent({
   emits: ['remove', 'edit', 'switchPredict'],
@@ -54,7 +54,9 @@ export default defineComponent({
       (val) => {
         if((this.chartConfiguration as any).type != "value" && (this.chartConfiguration as any).type != "semaphore"){
           this.refreshElement = true;
-          setTimeout(function() {
+
+
+          setTimeout(function(this: any) {
             this.refreshElement = false;
           }.bind(this), 50);
         }
