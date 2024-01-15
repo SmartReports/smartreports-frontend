@@ -10,7 +10,7 @@
               variant="text"
               tooltip="Edit">mdi-pencil</v-icon>
       <v-icon class="text-grey-darken-1 predict-button"
-              :class="{ 'predict-button-active': predictActive }"
+              :class="{ 'predict-button-active': predictActive && !isDark, 'predict-button-active-dark': predictActive && isDark }"
               v-if="options && chartConfiguration.type === 'line'"
               @click="onPredict()"
               variant="text"
@@ -47,7 +47,7 @@
         :data="scatterCastedData"
       />
       <div v-if="chartConfiguration.type === 'value'">
-        <div class="text-center" :class="{'dark-number': isDark}">
+        <div class="text-center">
           <span v-text="chartTitle"/>
           <h1 ref="content" class="number"
               v-text="chartConfiguration.data.value"
@@ -57,7 +57,7 @@
 
   <div v-if="chartConfiguration.type === 'semaphore'">
     <div class="text-center">
-      <span v-text="chartTitle" :class="{'dark-number': isDark}"/>
+      <span v-text="chartTitle"/>
       <div class="container">
         <img ref="semaphore" src="../assets/semaphore/red.svg"
              v-if="chartConfiguration.data.color === 'red'"
@@ -149,9 +149,11 @@ export default defineComponent ({
       return (<BarChartOption>this.chartConfiguration.options);
     },
     doughnutCastedOption() {
+      delete this.chartConfiguration.options.scales;
       return (<DoughnutChartOption>this.chartConfiguration.options);
     },
     pieCastedOption() {
+      delete this.chartConfiguration.options.scales;
       return (<PieChartOption>this.chartConfiguration.options);
     },
     lineCastedOption() {
@@ -167,10 +169,10 @@ export default defineComponent ({
     isDark: function() {
       return (this.$vuetify.theme as any).global.name == 'dark';
     },
-
-    invert_dark: function() {
-      return (this.$vuetify.theme as any).global.name == 'dark' ? 'invert(1)' : 'invert(0)';
-    },
+    //
+    // invert_dark: function() {
+    //   return (this.$vuetify.theme as any).global.name == 'dark' ? 'invert(1)' : 'invert(0)';
+    // },
   },
   components: { Bar, Doughnut, Pie, Line, Radar, Scatter },
   props: {
@@ -201,15 +203,15 @@ export default defineComponent ({
       this.resizeImage();
     }
 
-    this.imageStyle.filter = (this.$vuetify.theme.global.name == 'dark' ? 'invert(1)' : 'invert(0)')
-    this.$watch(
-      () => {
-        return this.$vuetify.theme.global.name
-      },
-      (val) => {
-        this.imageStyle.filter = (val == 'dark' ? 'invert(1)' : 'invert(0)')
-      }
-    )
+    // this.imageStyle.filter = (this.$vuetify.theme.global.name == 'dark' ? 'invert(1)' : 'invert(0)')
+    // this.$watch(
+    //   () => {
+    //     return this.$vuetify.theme.global.name
+    //   },
+    //   (val) => {
+    //     this.imageStyle.filter = (val == 'dark' ? 'invert(1)' : 'invert(0)')
+    //   }
+    // )
   },
   beforeUnmount() {
     if(this.chartConfiguration.type === 'value') {
@@ -228,7 +230,6 @@ export default defineComponent ({
       imageStyle: {
         transform: 'translate(-50%, -50%) rotate(90deg)',
         position: 'absolute',
-        filter: 'invert(0)',
         // top: '0',
         // left: '0',
       } as any,
@@ -326,6 +327,10 @@ export default defineComponent ({
 }
 .predict-button-active {
   background-color: #c8c8c8;
+  opacity: 1.0;
+}
+.predict-button-active-dark {
+  background-color: #373737;
   opacity: 1.0;
 }
 .delete-button:hover {
