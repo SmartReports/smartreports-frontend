@@ -96,8 +96,10 @@ export default defineComponent({
         modified.options.scales = {
           r: {
             angleLines: {
+              color: gridColor
             },
             grid: {
+              color: gridColor,
             },
             pointLabels: {
               color: textColor
