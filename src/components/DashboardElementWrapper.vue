@@ -86,12 +86,14 @@ export default defineComponent({
           }
         }
 
-        modified.options.plugins.title.color = textColor
-        modified.options.plugins.legend = {
-          labels: {
-            color: textColor,
-          }
-        };
+        if(modified.options.plugins != undefined){
+          modified.options.plugins.title.color = textColor
+          modified.options.plugins.legend = {
+            labels: {
+              color: textColor,
+            }
+          };
+        }
       }
 
       if(modified.type === "radar") {
@@ -147,7 +149,6 @@ export default defineComponent({
   max-height: 100%;
   box-shadow: 0 3px 30px rgb(0 0 0 / 0.1);
   border-radius: 15px;
-  -webkit-filter: invert(0);
 }
 
 </style>

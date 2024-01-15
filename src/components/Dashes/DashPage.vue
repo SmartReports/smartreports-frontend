@@ -2,7 +2,7 @@
   <div>
     <v-row v-for="row in rows" :key="row">
       <v-col  v-for="col in RowCols(row)">
-        <v-card-title>{{ getKpiName (kpi_id_mapping[getIndex(row, col)]) }}</v-card-title>
+        <v-card-title>{{ getChartTitle (kpi_id_mapping[getIndex(row, col)]) }}</v-card-title>
         <v-container class="d-flex-fill justify-center align-center">
           <v-card height="310" min-width="400" elevation="5" color="white" variant="tonal" class="rounded-xl">
             <DashboardElementWrapper
@@ -34,10 +34,6 @@ export default {
       pageKpis: [] as KpiReportElement[],
       cols: 0,
       current: 0,
-      default_chart_options: {
-        responsive: true,
-        maintainAspectRatio: false,
-      },
       charts_data: {} as { [id: number]: ChartConfiguration},
       kpi_id_mapping: {} as { [id: number]: string[]},
     };
@@ -61,9 +57,13 @@ export default {
     await this.getKpisData()
   },
   methods: {
-    getKpiName(index: string[]) {
-        const names = index.map((id: any) => this.mainStore.getKpiById(id)?.kb_name)
-        return names.join(', ')
+    getChartTitle(kpi_ids: string[]){
+      const kpi_names = kpi_ids.map((id) => this.mainStore.getKpiById(id)?.kb_name);
+      let title: string = "";
+      kpi_names.forEach((name) => {
+        title += " / " + name;
+      })
+      return title.slice(3);
     },
     RowCols(row: number) {
       if (row==this.rows && this.numOfCharts%2==1) {
@@ -118,15 +118,24 @@ export default {
             const type = kpi.chart_type as ChartType;
             const kpi_id = kpi.kpis as string[];
 
-
             try {
               // Use Vue.set to ensure reactivity
-              this.kpi_id_mapping[index] = kpi_id
+              this.kpi_id_mapping[index] = kpi_id;
               this.charts_data[index] = {
                 data: ( await this.axios.get(`/kpi-data/?kpis=${kpi_id}&user_type=${this.user_type}&chart_type=${type}`)).data['data'] as ChartData,
-                options: this.default_chart_options,
+                options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    title: {
+                      display: false,
+                      text: this.getChartTitle(kpi_id)
+                    }
+                  }
+                },
                 type: type,
               } as ChartConfiguration;
+
             } catch (error) {
               console.error('Error fetching data for KPI:', kpi_id, error);
             }
