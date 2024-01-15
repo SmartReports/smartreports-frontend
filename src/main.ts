@@ -18,7 +18,7 @@ axios.defaults.baseURL = dev ? (import.meta.env.VITE_APP_AXIOS_BASE ?? "http://1
 
 // // add basic auth axios
 
-if (!dev) {
+if (dev) {
   axios.defaults.auth = {
     username: import.meta.env.VITE_APP_AXIOS_USERNAME ?? "",
     password: import.meta.env.VITE_APP_AXIOS_PASSWORD ?? "",

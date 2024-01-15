@@ -65,7 +65,7 @@ export default defineComponent({
   max-height: 100%;
   box-shadow: 0 3px 30px rgb(0 0 0 / 0.1);
   border-radius: 15px;
-  -webkit-filter: invert(1) hue-rotate(180deg);
+  -webkit-filter: invert(1);
 
 }
 
