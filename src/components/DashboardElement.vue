@@ -149,9 +149,11 @@ export default defineComponent ({
       return (<BarChartOption>this.chartConfiguration.options);
     },
     doughnutCastedOption() {
+      delete this.chartConfiguration.options.scales;
       return (<DoughnutChartOption>this.chartConfiguration.options);
     },
     pieCastedOption() {
+      delete this.chartConfiguration.options.scales;
       return (<PieChartOption>this.chartConfiguration.options);
     },
     lineCastedOption() {
@@ -164,13 +166,13 @@ export default defineComponent ({
       return (<ScatterChartOption>this.chartConfiguration.options);
     },
 
-    isDark: function() {
-      return (this.$vuetify.theme as any).global.name == 'dark';
-    },
-
-    invert_dark: function() {
-      return (this.$vuetify.theme as any).global.name == 'dark' ? 'invert(1)' : 'invert(0)';
-    },
+    // isDark: function() {
+    //   return (this.$vuetify.theme as any).global.name == 'dark';
+    // },
+    //
+    // invert_dark: function() {
+    //   return (this.$vuetify.theme as any).global.name == 'dark' ? 'invert(1)' : 'invert(0)';
+    // },
   },
   components: { Bar, Doughnut, Pie, Line, Radar, Scatter },
   props: {
@@ -201,15 +203,15 @@ export default defineComponent ({
       this.resizeImage();
     }
 
-    this.imageStyle.filter = (this.$vuetify.theme.global.name == 'dark' ? 'invert(1)' : 'invert(0)')
-    this.$watch(
-      () => {
-        return this.$vuetify.theme.global.name
-      },
-      (val) => {
-        this.imageStyle.filter = (val == 'dark' ? 'invert(1)' : 'invert(0)')
-      }
-    )
+    // this.imageStyle.filter = (this.$vuetify.theme.global.name == 'dark' ? 'invert(1)' : 'invert(0)')
+    // this.$watch(
+    //   () => {
+    //     return this.$vuetify.theme.global.name
+    //   },
+    //   (val) => {
+    //     this.imageStyle.filter = (val == 'dark' ? 'invert(1)' : 'invert(0)')
+    //   }
+    // )
   },
   beforeUnmount() {
     if(this.chartConfiguration.type === 'value') {
@@ -228,7 +230,6 @@ export default defineComponent ({
       imageStyle: {
         transform: 'translate(-50%, -50%) rotate(90deg)',
         position: 'absolute',
-        filter: 'invert(0)',
         // top: '0',
         // left: '0',
       } as any,

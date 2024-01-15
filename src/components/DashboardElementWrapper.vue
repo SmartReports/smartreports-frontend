@@ -75,33 +75,52 @@ export default defineComponent({
       let modified = this.chartConfiguration as any;
 
 
-
+      const textColor =  (this.$vuetify.theme as any).global.name == 'dark' ? 'white' : 'black'
+      const gridColor =  (this.$vuetify.theme as any).global.name == 'dark' ? '#7D7D7D' : '#E0E0E0'
       if(modified.type !== "value" && modified.type !== "semaphore") {
         for (let i = 0; i < modified.data.datasets.length; i++) {
           if(modified.type === "pie" || modified.type === "doughnut" || modified.type === "bar") {
-            modified.data.datasets[i].borderColor = (this.$vuetify.theme as any).global.name == 'dark' ? "#dedede" : "#FFFFFF";
+            modified.data.datasets[i].borderColor = (this.$vuetify.theme as any).global.name == 'dark' ? "#212121" : "#FFFFFF";
           }
         }
+
+        modified.options.plugins.title.color = textColor
+        modified.options.plugins.legend = {
+          labels: {
+            color: textColor,
+          }
+        };
       }
 
-      // if(modified.type === "radar") {
-      //   modified.options.scales = {
-      //     r: {
-      //       angleLines: {
-      //         color: 'white'
-      //       },
-      //       grid: {
-      //         color: 'white'
-      //       },
-      //       pointLabels: {
-      //         color: 'white'
-      //       },
-      //       ticks: {
-      //         backdropColor: (this.$vuetify.theme as any).global.name == 'dark' ? "#212121" : "#FFFFFF"
-      //       }
-      //     }
-      //   };
-      // }
+      if(modified.type === "radar") {
+        modified.options.scales = {
+          r: {
+            angleLines: {
+            },
+            grid: {
+            },
+            pointLabels: {
+              color: textColor
+            },
+            ticks: {
+              backdropColor: (this.$vuetify.theme as any).global.name == 'dark' ? "#212121" : "#FFFFFF"
+            }
+          }
+        };
+      }
+
+      if(modified.type === "bar" || modified.type === "line") {
+        modified.options.scales = {
+          x: {
+            ticks: {color: textColor},
+            grid: {color: gridColor}
+          },
+          y: {
+            ticks: {color: textColor},
+            grid: {color: gridColor}
+          },
+        }
+      }
 
       return modified;
     }
@@ -124,7 +143,7 @@ export default defineComponent({
   max-height: 100%;
   box-shadow: 0 3px 30px rgb(0 0 0 / 0.1);
   border-radius: 15px;
-  -webkit-filter: invert(1);
+  -webkit-filter: invert(0);
 }
 
 </style>
