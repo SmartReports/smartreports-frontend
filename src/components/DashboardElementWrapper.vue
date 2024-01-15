@@ -111,7 +111,7 @@ export default defineComponent({
         };
       }
 
-      if(modified.type === "bar" || modified.type === "line") {
+      if(modified.type === "bar" || modified.type === "line" || modified.type === "scatter") {
         modified.options.scales = {
           x: {
             ticks: {color: textColor},
