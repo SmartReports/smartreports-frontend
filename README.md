@@ -1,4 +1,5 @@
 # default
+[![wakatime](https://wakatime.com/badge/user/018bc303-62c0-401f-a2a8-025205fa371c/project/018bc3c1-769c-4770-84db-86d43357bbe4.svg)](https://wakatime.com/badge/user/018bc303-62c0-401f-a2a8-025205fa371c/project/018bc3c1-769c-4770-84db-86d43357bbe4)
 
 ## Project setup
 
